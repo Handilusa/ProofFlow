@@ -62,7 +62,7 @@ const ALL_VECTORS_ES = [
 ];
 
 export default function DualPaneDashboard() {
-  const { account } = useWallet();
+  const { account, connect } = useWallet();
   const { t, language } = useLanguage();
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -151,7 +151,7 @@ export default function DualPaneDashboard() {
       } else if (err.message?.includes('503') || err.message?.includes('500')) {
         alert("AI service temporarily unavailable. Please wait a moment and try again.");
       } else {
-        alert("Failed to connect to the backend. Ensure backend is running on port 3001.");
+        alert(language === 'es' ? "Error al conectar con el servidor. Por favor, intenta de nuevo más tarde." : "Failed to connect to the backend server. Please try again later.");
       }
     } finally {
       setIsLoading(false);
@@ -204,19 +204,21 @@ export default function DualPaneDashboard() {
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault();
+                      if (!account) return;
                       handleSubmit(e);
                     }
                   }}
-                  placeholder={t('dash_placeholder')}
-                  className="w-full bg-background border border-border rounded-xl p-4 min-h-[140px] text-white placeholder-text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary transition-all resize-none shadow-inner"
-                  disabled={isLoading || isPolling}
+                  placeholder={!account ? (language === 'es' ? 'Conecta tu wallet para preguntar' : 'Connect your wallet to ask a question') : t('dash_placeholder')}
+                  className="w-full bg-background border border-border rounded-xl p-4 min-h-[140px] text-white placeholder-text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary transition-all resize-none shadow-inner disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={isLoading || isPolling || !account}
                 />
               </div>
 
               <Button
-                type="submit"
-                className="w-full h-12 text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black shadow-[0_0_20px_rgba(45,212,191,0.2)] transition-all group"
-                disabled={isLoading || isPolling || !question.trim()}
+                type={!account ? "button" : "submit"}
+                onClick={!account ? connect : undefined}
+                className="w-full h-12 text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black shadow-[0_0_20px_rgba(45,212,191,0.2)] transition-all group disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isLoading || isPolling || (!!account && !question.trim())}
               >
                 {isLoading || isPolling ? (
                   <span className="flex items-center gap-2">
@@ -224,7 +226,7 @@ export default function DualPaneDashboard() {
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
-                    {t('dash_submit')} <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    {!account ? (language === 'es' ? 'Conectar Wallet' : 'Connect Wallet') : t('dash_submit')} <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                 )}
               </Button>
@@ -237,8 +239,8 @@ export default function DualPaneDashboard() {
                   <button
                     key={i}
                     onClick={() => setQuestion(q)}
-                    disabled={isLoading || isPolling}
-                    className="px-3 py-1.5 rounded-lg border border-border/50 bg-background/50 text-[11px] text-text-muted hover:text-white hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-colors text-left disabled:opacity-50"
+                    disabled={isLoading || isPolling || !account}
+                    className="px-3 py-1.5 rounded-lg border border-border/50 bg-background/50 text-[11px] text-text-muted hover:text-white hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {q}
                   </button>

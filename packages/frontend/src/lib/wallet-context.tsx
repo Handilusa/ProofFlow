@@ -35,8 +35,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         const saved = localStorage.getItem('proofflow_wallet');
         if (saved) setAccount(saved);
 
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', (accounts: string[]) => {
+        const provider = (window as any).okxwallet || window.ethereum;
+        if (provider) {
+            provider.on('accountsChanged', (accounts: string[]) => {
                 if (accounts.length === 0) {
                     setAccount(null);
                     localStorage.removeItem('proofflow_wallet');
@@ -51,29 +52,31 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const connect = async () => {
         setError(null);
 
-        if (!window.ethereum) {
-            setError('MetaMask not found. Please install MetaMask.');
-            window.open('https://metamask.io/download/', '_blank');
+        const provider = (window as any).okxwallet || window.ethereum;
+
+        if (!provider) {
+            setError('Compatible Web3 wallet not found. Please install OKX Wallet or MetaMask.');
+            window.open('https://www.okx.com/web3', '_blank');
             return;
         }
 
         setIsConnecting(true);
         try {
             // Request accounts
-            const accounts = await window.ethereum.request({
+            const accounts = await provider.request({
                 method: 'eth_requestAccounts'
             });
 
             // Switch to Hedera Testnet (chainId 296 = 0x128)
             try {
-                await window.ethereum.request({
+                await provider.request({
                     method: 'wallet_switchEthereumChain',
                     params: [{ chainId: '0x128' }],
                 });
             } catch (switchError: any) {
                 // Chain not added yet, add it
                 if (switchError.code === 4902) {
-                    await window.ethereum.request({
+                    await provider.request({
                         method: 'wallet_addEthereumChain',
                         params: [{
                             chainId: '0x128',
