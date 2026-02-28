@@ -1,44 +1,8 @@
-import { jest } from '@jest/globals';
+import "dotenv/config";
+import app from "../api/server.js";
+import request from "supertest";
 
-jest.unstable_mockModule("../services/mirrorNode.js", () => ({
-    fetchProofFromMirrorNode: jest.fn(),
-    fetchLeaderboard: jest.fn(),
-    fetchStats: jest.fn().mockResolvedValue({
-        totalProofs: 150,
-        totalAgents: 42,
-        totalTokensMinted: 150,
-        lastActivity: 1700000000000
-    })
-}));
-
-jest.unstable_mockModule("../services/gemini.service.js", () => ({
-    GeminiService: jest.fn().mockImplementation(() => ({
-        reasonWithAudit: jest.fn().mockResolvedValue({
-            proofId: "0xmockedhash123",
-            question: "What is the status of the network?",
-            steps: [
-                { label: "STEP 1", content: "Analyzing network", stepNumber: 1 },
-                { label: "STEP 2", content: "Fetching data", stepNumber: 2 },
-                { label: "STEP 3", content: "Synthesizing", stepNumber: 3 },
-                { label: "FINAL", content: "Conclusion: ok", stepNumber: 4 }
-            ],
-            totalSteps: 4,
-            createdAt: 1700000000000
-        })
-    }))
-}));
-
-jest.unstable_mockModule("../services/hedera/proofflow.js", () => ({
-    submitProof: jest.fn().mockResolvedValue({
-        resultHash: "0xmockedhash123",
-        hcsReceiptStatus: "SUCCESS",
-        contractTxHash: "0xmockedtxhash456"
-    })
-}));
-
-// We must dynamically import the modules AFTER mocking
-const { default: app } = await import("../api/server.js");
-const { default: request } = await import("supertest");
+// Real services will be used. Ensure GEMINI_API_KEY and Hedera credentials are in .env or CI secrets.
 
 describe("ProofFlow API Integration Tests", () => {
     describe("GET /api/v1/health", () => {
@@ -64,7 +28,7 @@ describe("ProofFlow API Integration Tests", () => {
             expect(response.body.errors.length).toBeGreaterThan(0);
         });
 
-        it("should return 201 with correctly mocked reasoning submission", async () => {
+        it("should return 201 with correctly processed reasoning submission", async () => {
             const payload = {
                 question: "What is the status of the network?",
                 requesterAddress: "0x1234567890123456789012345678901234567890"
@@ -75,7 +39,8 @@ describe("ProofFlow API Integration Tests", () => {
                 .send(payload);
 
             expect(response.status).toBe(201);
-            expect(response.body).toHaveProperty("proofId", "0xmockedhash123");
+            expect(response.body).toHaveProperty("proofId");
+            expect(response.body.proofId).toBeDefined();
             expect(response.body).toHaveProperty("question", payload.question);
             expect(response.body).toHaveProperty("status", "PUBLISHING_TO_HEDERA");
         });
@@ -86,12 +51,10 @@ describe("ProofFlow API Integration Tests", () => {
             const response = await request(app).get("/api/v1/stats");
 
             expect(response.status).toBe(200);
-            expect(response.body).toStrictEqual({
-                totalProofs: 150,
-                totalAgents: 42,
-                totalTokensMinted: 150,
-                lastActivity: 1700000000000
-            });
+            expect(response.body).toHaveProperty("totalProofs");
+            expect(response.body).toHaveProperty("totalAgents");
+            expect(response.body).toHaveProperty("totalTokensMinted");
+            expect(response.body).toHaveProperty("lastActivity");
         });
     });
 });

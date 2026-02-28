@@ -23,10 +23,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Root Install
+      - name: Root Install & Lint
         run: |
           npm ci || npm install
-          # npx eslint . --ext .js,.cjs,.mjs
+          npx eslint . --ext .js,.cjs,.mjs
 
       - name: Compile Smart Contracts
         working-directory: ./packages/contracts
@@ -37,10 +37,11 @@ jobs:
       - name: Backend API Tests
         working-directory: ./packages/backend
         env:
-          HEDERA_ACCOUNT_ID: "0.0.12345"
-          HEDERA_PRIVATE_KEY: "0x0000000000000000000000000000000000000000000000000000000000000000"
-          EVM_ADDRESS: "0x0000000000000000000000000000000000000000"
-          TESTNET_OPERATOR_PRIVATE_KEY: "0x0000000000000000000000000000000000000000000000000000000000000000"
+          HEDERA_ACCOUNT_ID: ${{ secrets.HEDERA_ACCOUNT_ID }}
+          HEDERA_PRIVATE_KEY: ${{ secrets.HEDERA_PRIVATE_KEY }}
+          EVM_ADDRESS: ${{ secrets.EVM_ADDRESS }}
+          TESTNET_OPERATOR_PRIVATE_KEY: ${{ secrets.TESTNET_OPERATOR_PRIVATE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           npm ci || npm install
           npm test
