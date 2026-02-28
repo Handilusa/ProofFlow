@@ -62,11 +62,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         </div>
                     </div>
                 </footer>
-
-                {/* TEMPORARY DEBUG BANNER */}
-                <div className="fixed bottom-0 left-0 w-full bg-red-500/20 text-red-200 text-[10px] font-mono p-1 text-center z-50">
-                    DEBUG: {API_URL}
-                </div>
             </div>
         </div>
     );
