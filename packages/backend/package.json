@@ -5,7 +5,7 @@
     "scripts": {
         "start": "node src/api/server.js",
         "simulate": "node src/scripts/simulate-agents.js",
-        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles"
+        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --forceExit"
     },
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
