@@ -20,7 +20,7 @@ export default function SettingsPage() {
     const fetchProfileStatus = async () => {
         if (!account) return;
         try {
-            const res = await fetch(`${API_URL}/api/v1/user/profile/${account}`);
+            const res = await fetch(`${API_URL}/user/profile/${account}`);
             if (res.ok) {
                 const data = await res.json();
                 if (data.username) {
@@ -48,7 +48,7 @@ export default function SettingsPage() {
         if (!account) return;
         setIsSaving(true);
         try {
-            const res = await fetch(`${API_URL}/api/v1/user/profile`, {
+            const res = await fetch(`${API_URL}/user/profile`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ address: account, username })

@@ -32,11 +32,11 @@ export default function LeaderboardPage() {
 
     const fetchLeaderboard = async () => {
         try {
-            const res = await fetch(`${API_URL}/api/v1/leaderboard`);
+            const res = await fetch(`${API_URL}/leaderboard`);
             if (!res.ok) throw new Error('Failed to fetch leaderboard');
             const result = await res.json();
 
-            const agentRes = await fetch(`${API_URL}/api/v1/agents`);
+            const agentRes = await fetch(`${API_URL}/agents`);
             if (agentRes.ok) {
                 const agentData = await agentRes.json();
                 setAgents(agentData);
