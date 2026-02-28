@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.next/
+build/
+coverage/
+packages/frontend/
+*.config.js
+*.config.mjs
+*.config.ts
