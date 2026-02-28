@@ -1,0 +1,46 @@
+name: ProofFlow CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 20.x ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Root Install & Lint
+        run: |
+          npm ci || npm install
+          npx eslint . --ext .js,.cjs,.mjs
+
+      - name: Compile Smart Contracts
+        working-directory: ./packages/contracts
+        run: |
+          npm ci || npm install
+          npx hardhat compile
+
+      - name: Backend API Tests
+        working-directory: ./packages/backend
+        env:
+          HEDERA_ACCOUNT_ID: "0.0.12345"
+          HEDERA_PRIVATE_KEY: "0x0000000000000000000000000000000000000000000000000000000000000000"
+          EVM_ADDRESS: "0x0000000000000000000000000000000000000000"
+          TESTNET_OPERATOR_PRIVATE_KEY: "0x0000000000000000000000000000000000000000000000000000000000000000"
+        run: |
+          npm ci || npm install
+          npm test

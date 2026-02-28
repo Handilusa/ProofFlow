@@ -1,0 +1,29 @@
+{
+    "name": "@proofflow/backend",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "node src/api/server.js",
+        "simulate": "node src/scripts/simulate-agents.js",
+        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles"
+    },
+    "dependencies": {
+        "@google/generative-ai": "^0.24.1",
+        "@hashgraph/sdk": "^2.80.0",
+        "cors": "^2.8.6",
+        "dotenv": "^17.3.1",
+        "ethers": "^6.13.5",
+        "express": "^4.22.1",
+        "express-rate-limit": "^8.2.1",
+        "express-validator": "^7.3.1",
+        "helmet": "^8.1.0",
+        "morgan": "^1.10.1",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@types/uuid": "^10.0.0",
+        "cross-env": "^10.1.0",
+        "jest": "^30.2.0",
+        "supertest": "^7.2.2"
+    }
+}
