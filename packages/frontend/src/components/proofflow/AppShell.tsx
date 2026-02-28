@@ -5,9 +5,16 @@ import Sidebar from '@/components/proofflow/Sidebar';
 import ConnectWallet from '@/components/proofflow/ConnectWallet';
 import FooterText from '@/components/proofflow/FooterText';
 
+import { API_URL } from '@/lib/utils';
+import { useEffect } from 'react';
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isLanding = pathname === '/';
+
+    useEffect(() => {
+        console.log("APP_SHELL_MOUNTED: API_URL =", API_URL);
+    }, []);
 
     // Landing page renders without sidebar/footer
     if (isLanding) {
@@ -55,6 +62,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         </div>
                     </div>
                 </footer>
+
+                {/* TEMPORARY DEBUG BANNER */}
+                <div className="fixed bottom-0 left-0 w-full bg-red-500/20 text-red-200 text-[10px] font-mono p-1 text-center z-50">
+                    DEBUG: {API_URL}
+                </div>
             </div>
         </div>
     );
