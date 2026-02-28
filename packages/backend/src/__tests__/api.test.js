@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { jest } from "@jest/globals";
 import app from "../api/server.js";
 import request from "supertest";
 
