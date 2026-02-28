@@ -11,6 +11,23 @@ jest.unstable_mockModule("../services/mirrorNode.js", () => ({
     })
 }));
 
+jest.unstable_mockModule("../services/gemini.service.js", () => ({
+    GeminiService: jest.fn().mockImplementation(() => ({
+        reasonWithAudit: jest.fn().mockResolvedValue({
+            proofId: "0xmockedhash123",
+            question: "What is the status of the network?",
+            steps: [
+                { label: "STEP 1", content: "Analyzing network", stepNumber: 1 },
+                { label: "STEP 2", content: "Fetching data", stepNumber: 2 },
+                { label: "STEP 3", content: "Synthesizing", stepNumber: 3 },
+                { label: "FINAL", content: "Conclusion: ok", stepNumber: 4 }
+            ],
+            totalSteps: 4,
+            createdAt: 1700000000000
+        })
+    }))
+}));
+
 jest.unstable_mockModule("../services/hedera/proofflow.js", () => ({
     submitProof: jest.fn().mockResolvedValue({
         resultHash: "0xmockedhash123",
@@ -36,30 +53,31 @@ describe("ProofFlow API Integration Tests", () => {
         });
     });
 
-    describe("POST /api/v1/proofs", () => {
+    describe("POST /api/v1/reason", () => {
         it("should return 400 for missing body fields", async () => {
             const response = await request(app)
-                .post("/api/v1/proofs")
-                .send({ agentId: "agent-001" });
+                .post("/api/v1/reason")
+                .send({ requesterAddress: "0x123" });
 
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty("errors");
             expect(response.body.errors.length).toBeGreaterThan(0);
         });
 
-        it("should return 201 with correctly mocked proof submission", async () => {
+        it("should return 201 with correctly mocked reasoning submission", async () => {
             const payload = {
-                agentId: "agent-alpha-001",
-                taskId: "task-jest-test",
-                resultData: '{"prediction":"cat", "confidence":0.99}'
+                question: "What is the status of the network?",
+                requesterAddress: "0x1234567890123456789012345678901234567890"
             };
 
             const response = await request(app)
-                .post("/api/v1/proofs")
+                .post("/api/v1/reason")
                 .send(payload);
 
             expect(response.status).toBe(201);
             expect(response.body).toHaveProperty("proofId", "0xmockedhash123");
+            expect(response.body).toHaveProperty("question", payload.question);
+            expect(response.body).toHaveProperty("status", "PUBLISHING_TO_HEDERA");
         });
     });
 

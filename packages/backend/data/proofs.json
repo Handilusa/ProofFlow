@@ -821,5 +821,49 @@
       "tokenTxId": "0.0.7986674@1772236780.887695229",
       "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772236780.887695229"
     }
+  ],
+  [
+    "0xmockedhash123",
+    {
+      "proofId": "0xmockedhash123",
+      "question": "What is the status of the network?",
+      "steps": [
+        {
+          "label": "STEP 1",
+          "content": "Analyzing network",
+          "stepNumber": 1
+        },
+        {
+          "label": "STEP 2",
+          "content": "Fetching data",
+          "stepNumber": 2
+        },
+        {
+          "label": "STEP 3",
+          "content": "Synthesizing",
+          "stepNumber": 3
+        },
+        {
+          "label": "FINAL",
+          "content": "Conclusion: ok",
+          "stepNumber": 4
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1700000000000,
+      "dataSources": [],
+      "status": "CONFIRMED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0x1234567890123456789012345678901234567890",
+      "rootHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "hcsSequenceNumbers": [
+        291,
+        292,
+        293,
+        294
+      ],
+      "tokenTxId": "0.0.7986674@1772278567.454332415",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772278567.454332415"
+    }
   ]
 ]
