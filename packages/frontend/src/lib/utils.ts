@@ -30,5 +30,5 @@ export function formatNumber(num: number): string {
     return num.toString();
 }
 
-const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://proofflow-z8fx.onrender.com';
 export const API_URL = rawApiUrl.endsWith('/api/v1') ? rawApiUrl : `${rawApiUrl}/api/v1`;
