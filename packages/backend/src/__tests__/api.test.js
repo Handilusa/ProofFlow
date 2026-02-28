@@ -2,7 +2,19 @@ import "dotenv/config";
 import app from "../api/server.js";
 import request from "supertest";
 
-// Real services will be used. Ensure GEMINI_API_KEY and Hedera credentials are in .env or CI secrets.
+// Real services are used — GEMINI_API_KEY and Hedera credentials must be in .env or CI secrets.
+// Gemini API calls can take 15-60s, so we set a generous timeout.
+jest.setTimeout(120_000);
+
+let server;
+
+beforeAll(() => {
+    server = app.listen(0); // bind to random port for testing
+});
+
+afterAll((done) => {
+    server.close(done);
+});
 
 describe("ProofFlow API Integration Tests", () => {
     describe("GET /api/v1/health", () => {
@@ -43,6 +55,9 @@ describe("ProofFlow API Integration Tests", () => {
             expect(response.body.proofId).toBeDefined();
             expect(response.body).toHaveProperty("question", payload.question);
             expect(response.body).toHaveProperty("status", "PUBLISHING_TO_HEDERA");
+
+            // Give async Hedera operations time to complete
+            await new Promise((resolve) => setTimeout(resolve, 5000));
         });
     });
 
