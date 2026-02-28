@@ -26,11 +26,10 @@ export interface StoredProof extends ReasoningResult {
     explorerUrl?: string;
 }
 
-const envApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-const API_BASE_URL = envApiUrl.endsWith('/api/v1') ? envApiUrl : `${envApiUrl}/api/v1`;
+import { API_URL } from './utils';
 
 export async function submitQuestion(question: string, address?: string): Promise<ReasoningResult> {
-    const response = await fetch(`${API_BASE_URL}/reason`, {
+    const response = await fetch(`${API_URL}/reason`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -46,7 +45,7 @@ export async function submitQuestion(question: string, address?: string): Promis
 }
 
 export async function getProof(proofId: string): Promise<StoredProof> {
-    const response = await fetch(`${API_BASE_URL}/proof/${proofId}`);
+    const response = await fetch(`${API_URL}/proof/${proofId}`);
 
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
@@ -56,7 +55,7 @@ export async function getProof(proofId: string): Promise<StoredProof> {
 }
 
 export async function getRecentProofs(address?: string): Promise<StoredProof[]> {
-    const url = address ? `${API_BASE_URL}/proofs?address=${address}` : `${API_BASE_URL}/proofs`;
+    const url = address ? `${API_URL}/proofs?address=${address}` : `${API_URL}/proofs`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -74,7 +73,7 @@ export interface NetworkStats {
 }
 
 export async function getNetworkStats(): Promise<NetworkStats> {
-    const response = await fetch(`${API_BASE_URL}/stats`);
+    const response = await fetch(`${API_URL}/stats`);
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
     }

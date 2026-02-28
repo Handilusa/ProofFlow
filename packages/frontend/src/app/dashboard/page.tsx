@@ -14,6 +14,7 @@ import VerificationBadge from '@/components/proofflow/VerificationBadge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
 import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import { useLanguage } from '@/lib/language-context';
+import { API_URL } from '@/lib/utils';
 
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
@@ -107,9 +108,7 @@ export default function DualPaneDashboard() {
     if (result && result.status !== "CONFIRMED" && result.status !== "VERIFIED") {
       const pollProof = async () => {
         try {
-          const envApiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-          const baseUrl = envApiUrl.endsWith('/api/v1') ? envApiUrl : `${envApiUrl}/api/v1`;
-          const latestData = await fetch(`${baseUrl}/proof/${result.proofId}`);
+          const latestData = await fetch(`${API_URL}/proof/${result.proofId}`);
           if (latestData.ok) {
             const updatedProof = await latestData.json();
             setResult(updatedProof);
