@@ -1,0 +1,42 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ⚠ Found lockfile missing swc dependencies, patching...
+npm error code ENOWORKSPACES
+npm error This command does not support workspaces.
+npm error A complete log of this run can be found in: C:\Users\Handi\AppData\Local\npm-cache\_logs\2026-02-22T12_17_07_358Z-debug-0.log
+ ⨯ Failed to patch lockfile, please try uninstalling and reinstalling next in this workspace
+TypeError: Cannot read properties of undefined (reading 'os')
+    at fetchPkgInfo (C:\Users\Handi\Desktop\HEDERA X\ProofFlow\packages\frontend\node_modules\next\dist\lib\patch-incorrect-lockfile.js:73:25)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Promise.all (index 1)
+    at async patchIncorrectLockfile (C:\Users\Handi\Desktop\HEDERA X\ProofFlow\packages\frontend\node_modules\next\dist\lib\patch-incorrect-lockfile.js:162:26)
+ ✓ Ready in 1825ms
+ ○ Compiling / ...
+ ✓ Compiled / in 4.2s (2390 modules)
+ GET / 200 in 4495ms
+ ✓ Compiled in 266ms (1189 modules)
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1363ms (1233 modules)
+ GET /favicon.ico 200 in 1408ms
+ ○ Compiling /agents ...
+ ✓ Compiled /agents in 1036ms (2388 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 554ms (2391 modules)
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /_next/static/webpack/a3706d6e4ebd6e09.webpack.hot-update.json 404 in 1051ms
+ GET / 200 in 96ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 655ms (2423 modules)
+ GET /_next/static/chunks/app-pages-internals.js 404 in 784ms
+ GET /_next/static/chunks/main-app.js?v=1771762886445 404 in 789ms
+ GET /_next/static/css/app/layout.css?v=1771762886445 404 in 1042ms
+ GET /_next/static/chunks/app/layout.js 404 in 808ms
+ GET /_next/static/chunks/app/page.js 404 in 807ms
+ GET /favicon.ico 200 in 13ms

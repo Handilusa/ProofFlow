@@ -1,0 +1,3 @@
+﻿src/app/profile/page.tsx(169,28): error TS2322: Type '"secondary"' is not assignable to type '"default" | "outline" | "error" | "success" | "warning" | "info" | undefined'.
+src/app/profile/page.tsx(181,33): error TS2322: Type '{ children: string; href: string; variant: "secondary"; size: "sm"; }' is not assignable to type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'.
+  Property 'href' does not exist on type 'IntrinsicAttributes & ButtonProps & RefAttributes<HTMLButtonElement>'. Did you mean 'ref'?
