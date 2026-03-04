@@ -10,6 +10,7 @@ const nextConfig = {
     images: {
         domains: ['hashscan.io'],
     },
+    transpilePackages: ['@walletconnect/modal', '@walletconnect/modal-ui', '@walletconnect/modal-core'],
 
     webpack: (config) => {
         return config;

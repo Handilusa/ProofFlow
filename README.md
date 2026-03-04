@@ -1,171 +1,94 @@
-# ProofFlow
+# ProofFlow (v1.0.1)
 
-### Trust Layer for Autonomous Economies
-> On-chain reputation and execution verification protocol built on Hedera
+### The Autonomous "Agentic Web3" Trust Layer
+> Verifiable reasoning, immutable audit trails, and autonomous settlement on Hedera.
 
-[![Hedera Testnet](https://img.shields.io/badge/Network-Hedera%_Testnet-success?logo=hedera)](https://hashscan.io/testnet/)
+[![Hedera Testnet](https://img.shields.io/badge/Network-Hedera%20Testnet-success?logo=hedera)](https://hashscan.io/testnet/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-purple.svg)](#)
+[![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-cyan.svg)](#)
 
 ---
 
-## Overview
+## 🚀 Overview: The AI & Agents Challenge
+**ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon**. It solves the "Black Box" problem of AI by fusing decentralized infrastructure with autonomous reasoning. 
 
-ProofFlow is a decentralized trust layer designed for AI agents and autonomous economies. It cryptographically verifies off-chain executions by registering them on the Hedera Consensus Service, anchoring them to an EVM smart contract, and minting reputation tokens (PFR) via the Hedera Token Service. This creates an immutable, verifiable track record for any autonomous agent's activity.
-
----
-
-## Architecture Diagram
-
-```mermaid
-flowchart LR
-    Agent[Agent/Client] -->|Executes Task| API[Backend API]
-    API -->|1. Submit Hash| HCS[Hedera Consensus Service]
-    API -->|2. Register Proof| EVM[EVM Smart Contract]
-    API -->|3. Mint Reputation| HTS[Hedera Token Service]
-    
-    HCS -.->|Syncs| Mirror[Hedera Mirror Node]
-    HTS -.->|Syncs| Mirror
-    
-    Mirror -->|Read State| Dashboard[Next.js Frontend]
-```
+When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where an off-chain AI agent (powered by Gemini) autonomously manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
 
 ---
 
-## Tech Stack
+## 🏗️ Architectural Flow: "The Lifecycle of a Proof"
+
+ProofFlow demonstrates a true **multi-service integration** on Hedera:
+
+1.  **Autonomous Trigger**: User deposits a native HBAR micro-fee ($0.0001 equivalent) into the platform.
+2.  **AI Inference**: The Backend Agent detects the payment, fetches live market context, and uses **Gemini 1.5 Pro** to decompose the problem into logical reasoning steps.
+3.  **HCS Audit Logging**: Every internal "thought" and step is hashed and published to the **Hedera Consensus Service (HCS)** topic in real-time. This creates an immutable, timestamped trail of *how* the AI reached its conclusion.
+4.  **HTS Reputation Minting**: Upon successful completion, the agent mints a **Hedera Token Service (HTS)** NFT/Badge called a "Reputation Passport" to the user's wallet as an on-chain receipt.
+5.  **EVM Settlement**: The Agent acts as its own operator, signing a transaction to the `ProofValidator.sol` **EVM Smart Contract** to record the cryptographic hash of the final result, ensuring permanent availability.
+
+---
+
+## 🛠️ Tech Stack
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | Next.js 14, Tailwind CSS, Framer Motion | Modern, glassmorphism UI for block explorer and dashboard. |
-| **Backend API** | Node.js, Express.js | High-throughput orchestrator with rate-limiting and validation. |
-| **Blockchain** | Hedera (HCS, HTS, EVM) | Core infrastructure for consensus, tokenomics, and smart contracts. |
-| **Data Layer** | Hedera Mirror Node API | Real-time state indexing for leaderboard and global network stats. |
+| **Logic** | Gemini 1.5 Pro | Higher-order reasoning and autonomous step decomposition. |
+| **Blockchain** | Hedera (HCS, HTS, EVM) | The backbone for consensus, identity, and settlement. |
+| **Frontend** | Next.js 14, Tailwind, Framer Motion | Premium dashboard with interactive terminal and live audit feed. |
+| **Backend** | Node.js, Express | Autonomous orchestrator and Hedera service manager. |
+| **Connectivity** | WalletConnect / RainbowKit | Multi-ecosystem wallet support (Hashpack, MetaMask, OKX). |
 
 ---
 
-## Quick Start
+## 📡 API Reference
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/your-username/proofflow-monorepo.git
-cd proofflow-monorepo
-```
+The ProofFlow backend exposes a robust API for agent coordination:
 
-### 2. Install dependencies
-```bash
-npm install
-cd packages/backend && npm install
-cd ../frontend && npm install
-cd ../contracts && npm install
-```
+### `GET /api/v1/config`
+Fetch network configuration, contract addresses, and current operator fee (HBAR).
 
-### 3. Environment Setup
-Configure the backend variables (`packages/backend/.env`):
-```env
-HEDERA_ACCOUNT_ID="0.0.xxxxx"
-HEDERA_PRIVATE_KEY="YOUR_TESTNET_PRIVATE_KEY"
-EVM_ADDRESS="0x..."
-TESTNET_OPERATOR_PRIVATE_KEY="YOUR_TESTNET_PRIVATE_KEY"
-TESTNET_ENDPOINT="https://testnet.hashio.io/api"
-PORT=3001
-```
+### `POST /api/v1/reason`
+**Body**: `{ question: string, requesterAddress?: string, paymentTxHash?: string }`
+Triggers the full autonomous pipeline. Returns the reasoning result immediately.
 
-Configure the frontend variables (`packages/frontend/.env.local`):
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3001
-NEXT_PUBLIC_HEDERA_NETWORK=testnet
-```
-
-### 4. Run the stack
-```bash
-# Terminal 1: Backend
-cd packages/backend
-npm start
-
-# Terminal 2: Frontend
-cd packages/frontend
-npm run dev
-```
-
----
-
-## API Reference
-
-### `GET /api/v1/health`
-Check API uptime and network status.
-```json
-{
-  "status": "ok",
-  "network": "testnet",
-  "uptime": 3600
-}
-```
-
-### `POST /api/v1/proofs`
-Submit a new execution proof.
-**Request Body:**
-```json
-{
-  "agentId": "agent-alpha-001",
-  "taskId": "task-42",
-  "resultData": "{\"success\": true}"
-}
-```
-**Response:**
-```json
-{
-  "proofId": "0x123...abc",
-  "hcsSequence": "SUCCESS",
-  "contractTxId": "0x456...def",
-  "tokenAmount": 1,
-  "timestamp": 1708520000000
-}
-```
-
-### `GET /api/v1/proofs/:proofId`
-Retrieve verification status of a specific proof from the Mirror Node.
+### `GET /api/v1/proof/:id`
+Retrieves the full HCS reasoning chain and metadata for a specific proof.
 
 ### `GET /api/v1/leaderboard`
-Fetch top agents ranked by PFR token balance.
+Ranks users based on their HTS Reputation Token balances indexed via the Mirror Node.
 
-### `GET /api/v1/stats`
-Fetch global network metrics (Total Proofs, Total Agents, PFR Minted).
-
----
-
-## Hedera Integration
-
-ProofFlow deeply integrates three primary Hedera services:
-
-1. **Hedera Consensus Service (HCS):** 
-   Used as the decentralized message bus. Every task result is hashed and published to a public topic, generating an irrefutable timestamp and sequence number.
-2. **EVM Smart Contracts:** 
-   Used for complex on-chain verification logic. The `ProofValidator.sol` contract maps the HCS sequence to the cryptographic result hash.
-3. **Hedera Token Service (HTS):** 
-   Used for the reputation economy. The system mints and transfers fungible "ProofFlow Reputation" (PFR) tokens directly to the agent's account upon successful proof registration.
-
-The **Hedera Mirror Node REST API** powers the frontend, enabling fast queries for global metrics and leaderboard positioning without incurring transaction fees.
+### `GET /api/v1/user/profile/:address`
+Fetches community-defined usernames and reputation levels.
 
 ---
 
-## Deployment
+## 🎨 Judging Criteria Alignment
 
-**Testnet**
-The current architecture is optimized for the Hedera Testnet (`testnet.mirrornode.hedera.com`). To deploy your own instance, ensure you possess sufficient Testnet HBAR from the Hedera Portal.
-
-**Mainnet Readiness**
-The transition to Mainnet requires strictly updating the `.env` variables and updating the `Client.forTestnet()` initializations inside `proofflow.js` to `Client.forMainnet()`. Ensure the EVM contract is re-deployed to the mainnet.
-
----
-
-## Roadmap
-
-- **Q1 2026: Testnet MVP** (Current) — Core protocol integration (HCS, HTS, EVM) and Explorer Dashboard.
-- **Q2 2026: Mainnet Launch** — Mainnet deployment, multi-signature treasury, and advanced tokenomics.
-- **Q3 2026: Developer SDK** — Release `proofflow-sdk` enabling native integration into any AI agent framework (LangChain, AutoGPT).
+*   **Innovation (AI & Agents)**: ProofFlow moves beyond "chat" into "autonomous operation," where the agent handles payments, consensus logging, and contract settlement without human intervention.
+*   **Integration**: Combines HCS (real-time audits), HTS (reputation economy), and EVM (permanent settlement) in a single unified flow.
+*   **Execution**: Fully functional MVP with support for native Hedera wallets (Hashpack) and EVM wallets (MetaMask/OKX).
+*   **Success**: Encourages HBAR micro-transactions and HTS token adoption, increasing network utility and account creation.
 
 ---
 
-## License
+## 📦 Quick Start
 
-MIT License. See `LICENSE` for more information.
+```bash
+# Clone and install
+git clone https://github.com/Handilusa/ProofFlow.git
+npm install
+
+# Configure Backend (.env)
+HEDERA_ACCOUNT_ID="0.0.xxxx"
+HEDERA_PRIVATE_KEY="xxxx"
+GEMINI_API_KEY="xxxx"
+
+# Run stack
+npm run dev # within packages/frontend
+npm start   # within packages/backend
+```
+
+---
+
+## ⚖️ License
+MIT License - Developed for the **Hedera Apex 2026 Hackathon**.

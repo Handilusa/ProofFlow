@@ -3,23 +3,13 @@
 import React from 'react';
 import { useWallet } from '@/lib/wallet-context';
 import { useLanguage } from '@/lib/language-context';
-import { Wallet, LogOut, Loader2, Copy, Check } from 'lucide-react';
+import { Wallet, LogOut, Copy, Check, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui';
 
 export function ConnectWallet() {
-    const { account, isConnected, connect, disconnect } = useWallet();
+    const { account, isConnected, isConnecting, connect, disconnect } = useWallet();
     const { t } = useLanguage();
-    const [isConnecting, setIsConnecting] = React.useState(false);
     const [copied, setCopied] = React.useState(false);
-
-    const handleConnect = async () => {
-        setIsConnecting(true);
-        try {
-            await connect();
-        } finally {
-            setIsConnecting(false);
-        }
-    };
 
     const handleCopy = () => {
         if (!account) return;
@@ -28,7 +18,6 @@ export function ConnectWallet() {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    // Format address: 0.0.12345 → 0.0...2345
     const truncatedAddress = account
         ? `${account.slice(0, 6)}...${account.slice(-4)}`
         : '';
@@ -52,7 +41,7 @@ export function ConnectWallet() {
                         }
                     </button>
                     <button
-                        onClick={disconnect}
+                        onClick={() => disconnect()}
                         className="p-1.5 text-text-muted hover:text-error transition-colors rounded-lg hover:bg-surface/50"
                         title={t('wallet_disconnect')}
                     >
@@ -75,7 +64,7 @@ export function ConnectWallet() {
 
     return (
         <Button
-            onClick={handleConnect}
+            onClick={connect}
             disabled={isConnecting}
             className="w-full justify-center bg-accent-primary hover:bg-accent-secondary text-background font-semibold"
         >

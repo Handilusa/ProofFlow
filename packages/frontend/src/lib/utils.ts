@@ -24,6 +24,18 @@ export function timeAgo(timestamp: number | string): string {
     return `${days}d ago`;
 }
 
+export function formatTimeAgoI18n(timestamp: number | string, t: (key: any) => string): string {
+    const now = Date.now();
+    const ts = typeof timestamp === 'string' ? new Date(timestamp).getTime() : timestamp;
+    const diff = Math.max(0, now - ts);
+    const minutes = Math.floor(diff / 60000) || 1;
+    if (minutes < 60) return `${t('history_time_prefix')}${minutes}${t('history_ago')}`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${t('history_time_prefix')}${hours}${t('history_hours_ago')}`;
+    const days = Math.floor(hours / 24);
+    return `${t('history_time_prefix')}${days}${t('history_days_ago')}`;
+}
+
 export function formatNumber(num: number): string {
     if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M`;
     if (num >= 1_000) return `${(num / 1_000).toFixed(1)}K`;

@@ -27,6 +27,7 @@ export default function LeaderboardPage() {
     const [search, setSearch] = useState('');
     const [showPersonalOnly, setShowPersonalOnly] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(Date.now());
+    const [now, setNow] = useState(Date.now());
 
     const [hederaAccountId, setHederaAccountId] = useState<string | null>(null);
 
@@ -44,6 +45,7 @@ export default function LeaderboardPage() {
 
             setData(result);
             setLastUpdated(Date.now());
+            setNow(Date.now());
         } catch (e) {
             console.error(e);
         } finally {
@@ -53,8 +55,12 @@ export default function LeaderboardPage() {
 
     useEffect(() => {
         fetchLeaderboard();
-        const interval = setInterval(fetchLeaderboard, 30000);
-        return () => clearInterval(interval);
+        const fetchInterval = setInterval(fetchLeaderboard, 30000);
+        const displayInterval = setInterval(() => setNow(Date.now()), 1000);
+        return () => {
+            clearInterval(fetchInterval);
+            clearInterval(displayInterval);
+        };
     }, []);
 
     useEffect(() => {
@@ -92,7 +98,7 @@ export default function LeaderboardPage() {
     }
 
     const totalNetworkTokens = data.reduce((acc, curr) => acc + curr.balance, 0) || 1;
-    const secondsAgo = Math.floor((Date.now() - lastUpdated) / 1000);
+    const secondsAgo = Math.max(0, Math.floor((now - lastUpdated) / 1000));
 
     return (
         <Tooltip.Provider>

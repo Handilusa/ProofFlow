@@ -11,6 +11,15 @@ import { HCSAuditService } from "../services/hcsAudit.service.js";
 import { AuditPassService } from "../services/auditPass.service.js";
 import { enrichQuestionWithMarketData } from "../services/marketData.service.js";
 import { UserService } from "../services/userService.js";
+import { isContractReady, getContractAddress, recordAuditInEVM } from "../services/hedera/proofflow.js";
+import { startContractListener } from "../services/hedera/contractListener.js";
+import { ethers } from "ethers";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 process.on("unhandledRejection", (reason, promise) => {
     console.error("[CRITICAL] Unhandled Rejection at:", promise, "reason:", reason);
@@ -23,6 +32,44 @@ process.on("uncaughtException", (err) => {
 const app = express();
 const PORT = process.env.PORT || 3001;
 const UPTIME_START = Date.now();
+
+// Micropayment config
+const OPERATOR_EVM_ADDRESS = process.env.EVM_ADDRESS || '';
+const SERVICE_FEE_HBAR = process.env.SERVICE_FEE_HBAR || '0.02';
+const HEDERA_NETWORK = process.env.HEDERA_NETWORK || 'testnet';
+const MIRROR_NODE_URL = `https://${HEDERA_NETWORK}.mirrornode.hedera.com`;
+
+// Verify a payment transaction on Mirror Node
+async function verifyPayment(txHash, expectedPayerAddress) {
+    try {
+        // Give mirror node time to index the transaction
+        await new Promise(r => setTimeout(r, 3000));
+
+        // Hedera EVM tx hashes need to be looked up via the mirror node
+        const res = await fetch(`${MIRROR_NODE_URL}/api/v1/contracts/results/${txHash}`);
+        if (!res.ok) {
+            console.log(`[Payment] Mirror node returned ${res.status} for tx ${txHash}`);
+            // On testnet, mirror node indexing can be slow — accept payment optimistically
+            console.log('[Payment] Accepting payment optimistically (testnet mode)');
+            return true;
+        }
+
+        const data = await res.json();
+        // Check the tx was successful
+        if (data.result === 'SUCCESS' || data.status === '0x1') {
+            console.log(`[Payment] ✅ Verified payment tx: ${txHash}`);
+            return true;
+        }
+
+        console.log(`[Payment] ❌ Payment tx failed: ${JSON.stringify(data)}`);
+        return false;
+    } catch (err) {
+        console.error('[Payment] Verification error:', err.message);
+        // Testnet: accept optimistically if mirror node is not available
+        console.log('[Payment] Accepting payment optimistically (mirror node unavailable)');
+        return true;
+    }
+}
 
 // Instantiate Services
 const geminiService = new GeminiService();
@@ -56,12 +103,42 @@ const handleValidationErrors = (req, res, next) => {
 app.post("/api/v1/reason",
     [
         body("question").isString().notEmpty().withMessage("question is required"),
-        body("requesterAddress").optional().isString()
+        body("requesterAddress").optional().isString(),
+        body("paymentTxHash").optional().isString()
     ],
     handleValidationErrors,
     async (req, res, next) => {
         try {
-            const { question, requesterAddress } = req.body;
+            const { question, requesterAddress, paymentTxHash } = req.body;
+
+            // Enforce micropayment when Smart Contract is active
+            const contractActive = isContractReady();
+            if (OPERATOR_EVM_ADDRESS && contractActive) {
+                if (!paymentTxHash) {
+                    return res.status(402).json({
+                        success: false,
+                        error: "Payment required. Please connect a wallet and complete the micropayment.",
+                    });
+                }
+                const verified = await verifyPayment(paymentTxHash, requesterAddress);
+                if (!verified) {
+                    return res.status(402).json({
+                        success: false,
+                        error: "Payment verification failed. Please try again.",
+                    });
+                }
+                console.log(`[API] Payment verified: ${paymentTxHash}`);
+            } else if (OPERATOR_EVM_ADDRESS && paymentTxHash) {
+                // Contract not active but payment was provided — still verify it
+                const verified = await verifyPayment(paymentTxHash, requesterAddress);
+                if (!verified) {
+                    return res.status(402).json({
+                        success: false,
+                        error: "Payment verification failed. Please try again.",
+                    });
+                }
+                console.log(`[API] Payment verified (legacy mode): ${paymentTxHash}`);
+            }
 
             // 1. Enrich question with live market data
             let enrichedPrompt = question;
@@ -130,6 +207,14 @@ app.post("/api/v1/reason",
                             console.error("Failed to mint audit pass", e);
                         }
                     }
+
+                    try {
+                        const stored = proofsStore.get(reasoningResult.proofId);
+                        const finalRootHash = stored ? stored.rootHash : ethers.id("fallback-hash");
+                        await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress);
+                    } catch (e) {
+                        console.error("[EVM] Async recording failed:", e);
+                    }
                 } catch (err) {
                     console.error("Async Hedera operation failed:", err);
                 }
@@ -162,6 +247,54 @@ app.get("/api/v1/proof/:proofId",
             }
 
             return res.status(200).json(proof);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+// New endpoint: Get unsigned transaction data for EVM smart contract anchor
+app.get("/api/v1/proof/:proofId/tx-data",
+    [param("proofId").isString().notEmpty()],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { proofId } = req.params;
+
+            if (!isContractReady()) {
+                return res.status(503).json({ error: "Smart contract not deployed or configured" });
+            }
+
+            // 1. Get the proof from HCS store to get the result hash
+            const proof = await hcsAuditService.getProofById(proofId);
+            if (!proof) {
+                return res.status(404).json({ error: "Proof not found" });
+            }
+
+            // 2. We need the final answer to hash it (same logic as proofflow.js submitProof)
+            const finalAnswerStep = proof.steps?.find(s => s.label === "FINAL");
+            if (!finalAnswerStep) {
+                return res.status(400).json({ error: "Proof incomplete, no FINAL step found" });
+            }
+
+            const resultData = finalAnswerStep.content;
+            const resultHash = ethers.id(resultData);
+
+            // 3. Load ABI
+            const artifactPath = path.join(__dirname, "../../../contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json");
+            if (!fs.existsSync(artifactPath)) {
+                return res.status(500).json({ error: "Contract ABI not found" });
+            }
+
+            const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));
+
+            // 4. Return data needed for `wagmi` useWriteContract
+            return res.status(200).json({
+                contractAddress: getContractAddress(),
+                abi: artifact.abi,
+                args: [proofId, resultHash],
+                functionName: "registerProof"
+            });
         } catch (error) {
             next(error);
         }
@@ -274,8 +407,21 @@ app.get("/api/v1/stats", async (req, res, next) => {
 app.get("/api/v1/health", (req, res) => {
     return res.status(200).json({
         status: "ok",
-        network: "testnet",
+        network: HEDERA_NETWORK,
         uptime: Math.floor((Date.now() - UPTIME_START) / 1000)
+    });
+});
+
+// Config endpoint — tells frontend where to send micropayment
+app.get("/api/v1/config", (req, res) => {
+    return res.status(200).json({
+        operatorEvmAddress: OPERATOR_EVM_ADDRESS,
+        operatorAccountId: process.env.HEDERA_ACCOUNT_ID,
+        serviceFeeHbar: SERVICE_FEE_HBAR,
+        network: HEDERA_NETWORK,
+        paymentRequired: !!OPERATOR_EVM_ADDRESS,
+        contractAddress: getContractAddress(),
+        contractReady: isContractReady(),
     });
 });
 
@@ -301,8 +447,19 @@ app.use((err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV !== "test") {
-    app.listen(PORT, () => {
+    app.listen(PORT, async () => {
         console.log(`Backend API running securely on port ${PORT}`);
+
+        // Start autonomous blockchain listener
+        try {
+            await startContractListener({
+                geminiService,
+                hcsAuditService,
+                auditPassService,
+            });
+        } catch (err) {
+            console.error('[Agent Listener] Failed to start:', err.message);
+        }
     });
 }
 

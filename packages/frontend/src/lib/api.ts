@@ -28,19 +28,58 @@ export interface StoredProof extends ReasoningResult {
 
 import { API_URL } from './utils';
 
-export async function submitQuestion(question: string, address?: string): Promise<ReasoningResult> {
+export interface ProofFlowConfig {
+    operatorEvmAddress: string;
+    operatorAccountId: string;
+    serviceFeeHbar: string;
+    network: string;
+    paymentRequired: boolean;
+    contractAddress: string | null;
+    contractReady: boolean;
+}
+
+export async function getConfig(): Promise<ProofFlowConfig> {
+    const response = await fetch(`${API_URL}/config`, {
+        cache: "no-store",
+        headers: {
+            "Cache-Control": "no-cache"
+        }
+    });
+    if (!response.ok) {
+        // Fallback: payment not required
+        return { operatorEvmAddress: '', operatorAccountId: '0.0.7986674', serviceFeeHbar: '0.02', network: 'testnet', paymentRequired: false, contractAddress: null, contractReady: false };
+    }
+    return response.json();
+}
+
+export async function submitQuestion(question: string, address?: string, paymentTxHash?: string): Promise<ReasoningResult> {
     const response = await fetch(`${API_URL}/reason`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ question, requesterAddress: address }),
+        body: JSON.stringify({ question, requesterAddress: address, paymentTxHash }),
     });
 
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
     }
 
+    return response.json();
+}
+
+export interface ContractTxData {
+    contractAddress: string;
+    abi: any[];
+    args: any[];
+    functionName: string;
+}
+
+export async function getProofTxData(proofId: string): Promise<ContractTxData> {
+    const response = await fetch(`${API_URL}/proof/${proofId}/tx-data`);
+    if (!response.ok) {
+        throw new Error("Failed to fetch EVM transaction data");
+    }
     return response.json();
 }
 

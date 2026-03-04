@@ -19,6 +19,8 @@ const translations = {
         wallet_copied: '✓ Address copied to clipboard',
         wallet_testnet: 'Hedera Testnet',
         wallet_disconnect: 'Disconnect Wallet',
+        wallet_selector_title: 'Select Network',
+        wallet_selector_subtitle: 'Choose your preferred ecosystem to connect.',
 
         // Dashboard
         dash_title: 'ProofFlow Core Agent',
@@ -27,15 +29,17 @@ const translations = {
         dash_submit: 'Initialize Audit Session',
         dash_loading: 'Processing Blockchain Transaction...',
         dash_vectors: 'Suggested Vectors:',
-        dash_feed: 'Live Network Feed (Recent)',
+        dash_feed_global: 'Live Global Network Feed (Recent)',
+        dash_feed_personal: 'My Recent Audits',
         dash_awaiting: 'Awaiting execution matrix...',
-        dash_init: '] Initializing connection to Gemini 2.5 Flash...',
+        dash_init: '] Bootstrapping ProofFlow Neural Engine v2...',
         dash_negotiating: 'Negotiating consensus on HCS...',
         dash_live_data: 'LIVE DATA:',
         dash_terminal_title: 'HCS AUDIT TERMINAL',
         dash_terminal_listening: 'Listening to Mirror Node:',
         dash_publishing: 'Publishing...',
         dash_hcs_steps: 'HCS Steps',
+        dash_connect_first: 'Please connect your wallet first to start a verifiable AI audit.',
 
         // Verify Page
         verify_title: 'Proof Verification',
@@ -79,7 +83,13 @@ const translations = {
         history_pending: 'Pending',
         history_time_prefix: '',
         history_ago: 'm ago',
+        history_hours_ago: 'h ago',
+        history_days_ago: 'd ago',
         history_reward_tx: 'Reward Tx',
+        history_page: 'Page',
+        history_of: 'of',
+        history_prev: 'Previous',
+        history_next: 'Next',
 
         // Leaderboard
         lb_title: 'Most Active Reasoning Sessions',
@@ -111,6 +121,7 @@ const translations = {
         settings_language_desc: 'Choose the display language for the interface.',
         settings_profile: 'Profile',
         settings_profile_desc: 'Set a display name for the leaderboard.',
+        settings_connect_wallet_profile: '* Connect wallet to set your profile name',
         settings_username_placeholder: 'Enter username (max 20 chars)',
         settings_save: 'Save Changes',
         settings_saved: 'Profile updated successfully',
@@ -139,6 +150,8 @@ const translations = {
         wallet_copied: '✓ Copiado al portapapeles',
         wallet_testnet: 'Hedera Testnet',
         wallet_disconnect: 'Desconectar',
+        wallet_selector_title: 'Seleccionar Red',
+        wallet_selector_subtitle: 'Elige tu ecosistema preferido para conectar tu Wallet.',
 
         // Dashboard
         dash_title: 'Agente ProofFlow',
@@ -147,15 +160,17 @@ const translations = {
         dash_submit: 'Iniciar Sesión de Auditoría',
         dash_loading: 'Confirmando en Blockchain...',
         dash_vectors: 'Vectores de análisis:',
-        dash_feed: 'Últimas Auditorías',
+        dash_feed_global: 'Auditorías Globales (Recientes)',
+        dash_feed_personal: 'Mis Auditorías Recientes',
         dash_awaiting: 'ESPERANDO MATRIZ DE RAZONAMIENTO...',
-        dash_init: '] Conectando con Gemini 2.5 Flash...',
+        dash_init: '] Inicializando ProofFlow Neural Engine v2...',
         dash_negotiating: '] Negociando consenso en HCS...',
         dash_live_data: 'DATOS EN VIVO:',
         dash_terminal_title: 'TERMINAL DE AUDITORÍA HCS',
         dash_terminal_listening: 'Sincronizado con Mirror Node:',
         dash_publishing: 'Publicando...',
         dash_hcs_steps: 'Pasos HCS',
+        dash_connect_first: 'Primero conecta tu billetera para hacer preguntas al agente ProofFlow.',
 
         // Verify Page
         verify_title: 'Verificar Auditoría',
@@ -199,7 +214,13 @@ const translations = {
         history_pending: 'Procesando',
         history_time_prefix: 'hace ',
         history_ago: ' min',
+        history_hours_ago: ' h',
+        history_days_ago: ' d',
         history_reward_tx: 'Tx Reward',
+        history_page: 'Página',
+        history_of: 'de',
+        history_prev: 'Anterior',
+        history_next: 'Siguiente',
 
         // Leaderboard
         lb_title: 'Ranking de Actividad',
@@ -231,6 +252,7 @@ const translations = {
         settings_language_desc: 'Selecciona el idioma de la interfaz.',
         settings_profile: 'Perfil',
         settings_profile_desc: 'Establece un nombre de usuario para la clasificación (leaderboard).',
+        settings_connect_wallet_profile: '* Conecta tu wallet para establecer un nombre de perfil',
         settings_username_placeholder: 'Nombre de usuario (máx. 20 carácteres)',
         settings_save: 'Guardar Cambios',
         settings_saved: 'Perfil actualizado con éxito',

@@ -16,7 +16,7 @@ export default function FooterText() {
                 {t('footer_testnet')}
             </a>
             <span className="text-xs text-border">|</span>
-            <a href="https://github.com/handi/proofflow-monorepo" target="_blank" rel="noopener noreferrer" className="text-xs text-text-muted hover:text-white transition-colors">
+            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-xs text-text-muted hover:text-white transition-colors">
                 {t('footer_github')}
             </a>
             <span className="text-[10px] text-text-muted/60 uppercase tracking-widest hidden sm:inline">{t('footer_built_for')}</span>

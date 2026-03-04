@@ -8,23 +8,23 @@ import Link from 'next/link';
 const features = [
   {
     icon: Brain,
-    title: 'AI Reasoning Engine',
-    description: 'Powered by Gemini 2.5 Flash. Every reasoning step is decomposed, hashed, and made auditable before consensus.',
+    title: 'Autonomous AI Agent',
+    description: 'Powered by Gemini. Users fund a Smart Contract bounty, and our backend AI agent autonomously picks it up to process the inference.',
   },
   {
     icon: ShieldCheck,
-    title: 'HCS Audit Trail',
-    description: 'Each inference step is published to Hedera Consensus Service with cryptographic integrity — immutable and verifiable.',
+    title: 'HCS Audit Logging',
+    description: 'The agent transparently publishes its internal reasoning steps to the Hedera Consensus Service, creating an immutable trail.',
   },
   {
     icon: FileCheck,
-    title: 'On-Chain Verification',
-    description: 'Verify any AI output against its on-chain proof. SHA-256 hashes ensure tamper-proof reasoning chains.',
+    title: 'Autonomous EVM Settlement',
+    description: 'Upon completion, the AI Agent connects to the EVM as an autonomous operator, executing the Smart Contract to permanently record the audit’s cryptographic hash.',
   },
   {
     icon: Award,
-    title: 'Audit Passport NFT',
-    description: 'Every verified audit mints an NFT credential — your on-chain proof of trust for autonomous agent economies.',
+    title: 'HTS Reputation Passport',
+    description: 'Every verified audit automatically mints a Hedera Token Service (HTS) NFT credential to the user\'s wallet as an on-chain receipt.',
   },
 ];
 
@@ -73,7 +73,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="https://github.com/handi/proofflow-monorepo" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors">
+            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors">
               <Github className="w-5 h-5" />
             </a>
             <Link
@@ -149,11 +149,11 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-6 leading-[1.2]"
           >
-            <span className="text-white">Verifiable AI</span>
+            <span className="text-white">Autonomous Agent</span>
             <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-blue-400 italic pr-2">anchored on</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-cyan-300 to-blue-400 italic pr-2">Protocol on</span>
             <br />
-            <span className="text-white">Any chain</span>
+            <span className="text-white">Hedera</span>
           </motion.h1>
 
           <motion.p
@@ -162,8 +162,7 @@ export default function LandingPage() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed"
           >
-            Every reasoning step is cryptographically hashed, published to Hedera Consensus Service,
-            and made immutably verifiable. Zero trust required.
+            A true <strong>Agentic Web3</strong> architecture. Users simply deposit a native HBAR micro-fee, and our off-chain AI Agent autonomously takes over: generating the inference, logging reasoning steps to <strong>HCS</strong>, minting verifiable <strong>HTS</strong> Badges, and autonomously executing the <strong>EVM Smart Contract</strong> to record the final proof on-chain.
           </motion.p>
 
           <motion.div
@@ -180,7 +179,7 @@ export default function LandingPage() {
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
-              href="https://github.com/handi/proofflow-monorepo"
+              href="https://github.com/Handilusa/ProofFlow"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl border border-border hover:border-accent-primary/50 text-text-muted hover:text-white transition-all"
@@ -256,7 +255,7 @@ export default function LandingPage() {
                   className="flex items-center gap-2 text-text-muted overflow-hidden"
                 >
                   <Zap className="w-4 h-4 text-yellow-400 shrink-0" />
-                  <span className="truncate">Gemini Flash reasoning initiated...</span>
+                  <span className="truncate">Neural inference pipeline initiated...</span>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -323,33 +322,33 @@ export default function LandingPage() {
               {[
                 {
                   step: '01',
-                  title: 'Inference',
-                  desc: 'You ping an AI agent via ProofFlow. The agent decomposes its reasoning.',
-                  icon: Brain,
+                  title: 'Native HBAR Micro-fee',
+                  desc: 'User pays a frictionless native HBAR fee to the Agent Operator account.',
+                  icon: Zap,
                   color: 'text-blue-400',
                   bg: 'bg-blue-400/10'
                 },
                 {
                   step: '02',
-                  title: 'Hashing',
-                  desc: 'Every step is compressed into a unique SHA-256 cryptographic hash.',
-                  icon: ShieldCheck,
+                  title: 'Agent Inference',
+                  desc: 'The Backend AI Agent detects the request, runs Gemini, and decomposes the reasoning steps.',
+                  icon: Brain,
                   color: 'text-purple-400',
                   bg: 'bg-purple-400/10'
                 },
                 {
                   step: '03',
-                  title: 'Consensus',
-                  desc: 'Hashes are pushed to Hedera (HCS) for fair ordering and timestamping.',
+                  title: 'HCS & HTS Integration',
+                  desc: 'Agent logs reasoning transparently to HCS and mints a verifiable HTS NFT passport.',
                   icon: Activity,
                   color: 'text-cyan-400',
                   bg: 'bg-cyan-400/10'
                 },
                 {
                   step: '04',
-                  title: 'Passport NFT',
-                  desc: 'A verification NFT is minted, providing a portable trust primitive.',
-                  icon: Award,
+                  title: 'Autonomous EVM Execution',
+                  desc: 'The Backend Agent signs its own EVM transaction to record the final proof hash on the Solidity Smart Contract.',
+                  icon: ShieldCheck,
                   color: 'text-yellow-400',
                   bg: 'bg-yellow-400/10'
                 }
@@ -454,11 +453,11 @@ export default function LandingPage() {
             className="text-center mb-16"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/50 bg-surface/30 backdrop-blur-sm mb-4">
-              <span className="text-xs font-mono text-cyan-400 tracking-wide uppercase">Why Choose ProofFlow</span>
+              <span className="text-xs font-mono text-cyan-400 tracking-wide uppercase">Hedera Apex Hackathon</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">The ProofFlow Advantage</h2>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">Deep Hedera Integration</h2>
             <p className="text-text-muted max-w-2xl mx-auto">
-              Built for the next generation of autonomous economies. Equip your Web3 and AI teams with cryptographic certainty.
+              Combining HCS, HTS, and EVM to create a fully verifiable autonomous agent protocol.
             </p>
           </motion.div>
 
@@ -475,9 +474,9 @@ export default function LandingPage() {
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/10 rounded-full blur-[80px] -mr-20 -mt-20 transition-opacity group-hover:opacity-100 opacity-50" />
               <Globe className="w-10 h-10 text-cyan-400 mb-6 relative z-10" />
-              <h3 className="text-2xl font-display font-bold text-white mb-3 relative z-10">Zero-Trust Agent Economy</h3>
+              <h3 className="text-2xl font-display font-bold text-white mb-3 relative z-10">Single-Transaction UX for Users</h3>
               <p className="text-text-muted leading-relaxed relative z-10 max-w-md">
-                Enable true trustless AI interoperability. Autonomous agents can independently verify cryptographic proofs on Hedera before executing high-stakes smart contracts, eliminating the need for human arbitration.
+                Users simply deposit HBAR into the EVM Smart Contract with their prompt. The agent abstracts away all the complexities of HCS logging, HTS token minting, and EVM settlement. It's truly "fire and forget".
               </p>
             </motion.div>
 
@@ -492,9 +491,9 @@ export default function LandingPage() {
             >
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-400/10 rounded-full blur-[60px] -ml-10 -mb-10 transition-opacity group-hover:opacity-100 opacity-50" />
               <Lock className="w-10 h-10 text-blue-400 mb-6 relative z-10" />
-              <h3 className="text-xl font-display font-bold text-white mb-3 relative z-10">Enterprise Privacy</h3>
+              <h3 className="text-xl font-display font-bold text-white mb-3 relative z-10">DeFi Auditing</h3>
               <p className="text-sm text-text-muted leading-relaxed relative z-10">
-                Need to prove reasoning without revealing the proprietary model? Our architecture natively supports integration with Zero-Knowledge (zk) proofs.
+                AI agents evaluating smart contracts can now prove their analysis paths on-chain before protocols automatically execute upgrades.
               </p>
             </motion.div>
 
@@ -622,7 +621,7 @@ export default function LandingPage() {
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <a
-                href="https://github.com/handi/proofflow-monorepo"
+                href="https://github.com/Handilusa/ProofFlow"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold rounded-xl border border-white/10 hover:border-white/20 text-text-muted hover:text-white transition-all w-full sm:w-auto"
@@ -651,7 +650,7 @@ export default function LandingPage() {
 
             {/* Social links — centered */}
             <div className="flex items-center justify-center gap-6">
-              <a href="https://github.com/handi/proofflow-monorepo" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="GitHub">
+              <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="GitHub">
                 <Github className="w-5 h-5" />
               </a>
               <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="X (Twitter)">

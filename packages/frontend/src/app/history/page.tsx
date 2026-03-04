@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Activity, Search, Filter, Hash, ExternalLink, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Activity, Search, Filter, Hash, ExternalLink, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import { getRecentProofs, StoredProof } from '@/lib/api';
 import { motion } from 'framer-motion';
@@ -13,6 +13,7 @@ import VerificationBadge from '@/components/proofflow/VerificationBadge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
 import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import CopyHash from '@/components/proofflow/CopyHash';
+import { formatTimeAgoI18n } from '@/lib/utils';
 
 export default function HistoryPage() {
     const { account } = useWallet();
@@ -20,6 +21,14 @@ export default function HistoryPage() {
     const [proofs, setProofs] = useState<StoredProof[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'All' | 'Verified' | 'Pending'>('All');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 20;
+
+    // Reset pagination when filter or search changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filter, searchQuery]);
 
     const fetchProofs = async () => {
         try {
@@ -40,11 +49,17 @@ export default function HistoryPage() {
     }, [account]);
 
     const filteredProofs = proofs.filter(p => {
-        if (filter === 'All') return true;
-        if (filter === 'Verified') return p.status === 'CONFIRMED' || p.status === 'VERIFIED';
-        if (filter === 'Pending') return p.status === 'PUBLISHING' || p.status === 'PUBLISHING_TO_HEDERA';
-        return true;
+        const matchesSearch = p.proofId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            p.question.toLowerCase().includes(searchQuery.toLowerCase());
+
+        if (filter === 'All') return matchesSearch;
+        if (filter === 'Verified') return matchesSearch && (p.status === 'CONFIRMED' || p.status === 'VERIFIED');
+        if (filter === 'Pending') return matchesSearch && (p.status === 'PUBLISHING' || p.status === 'PUBLISHING_TO_HEDERA');
+        return matchesSearch;
     });
+
+    const totalPages = Math.ceil(filteredProofs.length / ITEMS_PER_PAGE);
+    const paginatedProofs = filteredProofs.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
         <div className="space-y-8 pb-10">
@@ -81,6 +96,8 @@ export default function HistoryPage() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
                     <input
                         type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t('history_search')}
                         className="w-full bg-surface border border-border rounded-xl pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-accent-primary transition-colors"
                     />
@@ -112,14 +129,14 @@ export default function HistoryPage() {
                                     <td className="p-4 pr-6 text-right"><Skeleton className="h-8 w-16 ml-auto" /></td>
                                 </tr>
                             ))
-                        ) : filteredProofs.length === 0 ? (
+                        ) : paginatedProofs.length === 0 ? (
                             <tr>
                                 <td colSpan={6} className="p-10 text-center text-text-muted">
                                     {t('history_empty')}
                                 </td>
                             </tr>
                         ) : (
-                            filteredProofs.map((proof, i) => {
+                            paginatedProofs.map((proof, i) => {
                                 const isVerified = proof.status === 'CONFIRMED' || proof.status === 'VERIFIED';
 
                                 return (
@@ -149,7 +166,7 @@ export default function HistoryPage() {
                                             </div>
                                         </td>
                                         <td className="p-4 text-sm text-text-muted">
-                                            {t('history_time_prefix')}{Math.floor((Date.now() - proof.createdAt) / 60000) || 1}{t('history_ago')}
+                                            {formatTimeAgoI18n(proof.createdAt, t)}
                                         </td>
                                         <td className="p-4 pr-6 text-right space-x-2">
                                             {proof.explorerUrl && (
@@ -172,6 +189,41 @@ export default function HistoryPage() {
                     </tbody>
                 </table>
             </Card>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between border-t border-border/50 pt-4 mt-4 text-sm">
+                    <span className="text-text-muted px-4">
+                        {t('history_page')} {currentPage} {t('history_of')} {totalPages}
+                    </span>
+                    <div className="flex gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage === 1}
+                            onClick={() => {
+                                setCurrentPage(p => Math.max(1, p - 1));
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="bg-surface border-border/50 hover:bg-surface-elevated text-text-muted hover:text-white transition-colors"
+                        >
+                            <ChevronLeft className="w-4 h-4 mr-1" /> {t('history_prev')}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage === totalPages}
+                            onClick={() => {
+                                setCurrentPage(p => Math.min(totalPages, p + 1));
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="bg-surface border-border/50 hover:bg-surface-elevated text-text-muted hover:text-white transition-colors"
+                        >
+                            {t('history_next')} <ChevronRight className="w-4 h-4 ml-1" />
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

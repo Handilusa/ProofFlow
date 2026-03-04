@@ -100,7 +100,7 @@ export default function Sidebar() {
 
                     <ConnectWallet />
                     <a
-                        href="https://github.com"
+                        href="https://github.com/Handilusa/ProofFlow"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 px-4 py-2 text-xs text-text-muted hover:text-text-primary transition-colors rounded-lg hover:bg-surface-elevated/50"

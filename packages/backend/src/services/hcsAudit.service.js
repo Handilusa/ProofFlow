@@ -114,6 +114,6 @@ export class HCSAuditService {
             filteredProofs = allProofs.filter(p => p.requesterAddress?.toLowerCase() === address.toLowerCase());
         }
         filteredProofs.sort((a, b) => b.createdAt - a.createdAt);
-        return filteredProofs.slice(0, 20);
+        return filteredProofs;
     }
 }

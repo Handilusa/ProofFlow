@@ -5,8 +5,18 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+
   body {
     @apply bg-background text-text-primary antialiased;
+  }
+
+  /* Prevent layout shift from Radix Dialog */
+  body[data-scroll-locked] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
 
   /* Custom Scrollbar Styles */

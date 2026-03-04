@@ -7,15 +7,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity } from 'lucide-react';
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
-import { submitQuestion, getRecentProofs, ReasoningResult, ReasoningStep, StoredProof } from '@/lib/api';
+import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig } from '@/lib/api';
 import { useWallet } from '@/lib/wallet-context';
+import { useSendTransaction } from 'wagmi';
+import { parseEther } from 'viem';
 import Link from 'next/link';
 import VerificationBadge from '@/components/proofflow/VerificationBadge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
 import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import { useLanguage } from '@/lib/language-context';
-import { API_URL } from '@/lib/utils';
-
+import { API_URL, formatTimeAgoI18n } from '@/lib/utils';
+import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
+import { getSignClient } from "@/lib/hedera-walletconnect";
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
   "Evaluate Hedera's Fully Diluted Valuation (FDV) against its real-world enterprise adoption metrics.",
@@ -71,6 +74,49 @@ export default function DualPaneDashboard() {
   const [recentAudits, setRecentAudits] = useState<StoredProof[]>([]);
   const [isPolling, setIsPolling] = useState(false);
   const [randomVectors, setRandomVectors] = useState<string[]>([]);
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'pending' | 'confirming' | 'done' | 'cancelled'>('idle');
+  const [pfConfig, setPfConfig] = useState<ProofFlowConfig | null>(null);
+
+  // Wagmi hooks — Native HBAR transfer to bypass WalletConnect contract simulation bugs
+  const { sendTransactionAsync, isPending: isSubmittingToContract } = useSendTransaction();
+
+  // Minimal ABI for the ProofValidator contract (only what the frontend needs)
+  const PROOF_VALIDATOR_ABI = [
+    {
+      "inputs": [{ "internalType": "string", "name": "prompt", "type": "string" }],
+      "name": "requestAudit",
+      "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "internalType": "uint256", "name": "requestId", "type": "uint256" },
+        { "indexed": true, "internalType": "address", "name": "requester", "type": "address" },
+        { "indexed": false, "internalType": "string", "name": "prompt", "type": "string" },
+        { "indexed": false, "internalType": "uint256", "name": "deposit", "type": "uint256" }
+      ],
+      "name": "AuditRequested",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        { "indexed": true, "internalType": "uint256", "name": "requestId", "type": "uint256" },
+        { "indexed": true, "internalType": "address", "name": "requester", "type": "address" },
+        { "indexed": false, "internalType": "bytes32", "name": "resultHash", "type": "bytes32" },
+        { "indexed": false, "internalType": "uint256", "name": "payout", "type": "uint256" }
+      ],
+      "name": "AuditCompleted",
+      "type": "event"
+    }
+  ] as const;
+
+  // Fetch platform config on mount
+  useEffect(() => {
+    getConfig().then(setPfConfig).catch(() => { });
+  }, []);
 
   // Pick 3 random vectors on mount or language change
   useEffect(() => {
@@ -139,22 +185,131 @@ export default function DualPaneDashboard() {
 
     setIsLoading(true);
     setResult(null);
+    setPaymentStatus('idle');
 
     try {
-      const res = await submitQuestion(question, account || undefined);
-      setResult(res);
+      // NEW AUTONOMOUS FLOW: Call Smart Contract requestAudit() if available
+      if (pfConfig?.contractReady && pfConfig?.contractAddress && account) {
+        setPaymentStatus('pending');
+        try {
+          const feeInWei = parseEther(pfConfig.serviceFeeHbar);
+
+          let paymentTxHash: string | undefined;
+
+          if (account?.startsWith('0x')) {
+            // MetaMask / OKX / injected EVM: Send native HBAR transfer
+            // We use standard EVM transfer to bypass the `eth_estimateGas` 'null fee' 
+            // WalletConnect parsing bug on Hedera Testnet RPC.
+            // EVM Smart Contract logging is deferred to the Backend Agent.
+            paymentTxHash = await sendTransactionAsync({
+              to: pfConfig.operatorEvmAddress as `0x${string}`,
+              value: feeInWei,
+            });
+            console.log('[Payment] Native EVM transfer sent for audit request:', paymentTxHash);
+            setPaymentStatus('confirming');
+
+            // Wait for mirror node indexing before submitting to backend
+            await new Promise(r => setTimeout(r, 3000));
+            setPaymentStatus('done');
+
+            // Submit question to backend with payment proof — backend verifies & runs AI pipeline
+            const res = await submitQuestion(question, account, paymentTxHash);
+            setResult(res);
+            setIsLoading(false);
+            return;
+          } else {
+            // Hashpack / Native Hedera via WalletConnect
+            // Hashpack WC bridge currently drops `payableAmount` on ContractExecutions.
+            // Workaround: Send standard HBAR transfer to Operator, then Operator automatically
+            // proxies the `requestAudit` execution on the Smart Contract.
+            const client = getSignClient();
+            if (!client || !account) throw new Error("WalletConnect Client not active. Please reconnect.");
+
+            const hbarFee = parseFloat(pfConfig.serviceFeeHbar);
+
+            if (!pfConfig.operatorAccountId) {
+              console.error("[Payment] Config missing operatorAccountId. Ensure backend is running and config endpoint is not cached.", pfConfig);
+              throw new Error("Missing operator account ID configuration. Please refresh the page.");
+            }
+
+            const tx = new TransferTransaction()
+              .addHbarTransfer(account, new Hbar(-hbarFee))
+              .addHbarTransfer(pfConfig.operatorAccountId, new Hbar(hbarFee))
+              .setTransactionId(TransactionId.generate(account))
+              .setNodeAccountIds([AccountId.fromString("0.0.3")]);
+
+            tx.freeze();
+            const txBytes = Buffer.from(tx.toBytes()).toString('base64');
+
+            const sessions = client.session.getAll();
+            const hederaSession = sessions.find(s => s.namespaces.hedera);
+            if (!hederaSession) throw new Error("No active Hedera WalletConnect session found.");
+
+            console.log('[Payment] Triggering native Hedera transfer request (Hashpack compatibility)...');
+            const response = await client.request({
+              topic: hederaSession.topic,
+              chainId: 'hedera:testnet',
+              request: {
+                method: 'hedera_signAndExecuteTransaction',
+                params: {
+                  transactionList: txBytes,
+                  signerAccountId: `hedera:testnet:${account}`
+                }
+              }
+            }) as any;
+
+            paymentTxHash = response?.transactionId || response?.response?.transactionId;
+            console.log('[Payment] Micropayment sent natively:', paymentTxHash);
+
+            setPaymentStatus('confirming');
+            // Brief wait for mirror node indexing
+            await new Promise(r => setTimeout(r, 2000));
+            setPaymentStatus('done');
+
+            // Submit question with payment proof. The backend API will pick this up,
+            // verify payment, and execute the Agent pipeline (equivalent to the UI polling flow).
+            const res = await submitQuestion(question, account, paymentTxHash);
+            setResult(res);
+            setIsLoading(false);
+          }
+        } catch (payErr: any) {
+          console.error('[Autonomous] Contract or Transfer call failed:', payErr);
+          if (payErr?.message?.includes('User rejected') || payErr?.message?.includes('denied') || payErr?.message?.includes('Cancel')) {
+            setPaymentStatus('cancelled');
+            setTimeout(() => {
+              setPaymentStatus('idle');
+              setIsLoading(false);
+            }, 2000);
+            return;
+          }
+          setPaymentStatus('idle');
+          setIsLoading(false);
+          const errorMsg = payErr?.shortMessage || payErr?.message || 'Unknown error';
+          alert(language === 'es' ? `Error en micropago: ${errorMsg}` : `Payment failed: ${errorMsg}`);
+          return;
+        }
+      } else {
+        // If the contract isn't ready or user isn't fully connected, just try the direct API fallback
+        let paymentTxHash = undefined;
+        const res = await submitQuestion(question, account || undefined, paymentTxHash);
+        setResult(res);
+      }
     } catch (err: any) {
       console.error(err);
       if (err.message?.includes('429')) {
         alert("The AI is rate-limited. Please wait about 30 seconds and try again.");
       } else if (err.message?.includes('503') || err.message?.includes('500')) {
         alert("AI service temporarily unavailable. Please wait a moment and try again.");
+      } else if (err.message?.includes('402')) {
+        alert(language === 'es' ? 'Verificación de pago fallida. Por favor, inténtalo de nuevo.' : 'Payment verification failed. Please try again.');
       } else {
         alert(language === 'es' ? "Error al conectar con el servidor. Por favor, intenta de nuevo más tarde." : "Failed to connect to the backend server. Please try again later.");
       }
-    } finally {
       setIsLoading(false);
+      setPaymentStatus('idle');
     }
+    // We intentionally removed the finally block here to prevent it from resetting
+    // the UI state immediately while the 2-second 'cancelled' timeout is running.
   };
 
   const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
@@ -187,6 +342,18 @@ export default function DualPaneDashboard() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
 
             <div className="mb-8 relative z-10">
+              {!account && (
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="inline-flex items-center gap-2 px-2 py-0.5 rounded border border-amber-500/20 bg-amber-500/5 mb-3"
+                >
+                  <Lock className="w-3 h-3 text-amber-500" />
+                  <span className="text-[9px] font-mono font-bold text-amber-500 tracking-widest uppercase">
+                    LOCKED_SESSION
+                  </span>
+                </motion.div>
+              )}
               <h1 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
                 {t('dash_title')} <ShieldCheck className="w-6 h-6 text-accent-primary" />
               </h1>
@@ -195,41 +362,73 @@ export default function DualPaneDashboard() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
-              <div className="relative">
-                <textarea
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      if (!account) return;
-                      handleSubmit(e);
-                    }
-                  }}
-                  placeholder={!account ? (language === 'es' ? 'Conecta tu wallet para preguntar' : 'Connect your wallet to ask a question') : t('dash_placeholder')}
-                  className="w-full bg-background border border-border rounded-xl p-4 min-h-[140px] text-white placeholder-text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent-primary/50 focus:border-accent-primary transition-all resize-none shadow-inner disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={isLoading || isPolling || !account}
-                />
-              </div>
+            <div className="relative z-10">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="relative group overflow-hidden rounded-xl border border-border/50">
+                  <textarea
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        if (!account) return;
+                        handleSubmit(e);
+                      }
+                    }}
+                    placeholder={t('dash_placeholder')}
+                    className="w-full bg-background/30 p-4 min-h-[140px] text-white placeholder-text-muted/20 focus:outline-none focus:ring-1 focus:ring-accent-primary/30 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
+                    disabled={isLoading || isPolling || !account}
+                  />
 
-              <Button
-                type={!account ? "button" : "submit"}
-                onClick={!account ? connect : undefined}
-                className="w-full h-12 text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black shadow-[0_0_20px_rgba(45,212,191,0.2)] transition-all group disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={isLoading || isPolling || (!!account && !question.trim())}
-              >
-                {isLoading || isPolling ? (
-                  <span className="flex items-center gap-2">
-                    <Loader2 className="w-4 h-4 animate-spin" /> {t('dash_loading')}
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-2">
-                    {!account ? (language === 'es' ? 'Conectar Wallet' : 'Connect Wallet') : t('dash_submit')} <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                )}
-              </Button>
-            </form>
+                  {/* Disconnected Overlay - Refined Aesthetics */}
+                  {!account && (
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md transition-all duration-500 group-hover:bg-black/20">
+                      {/* Sub-glow effect */}
+                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
+
+                      <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="p-3 bg-accent-primary/5 rounded-full border border-accent-primary/20 mb-3 shadow-[0_0_20px_rgba(45,212,191,0.1)]"
+                      >
+                        <Lock className="w-5 h-5 text-accent-primary" />
+                      </motion.div>
+                      <p className="text-xs font-display font-medium text-white/90 px-8 text-center max-w-[280px] leading-relaxed tracking-wide">
+                        {t('dash_connect_first')}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  type={!account ? "button" : "submit"}
+                  onClick={!account ? connect : undefined}
+                  className={`w-full h-12 text-sm font-semibold rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all group ${!account
+                    ? 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
+                    : 'bg-accent-primary hover:bg-accent-secondary text-black shadow-accent-primary/20'
+                    }`}
+                  disabled={isLoading || isPolling || (!!account && !question.trim())}
+                >
+                  {isLoading || isPolling ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" /> {t('dash_loading')}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      {!account ? (
+                        <>
+                          <Activity className="w-4 h-4 text-accent-primary" /> {t('wallet_connect')}
+                        </>
+                      ) : (
+                        <>
+                          {t('dash_submit')} <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </>
+                      )}
+                    </span>
+                  )}
+                </Button>
+              </form>
+            </div>
 
             <div className="mt-8 relative z-10">
               <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t('dash_vectors')}</p>
@@ -258,7 +457,7 @@ export default function DualPaneDashboard() {
             className="mt-8 px-2 space-y-4"
           >
             <h3 className="text-sm font-display font-semibold text-text-muted uppercase tracking-widest flex items-center gap-2">
-              <Activity className="w-4 h-4" /> {t('dash_feed')}
+              <Activity className="w-4 h-4" /> {account ? t('dash_feed_personal') : t('dash_feed_global')}
             </h3>
             <div className="space-y-3">
               {recentAudits.map((audit) => (
@@ -285,7 +484,7 @@ export default function DualPaneDashboard() {
                         <Hash className="w-3 h-3" /> {audit.totalSteps} {t('dash_hcs_steps')}
                       </span>
                       <span className="text-[10px] text-text-muted">
-                        {t('history_time_prefix')}{Math.floor((Date.now() - audit.createdAt) / 60000)}{t('history_ago')}
+                        {formatTimeAgoI18n(audit.createdAt, t)}
                       </span>
                     </div>
                   </div>
@@ -326,6 +525,19 @@ export default function DualPaneDashboard() {
             </div>
           ) : isLoading ? (
             <div className="space-y-4">
+              {paymentStatus !== 'idle' && (
+                <div className={`flex items-center gap-2 ${paymentStatus === 'done' ? 'text-emerald-400' : paymentStatus === 'cancelled' ? 'text-red-400' : 'text-amber-400 animate-pulse'}`}>
+                  {paymentStatus === 'done' ? (
+                    <><CheckCircle2 className="w-4 h-4" /> {language === 'es' ? 'Micropago verificado' : 'Micropayment verified'} ({pfConfig?.serviceFeeHbar} HBAR)</>
+                  ) : paymentStatus === 'cancelled' ? (
+                    <><Lock className="w-4 h-4" /> {language === 'es' ? 'Transacción cancelada' : 'Transaction cancelled'}</>
+                  ) : paymentStatus === 'confirming' ? (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Confirmando pago en Mirror Node...' : 'Confirming payment on Mirror Node...'}</>
+                  ) : (
+                    <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Esperando firma del micropago...' : 'Awaiting micropayment signature...'}</>
+                  )}
+                </div>
+              )}
               <div className="text-accent-primary animate-pulse">{t('dash_init')}</div>
               <div className="text-text-muted pl-4">{t('dash_negotiating')}</div>
             </div>
@@ -426,11 +638,40 @@ export default function DualPaneDashboard() {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.8 }}
+                          className="space-y-4"
                         >
                           <AuditPassport
                             tokenTxId={(result as StoredProof).tokenTxId!}
                             proofId={result.proofId}
                           />
+
+                          {/* 5th Pillar: Autonomous Agent EVM Settlement */}
+                          <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                              <h4 className="text-white text-sm font-semibold flex items-center gap-2">
+                                <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
+                              </h4>
+                              <p className="text-xs text-text-muted mt-1 max-w-sm">
+                                {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
+                              </p>
+                            </div>
+
+                            {result.status === 'VERIFIED' || (result as any).evmSettled ? (
+                              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
+                                <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 whitespace-nowrap animate-pulse">
+                                <Loader2 className="w-3 h-3 mr-1 animate-spin" /> {language === 'es' ? 'Agente procesando...' : 'Agent processing...'}
+                              </Badge>
+                            )}
+                          </div>
+
+                          {(result as any).evmTxHash && (
+                            <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
+                              EVM Tx: <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(result as any).evmTxHash}</a>
+                            </div>
+                          )}
                         </motion.div>
                       )}
                     </motion.div>

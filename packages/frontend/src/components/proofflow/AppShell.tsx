@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Sidebar from '@/components/proofflow/Sidebar';
 import ConnectWallet from '@/components/proofflow/ConnectWallet';
 import FooterText from '@/components/proofflow/FooterText';
+import { WalletSelector } from '@/components/proofflow/WalletSelector';
 
 import { API_URL } from '@/lib/utils';
 import { useEffect } from 'react';
@@ -18,7 +19,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
     // Landing page renders without sidebar/footer
     if (isLanding) {
-        return <>{children}</>;
+        return <>{children}<WalletSelector /></>;
     }
 
     return (
@@ -62,6 +63,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                         </div>
                     </div>
                 </footer>
+
+                {/* Global Wallet Selector Modal */}
+                <WalletSelector />
             </div>
         </div>
     );
