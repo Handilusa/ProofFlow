@@ -27,7 +27,11 @@ try {
 
     if (fs.existsSync(contractFilePath)) {
         contractAddress = JSON.parse(fs.readFileSync(contractFilePath, "utf8")).address;
-        const artifactPath = path.join(__dirname, "../../../../contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json");
+
+        // Try local config copy first (for production/Render), then cross-package path
+        const localArtifactPath = path.join(configPath, "ProofValidator.json");
+        const crossPkgArtifactPath = path.join(__dirname, "../../../../contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json");
+        const artifactPath = fs.existsSync(localArtifactPath) ? localArtifactPath : crossPkgArtifactPath;
 
         if (fs.existsSync(artifactPath)) {
             const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));

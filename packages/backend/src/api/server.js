@@ -280,8 +280,10 @@ app.get("/api/v1/proof/:proofId/tx-data",
             const resultData = finalAnswerStep.content;
             const resultHash = ethers.id(resultData);
 
-            // 3. Load ABI
-            const artifactPath = path.join(__dirname, "../../../contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json");
+            // 3. Load ABI — try local config copy first (production), then cross-package path
+            const localArtifactPath = path.join(__dirname, "../../config/ProofValidator.json");
+            const crossPkgArtifactPath = path.join(__dirname, "../../../contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json");
+            const artifactPath = fs.existsSync(localArtifactPath) ? localArtifactPath : crossPkgArtifactPath;
             if (!fs.existsSync(artifactPath)) {
                 return res.status(500).json({ error: "Contract ABI not found" });
             }
