@@ -13,6 +13,10 @@ dist/
 
 # Hardhat
 artifacts/
+!packages/contracts/artifacts/
+!packages/contracts/artifacts/contracts/
+!packages/contracts/artifacts/contracts/ProofValidator.sol/
+!packages/contracts/artifacts/contracts/ProofValidator.sol/ProofValidator.json
 cache/
 typechain/
 typechain-types/
