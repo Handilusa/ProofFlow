@@ -228,7 +228,7 @@ export default function SettingsPage() {
                         <Info className="w-5 h-5 text-text-muted mt-0.5 shrink-0" />
                         <div>
                             <h2 className="text-sm font-semibold text-white">{t('settings_version')}</h2>
-                            <p className="text-xs text-text-muted mt-1 font-mono">ProofFlow v1.0.1 — Hello Future Apex 2026</p>
+                            <p className="text-xs text-text-muted mt-1 font-mono">ProofFlow v1.0.2 — Hello Future Apex 2026</p>
                         </div>
                     </div>
                 </Card>

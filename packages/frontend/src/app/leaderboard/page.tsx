@@ -115,7 +115,7 @@ export default function LeaderboardPage() {
 
                 {/* Controls */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 w-full sm:w-auto">
                         <div className="flex-1 min-w-[200px] max-w-sm">
                             <Input
                                 icon={<Search className="w-4 h-4 text-text-muted" />}
@@ -149,9 +149,9 @@ export default function LeaderboardPage() {
                 </div>
 
                 {/* Data Dense Table */}
-                <Card className="p-0 border-border/50 overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm font-mono">
+                <Card className="p-0 border-border/50 overflow-hidden w-full max-w-full">
+                    <div className="overflow-x-auto w-full">
+                        <table className="w-full text-sm font-mono min-w-max md:min-w-full">
                             <thead>
                                 <tr className="bg-surface-elevated/50 border-b border-border/50">
                                     <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-20">POS</th>

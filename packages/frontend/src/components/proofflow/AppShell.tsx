@@ -1,6 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
 import Sidebar from '@/components/proofflow/Sidebar';
 import ConnectWallet from '@/components/proofflow/ConnectWallet';
 import FooterText from '@/components/proofflow/FooterText';
@@ -25,32 +27,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex min-h-screen">
             <Sidebar />
-            <div className="flex-1 flex flex-col lg:ml-[260px] min-h-screen relative">
+            <div className="flex-1 flex flex-col lg:ml-[260px] min-h-screen relative overflow-x-hidden">
 
                 {/* Mobile Header */}
-                <div className="lg:hidden flex items-center justify-between p-4 border-b border-border/50 bg-surface/50 backdrop-blur z-20 sticky top-0">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded bg-accent-primary/20 flex items-center justify-center">
-                            <div className="w-4 h-4 bg-accent-primary rounded-sm" />
-                        </div>
-                        <span className="font-display font-bold text-lg text-white tracking-wide">PROOFFLOW</span>
+                <div className="lg:hidden flex items-center justify-between p-4 border-b border-border/50 bg-surface/50 backdrop-blur z-20 sticky top-0 gap-3">
+                    <Link href="/" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
+                        <Image src="/logo.svg" alt="ProofFlow" width={28} height={28} className="rounded-lg shrink-0" />
+                        <span className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-cyan-500 tracking-tight">ProofFlow</span>
+                    </Link>
+                    <div className="w-fit shrink-0">
+                        <ConnectWallet />
                     </div>
-                    <ConnectWallet />
                 </div>
 
                 {/* Ambient Background Glows */}
-                <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-success/5 rounded-full blur-[120px] pointer-events-none -z-10" />
-                <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-surface-elevated/20 rounded-full blur-[120px] pointer-events-none -z-10" />
+                <div className="fixed top-0 left-1/4 w-[80vw] h-[80vw] sm:w-[500px] sm:h-[500px] bg-success/5 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none -z-10" />
+                <div className="fixed bottom-0 right-1/4 w-[80vw] h-[80vw] sm:w-[500px] sm:h-[500px] bg-surface-elevated/20 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none -z-10" />
 
-                <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-32 lg:pb-12 z-10 w-full max-w-7xl mx-auto">
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 pb-10 lg:pb-12 w-full max-w-7xl mx-auto overflow-x-hidden">
                     {children}
                 </main>
 
                 {/* Global Footer */}
-                <footer className="w-full border-t border-border bg-surface/50 backdrop-blur-md py-6 z-20 mt-auto">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <footer className="w-full border-t border-border bg-surface/50 backdrop-blur-md py-6 z-20 mt-auto pb-32 lg:pb-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-center lg:justify-between gap-4 text-center lg:text-left">
                         <FooterText />
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-center gap-2">
                             <span className="text-xs text-text-muted">Powered by</span>
                             <svg width="64" height="16" viewBox="0 0 100 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12.42 23H6.7V13.84H-0.02V12.04H6.7V2.88H12.42V12.04H19.14V13.84H12.42V23ZM1.16 3.12H5.56V4.92H1.16V3.12ZM13.58 3.12H17.98V4.92H13.58V3.12ZM1.16 20.96H5.56V22.76H1.16V20.96ZM13.58 20.96H17.98V22.76H13.58V20.96Z" fill="#F8FAFC" />

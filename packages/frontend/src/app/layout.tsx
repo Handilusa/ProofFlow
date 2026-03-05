@@ -18,8 +18,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className="min-h-screen bg-background antialiased selection:bg-success/20 selection:text-success text-text-primary">
+    <html lang="en" className="dark overflow-x-hidden">
+      <body className="min-h-screen bg-background antialiased selection:bg-success/20 selection:text-success text-text-primary overflow-x-hidden">
         <Web3Providers>
           <LanguageProvider>
             <WalletProvider>

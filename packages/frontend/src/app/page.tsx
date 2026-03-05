@@ -43,10 +43,10 @@ export default function LandingPage() {
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6">
 
         {/* Background effects */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-accent-primary/10 rounded-full blur-[150px]" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent-primary/5 rounded-full blur-[120px]" />
-          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-info/5 rounded-full blur-[100px]" />
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] sm:w-[700px] sm:h-[700px] bg-accent-primary/10 rounded-full blur-[100px] sm:blur-[150px]" />
+          <div className="absolute bottom-0 left-0 w-[80vw] h-[80vw] sm:w-[400px] sm:h-[400px] bg-accent-primary/5 rounded-full blur-[80px] sm:blur-[120px]" />
+          <div className="absolute top-0 right-0 w-[60vw] h-[60vw] sm:w-[300px] sm:h-[300px] bg-info/5 rounded-full blur-[60px] sm:blur-[100px]" />
         </div>
 
         {/* Grid overlay */}
@@ -73,12 +73,12 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors">
+            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="hidden sm:flex text-text-muted hover:text-white transition-colors">
               <Github className="w-5 h-5" />
             </a>
             <Link
               href="/dashboard"
-              className="px-5 py-2 text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow-sm"
+              className="px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow-sm whitespace-nowrap"
             >
               Launch App
             </Link>
@@ -147,7 +147,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight mb-6 leading-[1.2]"
+            className="text-4xl sm:text-5xl lg:text-6xl md:text-5xl font-display font-bold tracking-tight mb-6 leading-[1.2]"
           >
             <span className="text-white">Autonomous Agent</span>
             <br />
@@ -160,7 +160,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto mb-12 leading-relaxed"
+            className="text-base sm:text-xl text-text-muted max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed"
           >
             A true <strong>Agentic Web3</strong> architecture. Users simply deposit a native HBAR micro-fee, and our off-chain AI Agent autonomously takes over: generating the inference, logging reasoning steps to <strong>HCS</strong>, minting verifiable <strong>HTS</strong> Badges, and autonomously executing the <strong>EVM Smart Contract</strong> to record the final proof on-chain.
           </motion.p>
@@ -173,7 +173,7 @@ export default function LandingPage() {
           >
             <Link
               href="/dashboard"
-              className="group flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow"
+              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow"
             >
               Launch App
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -182,7 +182,7 @@ export default function LandingPage() {
               href="https://github.com/Handilusa/ProofFlow"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl border border-border hover:border-accent-primary/50 text-text-muted hover:text-white transition-all"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl border border-border hover:border-accent-primary/50 text-text-muted hover:text-white transition-all"
             >
               <Github className="w-5 h-5" />
               View Source
@@ -398,9 +398,9 @@ export default function LandingPage() {
       </section>
 
       {/* ============ PLATFORM CAPABILITIES ============ */}
-      <section id="capabilities" className="relative py-24 px-6 border-t border-border/50">
+      <section id="capabilities" className="relative py-24 px-6 border-t border-border/50 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-0 w-[400px] h-[400px] bg-accent-primary/5 rounded-full blur-[120px]" />
+          <div className="absolute top-1/2 left-0 w-[80vw] h-[80vw] sm:w-[400px] sm:h-[400px] bg-accent-primary/5 rounded-full blur-[80px] sm:blur-[120px]" />
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -441,8 +441,8 @@ export default function LandingPage() {
       <section id="advantages" className="relative py-24 px-6 overflow-hidden">
         {/* Subtle background glow for depth */}
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[150px]" />
-          <div className="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[100px]" />
+          <div className="absolute top-1/2 right-0 w-[100vw] h-[100vw] sm:w-[500px] sm:h-[500px] bg-cyan-500/5 rounded-full blur-[100px] sm:blur-[150px]" />
+          <div className="absolute bottom-0 left-1/4 w-[80vw] h-[80vw] sm:w-[300px] sm:h-[300px] bg-blue-500/5 rounded-full blur-[80px] sm:blur-[100px]" />
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -592,9 +592,9 @@ export default function LandingPage() {
       </section>
 
       {/* ============ CTA ============ */}
-      <section className="relative py-28 px-6">
+      <section className="relative py-28 px-6 overflow-hidden">
         {/* Single subtle glow — not screaming, just presence */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent-primary/5 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] sm:w-[500px] sm:h-[500px] bg-accent-primary/5 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none" />
 
         <div className="max-w-3xl mx-auto text-center relative z-10">
           <motion.div

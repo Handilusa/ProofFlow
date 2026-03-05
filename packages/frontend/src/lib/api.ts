@@ -23,6 +23,7 @@ export interface StoredProof extends ReasoningResult {
     rootHash?: string;
     hcsSequenceNumbers?: number[];
     tokenTxId?: string;
+    requesterAddress?: string;
     explorerUrl?: string;
 }
 

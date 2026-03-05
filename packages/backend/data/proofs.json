@@ -1911,5 +1911,61 @@
       "tokenTxId": "0.0.7986674@1772665436.795609080",
       "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772665436.795609080"
     }
+  ],
+  [
+    "ad258bbb-267a-4430-96d3-47bfb1d125a7",
+    {
+      "proofId": "ad258bbb-267a-4430-96d3-47bfb1d125a7",
+      "question": "Analiza el sentimiento y la actividad on-chain de HBAR durante las últimas 3 caídas fuertes de Bitcoin.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identificación del Alcance y Limitaciones de los Datos.\nLa solicitud del usuario pide un análisis del sentimiento y la actividad on-chain de HBAR durante las últimas tres caídas fuertes de Bitcoin. Sin embargo, los \"LIVE MARKET DATA\" proporcionados son una instantánea en tiempo real y no incluyen datos históricos sobre caídas pasadas de Bitcoin o el rendimiento correspondiente de HBAR durante esos eventos específicos. Por lo tanto, no es posible realizar un análisis exhaustivo de las \"últimas 3 caídas fuertes\" de Bitcoin utilizando únicamente los datos disponibles. La capacidad de análisis se limitará a la situación actual del mercado, donde Bitcoin ha experimentado una caída en las últimas 24 horas, y a las métricas on-chain y de actividad comercial presentes en los datos en vivo.",
+          "hash": "287de40306f780d58172cb5246eb901db59464e9c267754c5ba87c9724c3c5bf",
+          "timestamp": 1772746874802
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Análisis del Contexto Actual del Mercado y Rendimiento Reciente de HBAR.\nBitcoin (BTC) ha experimentado una caída del -2.88% en las últimas 24 horas, con un precio actual de $71,158 y un volumen de $56,147,487,593. En el mismo período, Hedera (HBAR) también ha mostrado una disminución, cayendo un -1.67%, con un precio de $0.09984 y un volumen de $94,149,738. Esta comparación sugiere que HBAR está reaccionando a la baja junto con Bitcoin en el corto plazo, aunque su caída porcentual en 24 horas es ligeramente menor que la de BTC. El volumen de HBAR en 24 horas es de $94.1 millones, lo que indica una actividad de trading significativa a pesar de la disminución del precio. HBAR se encuentra un 82.5% por debajo de su máximo histórico (ATH) de $0.569229, mientras que BTC está un 43.6% por debajo de su ATH de $126,080.",
+          "hash": "afb83ce745ff6d2ffc724b36979d56cf202e5d3ec8dbb49fdfe230b5eca97b8f",
+          "timestamp": 1772746874802
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Análisis de la Actividad On-Chain y Trading Actual.\nEn cuanto a la actividad on-chain, los datos muestran que el suministro total de la red Hedera es de 50,000,000,000,000,000,000 unidades, de las cuales se han liberado 1,594,233,169,841,538,610. Aunque este dato proporciona una visión de la distribución del suministro, no ofrece información dinámica sobre la actividad on-chain (como transacciones o direcciones activas) durante una caída. La actividad de trading en DEXs para HBAR muestra volúmenes modestos. El par HBAR/WBNB en PancakeSwap (BSC) tiene un volumen de $15,537.49 y una liquidez de $43,353.33, con una caída del -1.66% en 24 horas, alineándose con el movimiento general de HBAR. Similarmente, el par HBAR/WCRO en VVS Finance (Cronos) registra un volumen de $5,862.74 y una liquidez de $65,362.47, con una variación del -1.66% en 24 horas. El par HBAR/XRP en XRPL tiene un volumen muy bajo de $5.16. Estos datos sugieren que la mayor parte del trading de HBAR ocurre en exchanges centralizados, dado el volumen comparativamente bajo en los DEXs listados.",
+          "hash": "b6c15dd089b278bfa5e48601c1289a45e7e6a2a02d2c7ec9e98a80210631e84b",
+          "timestamp": 1772746874802
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Conclusión y Recomendación.\nDebido a la limitación de los datos proporcionados, que consisten en una instantánea en tiempo real y no en un historial de precios, no es posible analizar el sentimiento y la actividad on-chain de HBAR durante las \"últimas 3 caídas fuertes de Bitcoin\". Sin embargo, basándonos en los datos en vivo, podemos observar que HBAR ha seguido la tendencia bajista de Bitcoin en las últimas 24 horas, con una caída del -1.67% para HBAR frente al -2.88% de BTC. Esto indica una correlación en el movimiento de precios en el corto plazo. El volumen de trading de HBAR en 24 horas ($94.1 millones) es significativo, lo que sugiere interés continuo en el activo a pesar de la corrección. La actividad en los DEXs es relativamente baja en comparación con el volumen total, lo que podría indicar que la mayoría de las operaciones se realizan en plataformas centralizadas. Para un análisis más profundo sobre el comportamiento de HBAR durante caídas históricas de Bitcoin, se requerirían datos históricos de precios, volumen y métricas on-chain para ambos activos durante esos períodos específicos.",
+          "hash": "32c33ed9bb89ce8ebc669ba4dc097391c064b8d4afb6ad991de454157c9e6557",
+          "timestamp": 1772746874802
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772746874803,
+      "dataSources": [
+        "Hedera Mirror Node",
+        "CoinGecko API",
+        "DexScreener API"
+      ],
+      "status": "CONFIRMED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "7713d8b12934a0054d62545260cfbaa79c0d497b8b6348185804f3d6826d9afc",
+      "hcsSequenceNumbers": [
+        516,
+        517,
+        518,
+        519
+      ],
+      "tokenTxId": "0.0.7986674@1772746880.375077039",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772746880.375077039"
+    }
   ]
 ]

@@ -72,6 +72,7 @@ export default function DualPaneDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<ReasoningResult | null>(null);
   const [recentAudits, setRecentAudits] = useState<StoredProof[]>([]);
+  const [globalFeed, setGlobalFeed] = useState<StoredProof[]>([]);
   const [isPolling, setIsPolling] = useState(false);
   const [randomVectors, setRandomVectors] = useState<string[]>([]);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'pending' | 'confirming' | 'done' | 'cancelled'>('idle');
@@ -125,14 +126,21 @@ export default function DualPaneDashboard() {
     setRandomVectors(shuffled.slice(0, 3));
   }, [language]);
 
-  // Fetch recent audits (including simulation data) on mount
+  // Fetch recent audits (including simulation data) on mount or account change
   useEffect(() => {
     let isMounted = true;
     const fetchRecent = async () => {
       try {
-        const proofs = await getRecentProofs();
+        // Step 1: Try fetching personal audits
+        let proofs = await getRecentProofs(account || undefined);
+
+        // Step 2: If personal is empty and we have an account, fallback to global
+        if (proofs.length === 0 && account) {
+          proofs = await getRecentProofs();
+        }
+
         if (isMounted) {
-          setRecentAudits(proofs.slice(0, 3)); // show top 3
+          setRecentAudits(proofs.slice(0, 5)); // show top 5
         }
       } catch (e) {
         console.error("Failed to load recent audits", e);
@@ -140,7 +148,27 @@ export default function DualPaneDashboard() {
     };
 
     fetchRecent();
-    const interval = setInterval(fetchRecent, 5000);
+    const interval = setInterval(fetchRecent, 10000);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, [account]);
+
+  // Global feed — always fetch from all wallets, limit 3, for the visible feed section
+  useEffect(() => {
+    let isMounted = true;
+    const fetchGlobal = async () => {
+      try {
+        const proofs = await getRecentProofs();
+        if (isMounted) setGlobalFeed(proofs.slice(0, 3));
+      } catch (e) {
+        console.error("Failed to load global feed", e);
+      }
+    };
+
+    fetchGlobal();
+    const interval = setInterval(fetchGlobal, 10000);
     return () => {
       isMounted = false;
       clearInterval(interval);
@@ -300,10 +328,13 @@ export default function DualPaneDashboard() {
         alert("The AI is rate-limited. Please wait about 30 seconds and try again.");
       } else if (err.message?.includes('503') || err.message?.includes('500')) {
         alert("AI service temporarily unavailable. Please wait a moment and try again.");
-      } else if (err.message?.includes('402')) {
-        alert(language === 'es' ? 'Verificación de pago fallida. Por favor, inténtalo de nuevo.' : 'Payment verification failed. Please try again.');
+      } else if (err.message?.includes('402') || err.message?.includes('Payment Required')) {
+        alert(language === 'es' ? 'Verificación de pago fallida o requerida. Por favor, conecta tu wallet e inténtalo de nuevo.' : 'Payment verification failed or required. Please connect your wallet and try again.');
       } else {
-        alert(language === 'es' ? "Error al conectar con el servidor. Por favor, intenta de nuevo más tarde." : "Failed to connect to the backend server. Please try again later.");
+        const errorDetail = err.message || 'Unknown error';
+        alert(language === 'es'
+          ? `Error al conectar con el servidor: ${errorDetail}`
+          : `Failed to connect to the backend server: ${errorDetail}`);
       }
       setIsLoading(false);
       setPaymentStatus('idle');
@@ -314,34 +345,241 @@ export default function DualPaneDashboard() {
 
   const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
 
+  const renderTerminal = (isMobile: boolean) => (
+    <motion.div
+      initial={isMobile ? { opacity: 0, y: 20 } : { opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className={`flex flex-col bg-[#0A0D14] border border-border/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] relative w-full overflow-hidden ${isMobile
+        ? "block lg:hidden my-4 min-h-[400px]"
+        : "hidden lg:flex flex-1 lg:flex-[4] lg:min-w-[320px] lg:h-full " + (isLoading || result ? 'min-h-[calc(100vh-14rem)]' : 'min-h-[500px]')
+        }`}
+    >
+      {/* Header terminal style */}
+      <div className="p-4 border-b border-white/5 bg-black/40 flex justify-between items-center z-20">
+        <div>
+          <h2 className="text-sm font-mono font-bold text-white flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" /> {t('dash_terminal_title')}
+          </h2>
+          <p className="text-[10px] text-text-muted font-mono mt-1">{t('dash_terminal_listening')} wss://{network}.mirrornode.hedera.com</p>
+        </div>
+        {result && (
+          <VerificationBadge status={result.status} />
+        )}
+      </div>
+
+      {/* Terminal Window */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-40 lg:pb-6 font-mono text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+        {!result && !isLoading ? (
+          <div className="h-full w-full min-h-[300px] flex flex-col items-center justify-center text-center opacity-30 relative">
+            {isMobile && !account ? (
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md rounded-xl border border-white/5 opacity-100">
+                <div className="p-3 bg-accent-primary/5 rounded-full border border-accent-primary/20 mb-3 shadow-[0_0_20px_rgba(45,212,191,0.1)]">
+                  <Lock className="w-5 h-5 text-accent-primary" />
+                </div>
+                <p className="text-xs font-display font-medium text-white/90 px-8 text-center max-w-[280px] leading-relaxed tracking-wide">
+                  {t('dash_connect_first')}
+                </p>
+              </div>
+            ) : (
+              <>
+                <Loader2 className="w-8 h-8 mb-4 text-text-muted animate-[spin_3s_linear_infinite]" />
+                <p className="font-mono text-[10px] sm:text-xs text-text-muted uppercase tracking-widest px-4 break-words text-center">
+                  {t('dash_awaiting')}
+                </p>
+              </>
+            )}
+          </div>
+        ) : isLoading ? (
+          <div className="space-y-4">
+            {paymentStatus !== 'idle' && (
+              <div className={`flex items-center gap-2 ${paymentStatus === 'done' ? 'text-emerald-400' : paymentStatus === 'cancelled' ? 'text-red-400' : 'text-amber-400 animate-pulse'}`}>
+                {paymentStatus === 'done' ? (
+                  <><CheckCircle2 className="w-4 h-4" /> {language === 'es' ? 'Micropago verificado' : 'Micropayment verified'} ({pfConfig?.serviceFeeHbar} HBAR)</>
+                ) : paymentStatus === 'cancelled' ? (
+                  <><Lock className="w-4 h-4" /> {language === 'es' ? 'Transacción cancelada' : 'Transaction cancelled'}</>
+                ) : paymentStatus === 'confirming' ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Confirmando pago en Mirror Node...' : 'Confirming payment on Mirror Node...'}</>
+                ) : (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Esperando firma del micropago...' : 'Awaiting micropayment signature...'}</>
+                )}
+              </div>
+            )}
+            <div className="text-accent-primary animate-pulse">{t('dash_init')}</div>
+            <div className="text-text-muted pl-4">{t('dash_negotiating')}</div>
+          </div>
+        ) : result ? (
+          <div className="space-y-6 pb-8">
+
+            {/* The Initialization Log */}
+            <div className="bg-white/5 border border-white/10 rounded p-3 text-xs text-text-muted">
+              <div><span className="text-emerald-400">SESSION ID:</span> <span className="text-white">{result.proofId}</span></div>
+              <div className="flex items-center gap-2">
+                <span className="text-emerald-400">TOPIC ID:</span>
+                {result.hcsTopicId !== "pending" ? (
+                  <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}`} target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent-primary underline decoration-accent-primary/50 underline-offset-2 flex items-center gap-1 transition-colors">
+                    {result.hcsTopicId} <ExternalLink className="w-3 h-3" />
+                  </a>
+                ) : "Awaiting assignment..."}
+              </div>
+              {(result as any).dataSources && (result as any).dataSources.length > 0 && (
+                <div className="mt-2 pt-2 border-t border-white/5">
+                  <span className="text-purple-400">{t('dash_live_data')}</span>{' '}
+                  {(result as any).dataSources.map((src: string, i: number) => (
+                    <span key={i} className="inline-flex items-center text-[10px] bg-purple-500/10 text-purple-300 border border-purple-500/20 px-1.5 py-0.5 rounded mr-1">
+                      {src}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <AnimatePresence>
+              {result.steps.map((step, idx) => {
+                const isFinal = step.label === "FINAL";
+
+                // If status is CONFIRMED, the seqNum is available if backend passed it,
+                // but we can just show "Verified" status for visual impact.
+                const seqNum = (result as StoredProof).hcsSequenceNumbers?.[idx];
+
+                return (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -10, y: 10 }}
+                    animate={{ opacity: 1, x: 0, y: 0 }}
+                    transition={{ delay: idx * 0.4 }}
+                    className="relative mb-6 last:mb-0"
+                  >
+                    <div className={`p-4 border-l-2 ${isFinal ? 'border-amber-400 bg-amber-400/5' : 'border-emerald-500 bg-emerald-500/5'}`}>
+                      <div className="flex justify-between items-start mb-2">
+                        <span className={`text-[11px] font-bold ${isFinal ? 'text-amber-400' : 'text-emerald-400'}`}>
+                          {isFinal ? '> EXECUTION_FINAL' : `> ${step.label}_INFERENCE`}
+                        </span>
+                        {result.status === "CONFIRMED" || result.status === "VERIFIED" ? (
+                          <a
+                            href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}?sequenceNumber=${seqNum}`}
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[10px] text-emerald-400 flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 transition-colors group cursor-pointer"
+                            title="Verify on HashScan"
+                          >
+                            ✓ SEQ: {seqNum || 'SYNCED'} <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
+                          </a>
+                        ) : (
+                          <span className="text-[10px] text-amber-500 flex items-center gap-1 animate-pulse">
+                            <Loader2 className="w-3 h-3 animate-spin text-amber-500" />
+                            {t('dash_publishing')}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="text-sm my-2 space-y-3">
+                        {step.content.split(/\n{2,}/).map((block, bIdx) => {
+                          const trimmed = block.trim();
+                          if (!trimmed) return null;
+                          // Bullet list block
+                          if (trimmed.split('\n').some(l => l.trim().match(/^[\*\-]\s/))) {
+                            return (
+                              <ul key={bIdx} className="list-disc list-outside pl-5 space-y-1.5">
+                                {trimmed.split('\n').filter(l => l.trim()).map((line, lIdx) => (
+                                  <li key={lIdx} className="text-white/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: line.replace(/^[\*\-]\s+/, '').replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
+                                ))}
+                              </ul>
+                            );
+                          }
+                          // Normal paragraph
+                          return (
+                            <p key={bIdx} className="text-white/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: trimmed.replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>').replace(/\n/g, ' ') }} />
+                          );
+                        })}
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/5 text-[10px] text-text-muted/70">
+                        <span className="text-emerald-500 shrink-0">SHA256:</span>
+                        <span className="truncate max-w-[150px] sm:max-w-[300px]" title={step.hash}>{step.hash}</span>
+                      </div>
+                    </div>
+
+                    {/* Show the Passport exactly after Final step IF confirmed */}
+                    {isFinal && (result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.8 }}
+                        className="space-y-4"
+                      >
+                        <AuditPassport
+                          tokenTxId={(result as StoredProof).tokenTxId!}
+                          proofId={result.proofId}
+                        />
+
+                        {/* 5th Pillar: Autonomous Agent EVM Settlement */}
+                        <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                          <div>
+                            <h4 className="text-white text-sm font-semibold flex items-center gap-2">
+                              <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
+                            </h4>
+                            <p className="text-xs text-text-muted mt-1 max-w-sm">
+                              {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
+                            </p>
+                          </div>
+
+                          {result.status === 'VERIFIED' || (result as any).evmSettled ? (
+                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 whitespace-nowrap animate-pulse">
+                              <Loader2 className="w-3 h-3 mr-1 animate-spin" /> {language === 'es' ? 'Agente procesando...' : 'Agent processing...'}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {(result as any).evmTxHash && (
+                          <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
+                            EVM Tx: <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(result as any).evmTxHash}</a>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        ) : null}
+      </div>
+    </motion.div>
+  );
+
   return (
-    <div className="flex flex-col xl:flex-row gap-6 h-[calc(100vh-6rem)] overflow-hidden pb-6">
+    <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-6rem)] lg:overflow-hidden pb-6 w-full max-w-full overflow-x-hidden">
 
       {/* LEFT PANEL — Chat & Request */}
-      <div className="flex-1 xl:flex-[3] flex flex-col min-w-[320px] overflow-y-auto pr-2 scrollbar-thin">
+      <div className="flex-1 lg:flex-[3] flex flex-col min-w-0 sm:min-w-[320px] overflow-x-hidden overflow-y-auto pr-0 lg:pr-2 scrollbar-thin pb-6 lg:pb-0">
 
-        {/* Header Stats Counter */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 px-2"
-        >
-          <Badge className="bg-success/10 text-success border-success/20 inline-flex items-center gap-2 font-mono whitespace-nowrap">
-            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" /> Hedera {network.toUpperCase()} Live
-          </Badge>
-          <LiveNetworkCounter />
-        </motion.div>
+        {/* FIXED HEADER ROW — ALWAYS VISIBLE ON DESKTOP */}
+        <div className="flex justify-between items-center gap-4 mb-8 px-2 w-full min-h-[40px] z-30 min-w-0">
+          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-success/30 bg-success/5 shrink-0 whitespace-nowrap">
+            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-success uppercase tracking-wider">
+              Hedera {network.toUpperCase()} Live
+            </span>
+          </div>
+          <div className="min-w-0 flex-1 flex justify-end overflow-hidden">
+            <LiveNetworkCounter />
+          </div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
+          className={isLoading || result ? 'hidden md:block' : 'block'}
         >
-          <Card className="flex flex-col p-6 sm:p-8 border-border/50 bg-surface/50 backdrop-blur-sm relative overflow-hidden shrink-0">
+          <Card className="flex flex-col p-5 sm:p-6 border-border/50 bg-surface/50 backdrop-blur-sm relative overflow-hidden shrink-0">
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
 
-            <div className="mb-8 relative z-10">
+            <div className="mb-4 relative z-10">
               {!account && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
@@ -357,12 +595,16 @@ export default function DualPaneDashboard() {
               <h1 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
                 {t('dash_title')} <ShieldCheck className="w-6 h-6 text-accent-primary" />
               </h1>
-              <p className="text-text-muted text-sm pr-12">
+              <p className="text-text-muted text-sm pr-0 sm:pr-12">
                 {t('dash_subtitle')}
               </p>
             </div>
 
-            <div className="relative z-10">
+            {/* MOBILE ONLY: Terminal goes here, between Title and Vectors */}
+            {renderTerminal(true)}
+
+            {/* Form was moved to sticky bottom on mobile */}
+            <div className="hidden md:block">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative group overflow-hidden rounded-xl border border-border/50">
                   <textarea
@@ -376,7 +618,7 @@ export default function DualPaneDashboard() {
                       }
                     }}
                     placeholder={t('dash_placeholder')}
-                    className="w-full bg-background/30 p-4 min-h-[140px] text-white placeholder-text-muted/20 focus:outline-none focus:ring-1 focus:ring-accent-primary/30 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
+                    className="w-full bg-background/30 p-5 min-h-[140px] text-white placeholder-text-muted/20 focus:outline-none focus:ring-1 focus:ring-accent-primary/30 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
                     disabled={isLoading || isPolling || !account}
                   />
 
@@ -430,7 +672,8 @@ export default function DualPaneDashboard() {
               </form>
             </div>
 
-            <div className="mt-8 relative z-10">
+            {/* VECTORS MUST BE OUTSIDE hidden md:block TO SHOW ON MOBILE, BUT INSIDE CARD */}
+            <div className="mt-4 relative z-10 w-full md:mt-6">
               <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t('dash_vectors')}</p>
               <div className="flex flex-wrap gap-2">
                 {randomVectors.map((q, i) => (
@@ -448,240 +691,106 @@ export default function DualPaneDashboard() {
           </Card>
         </motion.div>
 
-        {/* Recent Audits List (from Simulation Data) */}
-        {!result && !isLoading && recentAudits.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-8 px-2 space-y-4"
-          >
-            <h3 className="text-sm font-display font-semibold text-text-muted uppercase tracking-widest flex items-center gap-2">
-              <Activity className="w-4 h-4" /> {account ? t('dash_feed_personal') : t('dash_feed_global')}
-            </h3>
-            <div className="space-y-3">
-              {recentAudits.map((audit) => (
+        {/* GLOBAL RECENT FEED — Always visible on desktop & mobile */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25 }}
+          className="mt-6 px-2 space-y-3 max-w-full overflow-hidden shrink-0"
+        >
+          <h3 className="text-xs font-display font-semibold text-text-muted uppercase tracking-widest flex items-center gap-2">
+            <Activity className="w-3.5 h-3.5 shrink-0" /> {t('dash_feed_global')}
+          </h3>
+          <div className="space-y-2">
+            {globalFeed.length > 0 ? (
+              globalFeed.map((audit) => (
                 <Card
                   key={audit.proofId}
-                  className="p-4 border-border/30 bg-surface/30 hover:bg-surface/50 hover:border-border transition-all cursor-pointer"
+                  className="p-3 border-border/30 bg-surface/30 hover:bg-surface/50 hover:border-border transition-all cursor-pointer group"
                   onClick={() => setResult(audit)}
                 >
                   <div className="flex flex-col gap-2">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-mono text-accent-primary">ID: {audit.proofId.substring(0, 8)}...</span>
-                      <div className="flex gap-2 items-center">
-                        {audit.hcsTopicId && audit.hcsTopicId !== "pending" && (
-                          <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${audit.hcsTopicId}`} target="_blank" rel="noopener noreferrer" className="text-[10px] flex items-center gap-1 font-mono text-text-muted hover:text-white transition-colors bg-white/5 px-2 py-0.5 rounded border border-white/10" title="Verify Topic on Hashscan">
-                            {audit.hcsTopicId} <ExternalLink className="w-3 h-3" />
-                          </a>
-                        )}
-                        <VerificationBadge status={audit.status || "CONFIRMED"} />
-                      </div>
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="text-[10px] font-mono text-accent-primary truncate">ID: {audit.proofId.substring(0, 8)}...</span>
+                      <VerificationBadge status={audit.status || "CONFIRMED"} />
                     </div>
-                    <p className="text-sm text-white/90 truncate pr-4">"{audit.question}"</p>
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/50">
-                      <span className="text-[10px] text-text-muted flex items-center gap-1">
-                        <Hash className="w-3 h-3" /> {audit.totalSteps} {t('dash_hcs_steps')}
+                    <p className="text-xs text-white/90 truncate">"{audit.question}"</p>
+                    <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
+                      <span className="text-[9px] text-text-muted flex items-center gap-1.5 min-w-0">
+                        <Hash className="w-2.5 h-2.5 text-accent-primary/60 shrink-0" />
+                        <span className="text-[7.5px] font-bold uppercase tracking-widest opacity-40 mr-1 shrink-0">HCS</span>
+                        <span className="truncate text-white/80">{audit.totalSteps}</span>
                       </span>
-                      <span className="text-[10px] text-text-muted">
+                      <span className="text-[9px] text-text-muted">
                         {formatTimeAgoI18n(audit.createdAt, t)}
                       </span>
                     </div>
                   </div>
                 </Card>
-              ))}
-            </div>
-          </motion.div>
-        )}
+              ))
+            ) : (
+              <div className="p-4 text-center border border-dashed border-white/5 rounded-xl opacity-30 text-[9px] font-mono tracking-widest uppercase">
+                {language === 'es' ? 'Sin actividad reciente' : 'No recent activity'}
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+
+
       </div>
 
-      {/* RIGHT PANEL — Audit Feed Terminal */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-        className="flex-1 xl:flex-[4] flex flex-col bg-[#0A0D14] border border-border/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] relative min-w-[320px] h-full overflow-hidden"
-      >
+      {/* RIGHT PANEL (Desktop Only) — Audit Feed Terminal via renderTerminal */}
+      {renderTerminal(false)}
 
-        {/* Header terminal style */}
-        <div className="p-4 border-b border-white/5 bg-black/40 flex justify-between items-center z-20">
-          <div>
-            <h2 className="text-sm font-mono font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> {t('dash_terminal_title')}
-            </h2>
-            <p className="text-[10px] text-text-muted font-mono mt-1">{t('dash_terminal_listening')} wss://{network}.mirrornode.hedera.com</p>
-          </div>
-          {result && (
-            <VerificationBadge status={result.status} />
-          )}
-        </div>
-
-        {/* Terminal Window */}
-        <div className="flex-1 overflow-y-auto p-6 font-mono text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-          {!result && !isLoading ? (
-            <div className="h-full flex flex-col items-center justify-center text-center opacity-30">
-              <Loader2 className="w-8 h-8 mb-4 text-text-muted animate-[spin_3s_linear_infinite]" />
-              <p className="font-mono text-xs text-text-muted uppercase tracking-widest">{t('dash_awaiting')}</p>
-            </div>
-          ) : isLoading ? (
-            <div className="space-y-4">
-              {paymentStatus !== 'idle' && (
-                <div className={`flex items-center gap-2 ${paymentStatus === 'done' ? 'text-emerald-400' : paymentStatus === 'cancelled' ? 'text-red-400' : 'text-amber-400 animate-pulse'}`}>
-                  {paymentStatus === 'done' ? (
-                    <><CheckCircle2 className="w-4 h-4" /> {language === 'es' ? 'Micropago verificado' : 'Micropayment verified'} ({pfConfig?.serviceFeeHbar} HBAR)</>
-                  ) : paymentStatus === 'cancelled' ? (
-                    <><Lock className="w-4 h-4" /> {language === 'es' ? 'Transacción cancelada' : 'Transaction cancelled'}</>
-                  ) : paymentStatus === 'confirming' ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Confirmando pago en Mirror Node...' : 'Confirming payment on Mirror Node...'}</>
-                  ) : (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Esperando firma del micropago...' : 'Awaiting micropayment signature...'}</>
-                  )}
-                </div>
-              )}
-              <div className="text-accent-primary animate-pulse">{t('dash_init')}</div>
-              <div className="text-text-muted pl-4">{t('dash_negotiating')}</div>
-            </div>
-          ) : result ? (
-            <div className="space-y-6 pb-8">
-
-              {/* The Initialization Log */}
-              <div className="bg-white/5 border border-white/10 rounded p-3 text-xs text-text-muted">
-                <div><span className="text-emerald-400">SESSION ID:</span> <span className="text-white">{result.proofId}</span></div>
-                <div className="flex items-center gap-2">
-                  <span className="text-emerald-400">TOPIC ID:</span>
-                  {result.hcsTopicId !== "pending" ? (
-                    <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}`} target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent-primary underline decoration-accent-primary/50 underline-offset-2 flex items-center gap-1 transition-colors">
-                      {result.hcsTopicId} <ExternalLink className="w-3 h-3" />
-                    </a>
-                  ) : "Awaiting assignment..."}
-                </div>
-                {(result as any).dataSources && (result as any).dataSources.length > 0 && (
-                  <div className="mt-2 pt-2 border-t border-white/5">
-                    <span className="text-purple-400">{t('dash_live_data')}</span>{' '}
-                    {(result as any).dataSources.map((src: string, i: number) => (
-                      <span key={i} className="inline-flex items-center text-[10px] bg-purple-500/10 text-purple-300 border border-purple-500/20 px-1.5 py-0.5 rounded mr-1">
-                        {src}
-                      </span>
-                    ))}
-                  </div>
-                )}
+      {/* MOBILE STICKY INPUT FORM (Hidden on Desktop) */}
+      <div className="lg:hidden fixed bottom-[4.8rem] left-0 right-0 p-4 bg-gradient-to-t from-background via-background/95 to-transparent z-50 pointer-events-none">
+        <form onSubmit={handleSubmit} className="flex gap-2 max-w-full mx-auto relative items-end pointer-events-auto">
+          <div className={`relative flex-1 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 ${!account ? 'bg-surface-elevated/40 border border-white/5' : 'bg-[#0F131D]/80 border border-accent-primary/20 backdrop-blur-xl group-focus-within:border-accent-primary/50 group-focus-within:shadow-[0_0_20px_rgba(45,212,191,0.1)]'}`}>
+            <textarea
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (!account) return;
+                  handleSubmit(e);
+                }
+              }}
+              placeholder={account ? "Type your query here..." : ""}
+              className={`w-full bg-transparent py-4 px-5 min-h-[56px] max-h-[120px] text-white placeholder-text-muted/40 focus:outline-none transition-all resize-none disabled:cursor-not-allowed text-sm ${!account ? 'opacity-0' : ''}`}
+              disabled={isLoading || isPolling || !account}
+              rows={1}
+            />
+            {/* Si no hay cuenta, usamos el área como botón para conectar la wallet */}
+            {!account && (
+              <div
+                className="absolute inset-0 flex items-center gap-2 cursor-pointer z-10 px-5 bg-transparent"
+                onClick={connect}
+              >
+                <Lock className="w-4 h-4 text-accent-primary shrink-0 opacity-80" />
+                <span className="text-sm font-medium text-white/90 truncate pr-4 opacity-80">Connect wallet to type...</span>
               </div>
+            )}
+          </div>
+          <Button
+            type={!account ? "button" : "submit"}
+            onClick={!account ? connect : undefined}
+            className={`h-[56px] w-[56px] shrink-0 rounded-2xl shadow-xl flex items-center justify-center p-0 transition-all pointer-events-auto ${!account || (!question.trim() && !isLoading && !isPolling)
+              ? 'bg-surface-elevated/40 text-white/30 border border-white/5 cursor-not-allowed backdrop-blur-md'
+              : isLoading || isPolling ? 'bg-accent-primary/50 text-black' : 'bg-accent-primary hover:bg-accent-secondary text-black'
+              }`}
+            disabled={isLoading || isPolling || (!!account && !question.trim())}
+          >
+            {isLoading || isPolling ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Send className="w-5 h-5 ml-0.5" />
+            )}
+          </Button>
+        </form>
+      </div>
 
-              <AnimatePresence>
-                {result.steps.map((step, idx) => {
-                  const isFinal = step.label === "FINAL";
-
-                  // If status is CONFIRMED, the seqNum is available if backend passed it,
-                  // but we can just show "Verified" status for visual impact.
-                  const seqNum = (result as StoredProof).hcsSequenceNumbers?.[idx];
-
-                  return (
-                    <motion.div
-                      key={idx}
-                      initial={{ opacity: 0, x: -10, y: 10 }}
-                      animate={{ opacity: 1, x: 0, y: 0 }}
-                      transition={{ delay: idx * 0.4 }}
-                      className="relative mb-6 last:mb-0"
-                    >
-                      <div className={`p-4 border-l-2 ${isFinal ? 'border-amber-400 bg-amber-400/5' : 'border-emerald-500 bg-emerald-500/5'}`}>
-                        <div className="flex justify-between items-start mb-2">
-                          <span className={`text-[11px] font-bold ${isFinal ? 'text-amber-400' : 'text-emerald-400'}`}>
-                            {isFinal ? '> EXECUTION_FINAL' : `> ${step.label}_INFERENCE`}
-                          </span>
-                          {result.status === "CONFIRMED" || result.status === "VERIFIED" ? (
-                            <a
-                              href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}?sequenceNumber=${seqNum}`}
-                              target="_blank" rel="noopener noreferrer"
-                              className="text-[10px] text-emerald-400 flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 transition-colors group cursor-pointer"
-                              title="Verify on HashScan"
-                            >
-                              ✓ SEQ: {seqNum || 'SYNCED'} <ExternalLink className="w-2.5 h-2.5 opacity-70 group-hover:opacity-100" />
-                            </a>
-                          ) : (
-                            <span className="text-[10px] text-amber-500 flex items-center gap-1 animate-pulse">
-                              <Loader2 className="w-3 h-3 animate-spin text-amber-500" />
-                              {t('dash_publishing')}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="text-sm my-2 space-y-3">
-                          {step.content.split(/\n{2,}/).map((block, bIdx) => {
-                            const trimmed = block.trim();
-                            if (!trimmed) return null;
-                            // Bullet list block
-                            if (trimmed.split('\n').some(l => l.trim().match(/^[\*\-]\s/))) {
-                              return (
-                                <ul key={bIdx} className="list-disc list-outside pl-5 space-y-1.5">
-                                  {trimmed.split('\n').filter(l => l.trim()).map((line, lIdx) => (
-                                    <li key={lIdx} className="text-white/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: line.replace(/^[\*\-]\s+/, '').replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
-                                  ))}
-                                </ul>
-                              );
-                            }
-                            // Normal paragraph
-                            return (
-                              <p key={bIdx} className="text-white/80 leading-relaxed" dangerouslySetInnerHTML={{ __html: trimmed.replace(/\*\*(.+?)\*\*/g, '<strong class="text-white">$1</strong>').replace(/\n/g, ' ') }} />
-                            );
-                          })}
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/5 text-[10px] text-text-muted/70">
-                          <span className="text-emerald-500">SHA256:</span>
-                          <span className="truncate max-w-[200px]" title={step.hash}>{step.hash}</span>
-                        </div>
-                      </div>
-
-                      {/* Show the Passport exactly after Final step IF confirmed */}
-                      {isFinal && (result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.8 }}
-                          className="space-y-4"
-                        >
-                          <AuditPassport
-                            tokenTxId={(result as StoredProof).tokenTxId!}
-                            proofId={result.proofId}
-                          />
-
-                          {/* 5th Pillar: Autonomous Agent EVM Settlement */}
-                          <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div>
-                              <h4 className="text-white text-sm font-semibold flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
-                              </h4>
-                              <p className="text-xs text-text-muted mt-1 max-w-sm">
-                                {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
-                              </p>
-                            </div>
-
-                            {result.status === 'VERIFIED' || (result as any).evmSettled ? (
-                              <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
-                                <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
-                              </Badge>
-                            ) : (
-                              <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 whitespace-nowrap animate-pulse">
-                                <Loader2 className="w-3 h-3 mr-1 animate-spin" /> {language === 'es' ? 'Agente procesando...' : 'Agent processing...'}
-                              </Badge>
-                            )}
-                          </div>
-
-                          {(result as any).evmTxHash && (
-                            <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
-                              EVM Tx: <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(result as any).evmTxHash}</a>
-                            </div>
-                          )}
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-            </div>
-          ) : null}
-        </div>
-      </motion.div>
-    </div>
+    </div >
   );
 }

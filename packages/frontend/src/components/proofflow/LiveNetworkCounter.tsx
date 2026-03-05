@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, Users, Database } from 'lucide-react';
+import { Activity, Users, Database, Loader2 } from 'lucide-react';
 import { getNetworkStats, NetworkStats } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -10,6 +10,14 @@ export default function LiveNetworkCounter() {
     const [stats, setStats] = useState<NetworkStats | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const { t } = useLanguage();
+
+    useEffect(() => {
+        console.log("LIVE_NETWORK_COUNTER_MOUNTED");
+    }, []);
+
+    useEffect(() => {
+        if (stats) console.log("LIVE_NETWORK_COUNTER_STATS_RECEIVED:", stats);
+    }, [stats]);
 
     useEffect(() => {
         let isMounted = true;
@@ -38,45 +46,63 @@ export default function LiveNetworkCounter() {
         return () => clearInterval(cycleInterval);
     }, [stats]);
 
-    if (!stats) return <div className="h-10 w-[240px] shrink-0" />;
+    // Use fallback data if fetch fails or is loading
+    const displayStats: NetworkStats = stats || {
+        totalProofs: 0,
+        totalAgents: 0,
+        totalTokensMinted: 0,
+        lastActivity: null
+    };
 
     const items = [
         {
             id: 'hcs',
             icon: <Database className="w-3.5 h-3.5 text-purple-400 shrink-0" />,
             label: t('net_hcs_msgs'),
-            value: stats.totalProofs.toLocaleString()
+            value: displayStats.totalProofs.toLocaleString()
         },
         {
             id: 'wallets',
             icon: <Users className="w-3.5 h-3.5 text-accent-primary shrink-0" />,
             label: t('net_wallets_created'),
-            value: stats.totalAgents.toLocaleString()
+            value: displayStats.totalAgents.toLocaleString()
         },
         {
             id: 'pfr',
             icon: <Activity className="w-3.5 h-3.5 text-emerald-400 shrink-0" />,
             label: t('net_pfr_minted'),
-            value: stats.totalTokensMinted.toLocaleString()
+            value: displayStats.totalTokensMinted.toLocaleString()
         }
     ];
 
     return (
-        <div className="relative overflow-hidden h-10 w-[240px] flex items-center shrink-0">
-            <AnimatePresence>
+        <div className="h-10 w-full sm:w-[240px] flex items-center justify-center sm:justify-end shrink-0 relative px-2">
+            <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                     key={items[currentIndex].id}
-                    initial={{ y: 20, opacity: 0 }}
+                    initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -20, opacity: 0 }}
-                    transition={{ duration: 0.4 }}
-                    className="absolute inset-x-0 mx-auto flex items-center gap-1.5 bg-surface/80 px-3 py-1.5 rounded-lg border border-border/50 whitespace-nowrap w-fit max-w-full"
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 30,
+                        opacity: { duration: 0.2 }
+                    }}
+                    className="flex items-center justify-center gap-1.5 sm:gap-2 bg-surface-elevated/80 px-2.5 sm:px-3 py-1.5 rounded-lg border border-border shadow-lg cursor-default hover:border-accent-primary/50 transition-colors min-w-0 max-w-full"
                 >
                     {items[currentIndex].icon}
-                    <span className="text-text-muted text-[11px] font-mono shrink-0">{items[currentIndex].label}</span>
-                    <span className="text-white text-[11px] font-bold font-mono truncate">{items[currentIndex].value}</span>
+                    <span className="text-text-muted text-[9px] sm:text-[10px] font-mono font-medium truncate shrink">{items[currentIndex].label}</span>
+                    <span className="text-white text-[9px] sm:text-[10px] font-bold font-mono text-right shrink-0">{items[currentIndex].value}</span>
                 </motion.div>
             </AnimatePresence>
+
+            {!stats && (
+                <div className="absolute -bottom-2 right-2 flex items-center gap-1.5 px-1 bg-surface rounded text-[8px] font-bold text-accent-primary uppercase tracking-widest border border-accent-primary/20 z-10">
+                    <span className="w-1 h-1 bg-accent-primary rounded-full animate-ping" />
+                    SYNCING
+                </div>
+            )}
         </div>
     );
 }
