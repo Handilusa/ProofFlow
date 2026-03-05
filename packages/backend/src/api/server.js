@@ -40,7 +40,7 @@ const HEDERA_NETWORK = process.env.HEDERA_NETWORK || 'testnet';
 const MIRROR_NODE_URL = `https://${HEDERA_NETWORK}.mirrornode.hedera.com`;
 
 // Verify a payment transaction on Mirror Node
-async function verifyPayment(txHash, expectedPayerAddress) {
+async function verifyPayment(txHash, _expectedPayerAddress) {
     try {
         // Give mirror node time to index the transaction
         await new Promise(r => setTimeout(r, 3000));
