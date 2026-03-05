@@ -142,8 +142,8 @@ contract ProofValidator {
     /**
      * @notice The authorized Agent submits the result hash after completing
      *         the HCS reasoning chain. The escrowed HBAR is released to the Agent.
-     * @param requestId ID of the audit request.
-     * @param resultHash Keccak256 hash of the final AI reasoning output.
+     * @param reqId ID of the audit request.
+     * @param rootHash Keccak256 hash of the final AI reasoning output.
      */
     function submitResult(uint256 reqId, bytes32 rootHash) external onlyAgent {
         AuditRequest storage request = auditRequests[reqId];
