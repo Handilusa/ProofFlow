@@ -41,7 +41,7 @@ describe("ProofFlow API Integration Tests", () => {
             expect(response.body.errors.length).toBeGreaterThan(0);
         });
 
-        it("should return 201 with correctly processed reasoning submission", async () => {
+        it("should return 402 when payment is required but no paymentTxHash is provided", async () => {
             const payload = {
                 question: "What is the status of the network?",
                 requesterAddress: "0x1234567890123456789012345678901234567890"
@@ -51,14 +51,9 @@ describe("ProofFlow API Integration Tests", () => {
                 .post("/api/v1/reason")
                 .send(payload);
 
-            expect(response.status).toBe(201);
-            expect(response.body).toHaveProperty("proofId");
-            expect(response.body.proofId).toBeDefined();
-            expect(response.body).toHaveProperty("question", payload.question);
-            expect(response.body).toHaveProperty("status", "PUBLISHING_TO_HEDERA");
-
-            // Give async Hedera operations time to complete
-            await new Promise((resolve) => setTimeout(resolve, 5000));
+            // Backend enforces micropayment — no paymentTxHash means 402
+            expect(response.status).toBe(402);
+            expect(response.body).toHaveProperty("error");
         });
     });
 
