@@ -614,12 +614,12 @@ export default function DualPaneDashboard() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className={isLoading || result ? 'hidden md:block' : 'block'}
+          className="block"
         >
-          <Card className="flex flex-col p-5 sm:p-6 border-border/50 bg-surface/50 backdrop-blur-sm relative overflow-hidden shrink-0">
+          <Card className={`flex flex-col p-5 sm:p-6 border-border/50 bg-surface/50 backdrop-blur-sm relative overflow-hidden shrink-0 ${isLoading || result ? 'min-h-[60vh] md:min-h-0' : ''}`}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
 
-            <div className="mb-4 relative z-10">
+            <div className={`mb-4 relative z-10 ${isLoading || result ? 'hidden md:block' : 'block'}`}>
               {!account && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
@@ -713,7 +713,7 @@ export default function DualPaneDashboard() {
             </div>
 
             {/* VECTORS MUST BE OUTSIDE hidden md:block TO SHOW ON MOBILE, BUT INSIDE CARD */}
-            <div className="mt-4 relative z-10 w-full md:mt-6">
+            <div className={`mt-4 relative z-10 w-full md:mt-6 ${isLoading || result ? 'hidden md:block' : 'block'}`}>
               <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t('dash_vectors')}</p>
               <div className="flex flex-wrap gap-2">
                 {randomVectors.map((q, i) => (

@@ -235,19 +235,19 @@ export default function HistoryPage() {
                                     </h3>
 
                                     <div className="flex items-center justify-between gap-2 pt-4 border-t border-border/20">
-                                        <div className="flex items-center gap-1 min-w-0 mr-auto">
+                                        <div className="flex items-center gap-1 min-w-0 mr-1">
                                             <div className="flex items-center gap-0.5 text-[9px] font-mono text-text-muted shrink-0">
                                                 <Hash className="w-2.5 h-2.5 text-accent-primary/60" />
                                                 <CopyHash hash={proof.proofId} chars={3} className="bg-transparent border-none p-0 h-auto text-text-muted" />
                                             </div>
                                             <span className="text-[9px] text-border shrink-0 opacity-50 px-0.5">|</span>
                                             <div className="flex items-center gap-0.5 text-[9px] font-medium text-text-muted shrink-0">
-                                                <span className="text-[7px] font-bold uppercase tracking-widest opacity-40">HCS</span>
+                                                <span className="text-[7.5px] font-bold uppercase tracking-widest opacity-40">#HCS</span>
                                                 <span className="text-white/80">{proof.totalSteps}</span>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-1.5 shrink-0">
+                                        <div className="flex items-center gap-1.5 shrink-0 ml-auto pt-0.5">
                                             {proof.explorerUrl && (
                                                 <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
                                                     <Button variant="outline" size="icon" className="w-6 h-6 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">

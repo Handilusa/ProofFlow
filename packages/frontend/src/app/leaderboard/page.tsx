@@ -294,12 +294,15 @@ export default function LeaderboardPage() {
                                             {entry.username ? (
                                                 <div className="flex items-center justify-between">
                                                     <span className="font-bold text-white text-base">{entry.username}</span>
-                                                    {isMe && <CopyHash hash={entry.account} chars={6} className="bg-transparent border-transparent px-0 text-text-muted scale-90" />}
+                                                    {isMe && <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 text-text-muted scale-90 origin-right" />}
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-white font-mono text-sm">{entry.account.slice(0, 8)}...{entry.account.slice(-6)}</span>
-                                                    <CopyHash hash={entry.account} chars={6} className="bg-transparent border-transparent px-0 text-text-muted scale-90" />
+                                                    {isMe ? (
+                                                        <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 text-white font-mono text-sm" />
+                                                    ) : (
+                                                        <span className="text-white font-mono text-sm">{entry.account.length > 15 ? `${entry.account.slice(0, 8)}...${entry.account.slice(-6)}` : `${entry.account.slice(0, 5)}***${entry.account.slice(-2)}`}</span>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
