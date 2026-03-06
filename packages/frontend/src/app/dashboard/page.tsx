@@ -328,7 +328,10 @@ export default function DualPaneDashboard() {
     } catch (err: any) {
       console.error(err);
       if (err.message?.includes('429')) {
-        alert("The AI is rate-limited. Please wait about 30 seconds and try again.");
+        const detail = err.message.replace('API Error: ', '');
+        alert(language === 'es'
+          ? `Límite de capacidad IA: ${detail}. Por favor, espera unos segundos.`
+          : `AI Capacity Limit: ${detail}. Please wait a few seconds.`);
       } else if (err.message?.includes('503') || err.message?.includes('500')) {
         alert(language === 'es'
           ? 'El Agente IA no pudo completar el razonamiento. Por favor, intenta de nuevo.'

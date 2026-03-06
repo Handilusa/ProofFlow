@@ -3024,5 +3024,64 @@
       "evmTxHash": "0x49254f44ee96eb5f6fc1df282c06744f7831072f905ffe46676c7c9b9a83ce62",
       "evmSettled": true
     }
+  ],
+  [
+    "ee8e91d0-6b93-46b5-a94c-82688a4e9e65",
+    {
+      "proofId": "ee8e91d0-6b93-46b5-a94c-82688a4e9e65",
+      "question": "¿Qué impacto tienen las últimas incorporaciones al Governing Council de Hedera en la confianza institucional vs. métricas retail?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identificación de las últimas incorporaciones al Consejo de Gobierno de Hedera y su relevancia institucional.\nLa incorporación más destacada al Consejo de Gobierno de Hedera es FedEx Corp., que se unió el 13 de febrero de 2026. Esta adición es significativa porque FedEx es una empresa Fortune 500 y un líder global en logística, lo que aporta una credibilidad empresarial considerable a la red Hedera. Como miembro del Consejo, FedEx ahora opera un nodo de Hedera y tiene los mismos derechos de voto que otros miembros como Google, IBM, Dell y Deutsche Telekom, participando directamente en la gobernanza de la red. Además de FedEx, otras cuatro organizaciones se unieron a través de programas de Socios Estratégicos y Comunitarios en febrero de 2026, lo que expande aún más la huella empresarial y la gobernanza diversificada de Hedera.",
+          "hash": "c84a39211943798a8cca3336f6393144253c02ac8f1971489d6028c12b0bc470",
+          "timestamp": 1772840078373
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Análisis de las métricas minoristas y el sentimiento del mercado en relación con los desarrollos del Consejo.\nLas métricas minoristas actuales, a pesar de la noticia de FedEx, muestran un panorama mixto y predominantemente cauteloso. El precio de HBAR es de $0.097564, con un cambio negativo del -2.40% en las últimas 24 horas y -2.34% en 7 días (CoinGecko Market Data). Esto indica una tendencia a la baja a corto plazo en el mercado spot. El índice Crypto Fear & Greed ha mostrado un \"Miedo Extremo\" constante durante la última semana, con valores entre 10/100 y 22/100, lo que refleja un sentimiento minorista generalizado de aversión al riesgo y falta de confianza. Los datos de DexScreener refuerzan esta tendencia, con los principales pares de HBAR/USDC, HBAR/WBNB y HBAR/WCRO registrando cambios negativos en las últimas 24 horas (-0.65%, -2.23% y -3.2% respectivamente). La cotización actual de HBAR está un -82.9% por debajo de su máximo histórico (ATH) de $0.569229, lo que también puede contribuir a la cautela de los inversores minoristas.",
+          "hash": "8aa45b437b96fb6b652e2fbc33ff6a0d8e1a360d550a7c6ded556bc5664625df",
+          "timestamp": 1772840078373
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Síntesis del impacto en la confianza institucional frente a las métricas minoristas.\nLa incorporación de FedEx a Hedera el 13 de febrero de 2026 generó un aumento inicial del 7.3% en el precio de HBAR, alcanzando los $0.097, y un incremento del 7.4% en la capitalización de mercado a $4.19 mil millones, lo que demuestra un impacto positivo inmediato en la confianza institucional. Esta confianza se ve reforzada por las entradas constantes en los ETF de HBAR, con Canary's spot HBAR ETF registrando entradas netas diarias consistentes y acumulando $93.21 millones desde octubre de 2025, lo que sugiere una demanda institucional persistente y un compromiso inquebrantable a largo plazo, a pesar de las correcciones de precios a principios de 2026. Sin embargo, la confianza institucional a largo plazo, evidenciada por la gobernanza de grandes empresas y las entradas en ETF, contrasta con el sentimiento minorista actual. Las métricas minoristas, incluyendo la volatilidad de precios a corto plazo, el \"Miedo Extremo\" en el índice Fear & Greed y los rendimientos negativos en los DEX, indican que el optimismo institucional aún no se ha traducido en un repunte sostenido o una mejora del sentimiento entre los inversores minoristas en el corto plazo. El precio está probando un soporte crítico de $0.09, lo que sugiere un período de \"consolidación técnica tensa\".",
+          "hash": "48ab993e0d8aebdfe3abf8e73e79fc18785515479c291e1dce66dfe1acbcc56f",
+          "timestamp": 1772840078373
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Conclusión y recomendación.\nLas últimas incorporaciones al Consejo de Gobierno de Hedera, especialmente la de FedEx, han tenido un impacto significativamente positivo y sostenido en la confianza institucional, validando la utilidad empresarial y la credibilidad de la red. Las entradas consistentes en los ETF de HBAR demuestran un compromiso institucional a largo plazo que trasciende la volatilidad del mercado. Por otro lado, el impacto en las métricas minoristas es actualmente más limitado y negativo, con el precio de HBAR mostrando una ligera tendencia a la baja en el corto plazo y el índice Fear & Greed indicando un \"Miedo Extremo\" generalizado. A pesar de la fuerte señal institucional, el mercado minorista parece estar influenciado por factores macroeconómicos más amplios y la consolidación técnica actual, lo que lleva a una desconexión entre la creciente adopción institucional y el sentimiento de los inversores minoristas.",
+          "hash": "2c02956f78980d6a6bd74d6eed298096ab4ad0ed3520f6cdca819a6ba57aa59c",
+          "timestamp": 1772840078373
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772840078373,
+      "dataSources": [
+        "Hedera Mirror Node",
+        "CoinGecko API",
+        "DexScreener API",
+        "Fear & Greed Index"
+      ],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "40bba1bcbe75d5b911dce10b6796b442ff22e85dd8809af798f49a9830997b82",
+      "hcsSequenceNumbers": [
+        647,
+        648,
+        649,
+        650
+      ],
+      "tokenTxId": "0.0.7986674@1772840083.982207946",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772840083.982207946",
+      "evmTxHash": "0x63f87566b83e139fb2b89c6c630332fe40f380c12e2b338feaf045667bc7d26d",
+      "evmSettled": true
+    }
   ]
 ]

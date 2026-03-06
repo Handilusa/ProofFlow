@@ -70,17 +70,9 @@ CRITICAL RULES:
         return this.models[this.currentKeyIndex];
     }
 
-    private rotateKey(): boolean {
-        const nextIndex = (this.currentKeyIndex + 1) % this.models.length;
-        if (nextIndex === this.currentKeyIndex && this.models.length === 1) return false;
-        // Don't rotate back to the starting key
-        if (nextIndex === 0 && this.currentKeyIndex !== 0) {
-            console.warn(`[Gemini] All ${this.models.length} API keys exhausted.`);
-            return false;
-        }
-        this.currentKeyIndex = nextIndex;
-        console.log(`[Gemini] 🔄 Rotated to API key #${nextIndex + 1}`);
-        return true;
+    private rotateKey(): void {
+        this.currentKeyIndex = (this.currentKeyIndex + 1) % this.models.length;
+        console.log(`[Gemini] 🔄 Rotated to API key #${this.currentKeyIndex + 1}`);
     }
 
     private parseSteps(text: string): ReasoningStep[] {
