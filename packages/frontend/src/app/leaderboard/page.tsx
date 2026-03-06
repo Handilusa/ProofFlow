@@ -22,7 +22,6 @@ export default function LeaderboardPage() {
     const { account } = useWallet();
     const { t } = useLanguage();
     const [data, setData] = useState<LeaderboardEntry[]>([]);
-    const [agents, setAgents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [showPersonalOnly, setShowPersonalOnly] = useState(false);
@@ -36,13 +35,6 @@ export default function LeaderboardPage() {
             const res = await fetch(`${API_URL}/leaderboard`);
             if (!res.ok) throw new Error('Failed to fetch leaderboard');
             const result = await res.json();
-
-            const agentRes = await fetch(`${API_URL}/agents`);
-            if (agentRes.ok) {
-                const agentData = await agentRes.json();
-                setAgents(agentData);
-            }
-
             setData(result);
             setLastUpdated(Date.now());
             setNow(Date.now());
@@ -248,6 +240,94 @@ export default function LeaderboardPage() {
                             </div>
                         )}
                     </Card>
+                </div>
+
+                {/* Card Layout — Mobile only */}
+                <div className="lg:hidden space-y-4">
+                    {loading ? (
+                        Array.from({ length: 5 }).map((_, i) => (
+                            <Card key={i} className="p-5 border-border/50 space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <Skeleton className="h-5 w-8 rounded-md" />
+                                    <Skeleton className="h-4 w-24 rounded-full" />
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <Skeleton className="h-8 w-32" />
+                                    <Skeleton className="h-6 w-16" />
+                                </div>
+                                <Skeleton className="h-2 w-full rounded-full" />
+                            </Card>
+                        ))
+                    ) : filtered.length === 0 ? (
+                        <div className="p-10 text-center text-text-muted bg-surface/30 rounded-2xl border border-dashed border-border/50 font-mono text-xs uppercase tracking-widest">
+                            <span className="cursor-blink" /> 0x_NULL_INDEX
+                        </div>
+                    ) : (
+                        filtered.map((entry, i) => {
+                            const rank = data.indexOf(entry) + 1;
+                            const progress = (entry.balance / totalNetworkTokens) * 100;
+                            const isMe = targetAccountId && entry.account.toLowerCase() === targetAccountId;
+
+                            return (
+                                <motion.div
+                                    key={entry.account}
+                                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
+                                >
+                                    <Card className={`p-4 border transition-all relative overflow-hidden group ${isMe ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-surface/40 hover:bg-surface-elevated/30 border-border/40 hover:border-accent-primary/30 backdrop-blur-sm'}`}>
+                                        <div className="flex justify-between items-start gap-3 mb-3">
+                                            <div className="flex items-center gap-2">
+                                                <span className={`text-xs ${rank <= 3 ? 'text-success font-bold' : isMe ? 'text-indigo-400 font-bold' : 'text-text-muted'}`}>
+                                                    #{rank.toString().padStart(2, '0')}
+                                                </span>
+                                                {isMe && (
+                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest">
+                                                        YOU
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] font-mono text-text-muted bg-background/50 px-2 py-0.5 rounded border border-border/30">
+                                                {progress.toFixed(1)}% DOMINANCE
+                                            </span>
+                                        </div>
+
+                                        <div className="flex flex-col gap-1 mb-4">
+                                            {entry.username ? (
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-bold text-white text-base">{entry.username}</span>
+                                                    {isMe && <CopyHash hash={entry.account} chars={6} className="bg-transparent border-transparent px-0 text-text-muted scale-90" />}
+                                                </div>
+                                            ) : (
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-white font-mono text-sm">{entry.account.slice(0, 8)}...{entry.account.slice(-6)}</span>
+                                                    <CopyHash hash={entry.account} chars={6} className="bg-transparent border-transparent px-0 text-text-muted scale-90" />
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/20">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">{t('lb_col_tokens')}</span>
+                                            </div>
+                                            <div className={`text-lg font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
+                                                {entry.balance.toLocaleString()}
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-4 flex items-center gap-3">
+                                            <div className="w-full bg-background border border-border/50 rounded-full h-1.5 overflow-hidden">
+                                                <motion.div
+                                                    className={`${isMe ? 'bg-indigo-500' : 'bg-success'} h-full`}
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${progress}%` }}
+                                                    transition={{ duration: 1, delay: 0.2 + (i * 0.05) }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </Card>
+                                </motion.div>
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </Tooltip.Provider>

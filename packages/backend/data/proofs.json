@@ -2970,5 +2970,59 @@
       "evmTxHash": "0x558b540eb8fdde0a63350c51065665c4f6cf3edef3a59af343bf923825790fae",
       "evmSettled": true
     }
+  ],
+  [
+    "cfe536da-dd6e-4b58-9c1f-ef6f406471b8",
+    {
+      "proofId": "cfe536da-dd6e-4b58-9c1f-ef6f406471b8",
+      "question": "Como estas",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "The user's query is \"Como estas,\" which translates to \"How are you?\" in Spanish. This is a direct social greeting and does not require external data fetching or complex reasoning.",
+          "hash": "af65d9adba9e0b54e3dc4a9014f4957b5e6c278ddbbe4076c25419e95ed874f2",
+          "timestamp": 1772838301714
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "As an AI, I do not have feelings or a physical state, so I cannot be \"well\" or \"unwell\" in the human sense. My operational status is generally constant unless there are system-wide issues.",
+          "hash": "f14141ebe2bd71843257f78ea9e0f1d8b7d70608810ee50ee17e549ae0322ec7",
+          "timestamp": 1772838301714
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "My response should be polite, informative about my nature as an AI, and acknowledge the user's greeting. It's important to clarify that I don't experience emotions.",
+          "hash": "34fa9835c8b7736020681068db0d7900ca4625ab0daaa04134cdab0e7af865f9",
+          "timestamp": 1772838301714
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Estoy bien, gracias por preguntar. Como un modelo de lenguaje, no tengo sentimientos ni un estado físico, pero estoy listo para ayudarte.",
+          "hash": "8328da6d72f8e199258d0bae378a737fd23288933a602723995d5e731398165b",
+          "timestamp": 1772838301714
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772838301714,
+      "dataSources": [],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "1e0162f36e4f3d1852eab561dd7437525e76bfb277022fb818749ae5117895a9",
+      "hcsSequenceNumbers": [
+        632,
+        633,
+        634,
+        635
+      ],
+      "tokenTxId": "0.0.7986674@1772838305.170113422",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772838305.170113422",
+      "evmTxHash": "0x49254f44ee96eb5f6fc1df282c06744f7831072f905ffe46676c7c9b9a83ce62",
+      "evmSettled": true
+    }
   ]
 ]

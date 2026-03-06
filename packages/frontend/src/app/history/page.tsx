@@ -234,32 +234,31 @@ export default function HistoryPage() {
                                         {proof.question}
                                     </h3>
 
-                                    <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/20">
-                                        <div className="flex items-center gap-1.5 min-w-0 mr-auto">
-                                            <div className="flex items-center gap-1 text-[10px] font-mono text-text-muted shrink-0">
-                                                <Hash className="w-3 h-3 text-accent-primary/60" />
-                                                <CopyHash hash={proof.proofId} chars={4} className="bg-transparent border-none p-0 h-auto text-text-muted" />
+                                    <div className="flex items-center justify-between gap-2 pt-4 border-t border-border/20">
+                                        <div className="flex items-center gap-1 min-w-0 mr-auto">
+                                            <div className="flex items-center gap-0.5 text-[9px] font-mono text-text-muted shrink-0">
+                                                <Hash className="w-2.5 h-2.5 text-accent-primary/60" />
+                                                <CopyHash hash={proof.proofId} chars={3} className="bg-transparent border-none p-0 h-auto text-text-muted" />
                                             </div>
-                                            <span className="text-[10px] text-border shrink-0 opacity-50">|</span>
-                                            <div className="flex items-center gap-1 text-[10px] font-medium text-text-muted shrink-0">
-                                                <Hash className="w-3 h-3 text-accent-primary/60" />
-                                                <span className="text-[7.5px] font-bold uppercase tracking-widest opacity-40 mr-1">HCS</span>
+                                            <span className="text-[9px] text-border shrink-0 opacity-50 px-0.5">|</span>
+                                            <div className="flex items-center gap-0.5 text-[9px] font-medium text-text-muted shrink-0">
+                                                <span className="text-[7px] font-bold uppercase tracking-widest opacity-40">HCS</span>
                                                 <span className="text-white/80">{proof.totalSteps}</span>
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2 shrink-0">
+                                        <div className="flex items-center gap-1.5 shrink-0">
                                             {proof.explorerUrl && (
                                                 <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                                                    <Button variant="outline" size="icon" className="w-7 h-7 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
-                                                        <ExternalLink className="w-3 h-3" />
+                                                    <Button variant="outline" size="icon" className="w-6 h-6 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+                                                        <ExternalLink className="w-2.5 h-2.5" />
                                                     </Button>
                                                 </a>
                                             )}
                                             <Link href={`/verify?id=${proof.proofId}`} className="shrink-0">
-                                                <Button size="sm" className="h-7 text-[10px] px-2.5 bg-accent-primary text-black font-bold hover:bg-white transition-all whitespace-nowrap shadow-glow-sm">
+                                                <Button size="sm" className="h-6 text-[9px] px-2 bg-accent-primary text-black font-bold hover:bg-white transition-all whitespace-nowrap shadow-glow-sm">
                                                     {t('nav_verify')}
-                                                    <ArrowRight className="w-2.5 h-2.5 ml-1" />
+                                                    <ArrowRight className="w-2 h-2 ml-0.5" />
                                                 </Button>
                                             </Link>
                                         </div>

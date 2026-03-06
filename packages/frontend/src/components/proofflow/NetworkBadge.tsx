@@ -7,7 +7,7 @@ export default function NetworkBadge() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
             </span>
-            <span className="text-xs font-medium text-success">Hedera Testnet</span>
+            <span className="text-[10px] font-bold tracking-widest text-success uppercase">ONLINE</span>
         </div>
     );
 }

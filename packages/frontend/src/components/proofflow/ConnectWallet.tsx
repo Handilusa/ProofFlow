@@ -53,11 +53,6 @@ export function ConnectWallet() {
                         {t('wallet_copied')}
                     </div>
                 )}
-                {!copied && (
-                    <div className="text-[10px] font-medium text-text-muted uppercase tracking-wider px-1">
-                        {t('wallet_testnet')}
-                    </div>
-                )}
             </div>
         );
     }
