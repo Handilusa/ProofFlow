@@ -249,12 +249,6 @@ export default function DualPaneDashboard() {
             // Wait for mirror node indexing before submitting to backend
             await new Promise(r => setTimeout(r, 3000));
             setPaymentStatus('done');
-
-            // Submit question to backend with payment proof — backend verifies & runs AI pipeline
-            const res = await submitQuestion(question, account, paymentTxHash);
-            setResult(res);
-            setIsLoading(false);
-            return;
           } else {
             // Hashpack / Native Hedera via WalletConnect
             // Hashpack WC bridge currently drops `payableAmount` on ContractExecutions.
