@@ -120,34 +120,51 @@ CRITICAL RULES:
         let lastRawText = "";
 
         for (let attempt = 1; attempt <= GeminiService.MAX_RETRIES; attempt++) {
-            try {
-                const prompt = attempt === 1
-                    ? question
-                    : `${question}\n\n[SYSTEM REMINDER: You MUST complete ALL reasoning steps and end with a [FINAL] block. This is attempt ${attempt}. Do NOT stop mid-reasoning.]`;
+            let keysTriedThisAttempt = 0;
 
-                console.log(`[Gemini] Attempt ${attempt}/${GeminiService.MAX_RETRIES} (key #${this.currentKeyIndex + 1})...`);
+            while (keysTriedThisAttempt < this.models.length) {
+                try {
+                    const prompt = attempt === 1
+                        ? question
+                        : `${question}\n\n[SYSTEM REMINDER: You MUST complete ALL reasoning steps and end with a [FINAL] block. This is attempt ${attempt}. Do NOT stop mid-reasoning.]`;
 
-                const result = await this.getModel().generateContent(prompt);
-                lastRawText = result.response.text();
-                steps = this.parseSteps(lastRawText);
+                    console.log(`[Gemini] Attempt ${attempt}/${GeminiService.MAX_RETRIES} (key #${this.currentKeyIndex + 1})...`);
 
-                if (this.hasFinalStep(steps) && steps.length >= 2) {
-                    console.log(`[Gemini] ✅ Success on attempt ${attempt}. ${steps.length} steps parsed (including FINAL).`);
-                    break;
-                }
+                    const result = await this.getModel().generateContent(prompt);
+                    lastRawText = result.response.text();
+                    steps = this.parseSteps(lastRawText);
 
-                console.warn(`[Gemini] ⚠️ Attempt ${attempt} incomplete: ${steps.length} steps, hasFinal=${this.hasFinalStep(steps)}. Retrying...`);
-            } catch (err: any) {
-                // On rate limit (429) or overload (503), rotate to next API key and retry without burning an attempt
-                if (err.message?.includes('429') || err.message?.includes('RESOURCE_EXHAUSTED') || err.message?.includes('503') || err.message?.includes('Service Unavailable')) {
-                    console.warn(`[Gemini] ⚠️ Key #${this.currentKeyIndex + 1} overloaded/rate-limited. Rotating...`);
-                    if (this.rotateKey()) {
-                        attempt--; // Don't count this as a failed attempt
-                        continue;
+                    if (this.hasFinalStep(steps) && steps.length >= 2) {
+                        console.log(`[Gemini] ✅ Success on attempt ${attempt}. ${steps.length} steps parsed (including FINAL).`);
+                        break;
                     }
+
+                    console.warn(`[Gemini] ⚠️ Attempt ${attempt} incomplete: ${steps.length} steps, hasFinal=${this.hasFinalStep(steps)}. Retrying...`);
+                    break; // Break the while loop to move to the next 'attempt' explicitly
+                } catch (err: any) {
+                    // On rate limit (429) or overload (503), rotate to next API key and retry
+                    if (err.message?.includes('429') || err.message?.includes('RESOURCE_EXHAUSTED') || err.message?.includes('503') || err.message?.includes('Service Unavailable') || err.message?.includes('500') || err.message?.includes('Internal Server Error')) {
+                        console.warn(`[Gemini] ⚠️ Key #${this.currentKeyIndex + 1} overloaded/rate-limited/failed. Error: ${err.message}`);
+                        keysTriedThisAttempt++;
+
+                        // Only rotate and continue the while loop if we haven't exhausted all keys this attempt
+                        if (keysTriedThisAttempt < this.models.length) {
+                            this.rotateKey();
+                            console.log(`[Gemini] Trying fallback key #${this.currentKeyIndex + 1}...`);
+                            continue;
+                        } else {
+                            console.error(`[Gemini] ❌ All ${this.models.length} API keys exhausted for attempt ${attempt}.`);
+                        }
+                    }
+
+                    console.error(`[Gemini] ❌ Attempt ${attempt} error: ${err.message}`);
+                    if (attempt === GeminiService.MAX_RETRIES) throw err;
+                    break; // Break the while loop for non-429/503 errors to burn an attempt
                 }
-                console.error(`[Gemini] ❌ Attempt ${attempt} error: ${err.message}`);
-                if (attempt === GeminiService.MAX_RETRIES) throw err;
+            }
+
+            if (this.hasFinalStep(steps) && steps.length >= 2) {
+                break; // Break outer loop if success
             }
         }
 

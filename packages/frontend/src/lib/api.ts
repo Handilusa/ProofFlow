@@ -63,7 +63,12 @@ export async function submitQuestion(question: string, address?: string, payment
     });
 
     if (!response.ok) {
-        throw new Error(`API Error: ${response.statusText}`);
+        let serverMsg = response.statusText;
+        try {
+            const errorData = await response.json();
+            if (errorData.error) serverMsg = errorData.error;
+        } catch (_) { /* ignore parse error */ }
+        throw new Error(`API Error: ${serverMsg}`);
     }
 
     return response.json();
