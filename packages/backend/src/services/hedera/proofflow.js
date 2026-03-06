@@ -56,27 +56,38 @@ export function getContractAddress() {
 }
 
 export async function recordAuditInEVM(prompt, rootHash, requesterAddress) {
-    if (!contract) return null;
+    if (!contract) {
+        console.warn("[EVM] Contract not initialized — skipping EVM recording.");
+        return null;
+    }
     try {
-        console.log(`[EVM] Recording audit on Smart Contract implicitly for Hackathon...`);
-        // Ensure standard address format for EVM
-        let formattedAddress = requesterAddress;
-        if (!requesterAddress || !requesterAddress.startsWith('0x')) {
-            // Hashpack accounts (0.0.x) can't natively map to EVM addresses strictly here without alias lookup
-            formattedAddress = ethers.ZeroAddress;
+        console.log(`[EVM] Recording audit on Smart Contract via registerProof()...`);
+
+        // Guard against undefined/null rootHash
+        if (!rootHash) {
+            console.warn("[EVM] rootHash is empty — using keccak256 fallback");
+            rootHash = ethers.id(prompt || "fallback");
         }
 
-        // rootHash is a hex string, ensure it has 0x prefix
+        // rootHash is a hex string, ensure it has 0x prefix and is bytes32
         const formattedHash = rootHash.startsWith('0x') ? rootHash : '0x' + rootHash;
+        // Pad to bytes32 if needed (SHA256 hashes are 64 hex chars = 32 bytes)
+        const bytes32Hash = formattedHash.length === 66 ? formattedHash : ethers.zeroPadValue(formattedHash, 32);
 
-        const tx = await contract.recordAudit(prompt, formattedHash, formattedAddress, {
-            gasLimit: 600000
+        // Use a short, clean ASCII taskId — avoid special chars that may cause EVM issues
+        const taskId = `pf-${Date.now()}`;
+
+        console.log(`[EVM]   taskId: "${taskId}", hash: ${bytes32Hash.substring(0, 16)}...`);
+
+        const tx = await contract.registerProof(taskId, bytes32Hash, {
+            gasLimit: 800000
         });
+        console.log(`[EVM]   Tx sent: ${tx.hash}, waiting for confirmation...`);
         const receipt = await tx.wait();
-        console.log(`[EVM] Audit recorded! Tx: ${receipt.hash}`);
+        console.log(`[EVM] ✅ Audit registered! Tx: ${receipt.hash}`);
         return receipt.hash;
     } catch (err) {
-        console.error("[EVM] Failed to record audit:", err.message);
+        console.error("[EVM] ❌ Failed to record audit:", err.message);
         return null;
     }
 }

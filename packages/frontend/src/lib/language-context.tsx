@@ -62,6 +62,7 @@ const translations = {
         verify_loading_ui: 'Loading Validator...',
         verify_hcs_pending: 'HCS SYNC PENDING',
         verify_hcs_confirmed: 'CONFIRMED ON HEDERA',
+        verify_hcs_evm_confirmed: 'HCS & EVM VERIFIED',
 
         // History Page
         history_title_personal: 'My Audit History',
@@ -193,6 +194,7 @@ const translations = {
         verify_loading_ui: 'Cargando validador...',
         verify_hcs_pending: 'SINCRONIZANDO HCS',
         verify_hcs_confirmed: 'CONFIRMADO EN HEDERA',
+        verify_hcs_evm_confirmed: 'HCS & EVM VERIFICADOS',
 
         // History Page
         history_title_personal: 'Mi Historial',

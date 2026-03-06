@@ -168,13 +168,22 @@ app.post("/api/v1/reason",
             reasoningResult.question = question;
             reasoningResult.dataSources = sources;
 
-            // 3. Return result immediately to client
+            // 3. Ensure the model actually completed its reasoning
             const finalAnswerStep = reasoningResult.steps.find(s => s.label === "FINAL");
 
+            if (!finalAnswerStep) {
+                console.error("[API] AI generation stopped prematurely without a FINAL step.");
+                return res.status(503).json({
+                    success: false,
+                    error: "El Agente IA no pudo concluir el razonamiento complejo. Por favor, intenta de nuevo con un contexto más específico.",
+                });
+            }
+
+            // Return result immediately to client so UI unblocks
             const responseData = {
                 proofId: reasoningResult.proofId,
                 question: reasoningResult.question,
-                answer: finalAnswerStep ? finalAnswerStep.content : "Answer generation issue.",
+                answer: finalAnswerStep.content,
                 steps: reasoningResult.steps,
                 totalSteps: reasoningResult.totalSteps,
                 status: "PUBLISHING_TO_HEDERA",
@@ -211,7 +220,15 @@ app.post("/api/v1/reason",
                     try {
                         const stored = proofsStore.get(reasoningResult.proofId);
                         const finalRootHash = stored ? stored.rootHash : ethers.id("fallback-hash");
-                        await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress);
+                        const evmTxHash = await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress);
+                        if (evmTxHash && stored) {
+                            stored.evmTxHash = evmTxHash;
+                            stored.evmSettled = true;
+                            stored.status = "VERIFIED";
+                            proofsStore.set(reasoningResult.proofId, stored);
+                            saveProofsToDisk();
+                            console.log(`[EVM] ✅ Proof ${reasoningResult.proofId} marked as VERIFIED (tx: ${evmTxHash})`);
+                        }
                     } catch (e) {
                         console.error("[EVM] Async recording failed:", e);
                     }

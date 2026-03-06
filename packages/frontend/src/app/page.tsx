@@ -674,17 +674,21 @@ export default function LandingPage() {
               </a>
             </div>
 
-            {/* Powered by */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-text-muted">Powered by</span>
-              <svg width="64" height="16" viewBox="0 0 100 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12.42 23H6.7V13.84H-0.02V12.04H6.7V2.88H12.42V12.04H19.14V13.84H12.42V23ZM1.16 3.12H5.56V4.92H1.16V3.12ZM13.58 3.12H17.98V4.92H13.58V3.12ZM1.16 20.96H5.56V22.76H1.16V20.96ZM13.58 20.96H17.98V22.76H13.58V20.96Z" fill="#F8FAFC" />
-                <path d="M33.8 23H28.8L28.66 12.04H23.08L22.94 23H17.94L18.08 2.88H23.08L22.94 10.28H28.66L28.8 2.88H33.8V23Z" fill="#F8FAFC" />
-                <path d="M49 14.88H39.52V19.16H51.08V23H34V2.88H50.84V6.72H39.52V11H49V14.88Z" fill="#F8FAFC" />
-                <path d="M68.78 12.94C68.78 18.8 63.84 23.36 57.06 23.36H49.12V2.88H57.06C63.84 2.88 68.78 7.44 68.78 13.1V12.94ZM54.64 19.34H56.5C60.6 19.34 63.2 16.5 63.2 13.04C63.2 9.4 60.6 6.74 56.5 6.74H54.64V19.34Z" fill="#F8FAFC" />
-                <path d="M84.34 14.88H74.86V19.16H86.42V23H69.34V2.88H86.18V6.72H74.86V11H84.34V14.88Z" fill="#F8FAFC" />
-                <path d="M102.66 23H96.38L92.1 14.88H91.1L89.14 14.84V23H83.62V2.88H92.2C96.9 2.88 100.2 5.56 100.2 9.88C100.2 12.78 98.42 14.52 96.06 15.02L102.66 23ZM89.14 11.24L91.86 11.28C93.7 11.28 94.7 10.38 94.7 8.92C94.7 7.28 93.68 6.64 91.56 6.64H89.14V11.24Z" fill="#F8FAFC" />
-              </svg>
+            {/* Built on Hedera Badge */}
+            <div className="flex items-center gap-2.5 opacity-80 hover:opacity-100 transition-opacity">
+              <div className="w-[30px] h-[30px] rounded-full bg-white flex items-center justify-center shrink-0">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="2" width="3" height="20" />
+                  <rect x="17" y="2" width="3" height="20" />
+                  <rect x="7" y="8" width="10" height="2.5" />
+                  <rect x="7" y="13.5" width="10" height="2.5" />
+                </svg>
+              </div>
+              <div className="flex flex-col justify-center text-white">
+                <span className="text-[9px] font-bold tracking-widest leading-none mb-[2px]">BUILT ON</span>
+                <span className="text-[13px] font-black tracking-widest leading-none hidden sm:block">HEDERA</span>
+                <span className="text-[13px] font-black tracking-widest leading-none sm:hidden">HEDERA</span>
+              </div>
             </div>
           </div>
 

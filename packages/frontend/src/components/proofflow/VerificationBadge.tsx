@@ -3,6 +3,7 @@ import { useLanguage } from '@/lib/language-context';
 
 export default function VerificationBadge({ status }: { status: string }) {
     const isPending = status === "PUBLISHING_TO_HEDERA" || status === "PUBLISHING";
+    const isVerified = status === "VERIFIED";
     const { t } = useLanguage();
 
     return (
@@ -11,6 +12,11 @@ export default function VerificationBadge({ status }: { status: string }) {
                 <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     <span>{t('verify_hcs_pending')}</span>
+                </>
+            ) : isVerified ? (
+                <>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>{t('verify_hcs_evm_confirmed') || 'HCS & EVM VERIFIED'}</span>
                 </>
             ) : (
                 <>

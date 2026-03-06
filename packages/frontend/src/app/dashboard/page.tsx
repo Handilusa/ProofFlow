@@ -178,8 +178,10 @@ export default function DualPaneDashboard() {
   // Polling logic for active session
   useEffect(() => {
     let pollInterval: NodeJS.Timeout;
+    let pollTimeout: NodeJS.Timeout;
 
-    if (result && result.status !== "CONFIRMED" && result.status !== "VERIFIED") {
+    // Keep polling until status is VERIFIED (full pipeline: HCS + HTS + EVM)
+    if (result && result.status !== "VERIFIED") {
       const pollProof = async () => {
         try {
           const latestData = await fetch(`${API_URL}/proof/${result.proofId}`);
@@ -187,9 +189,10 @@ export default function DualPaneDashboard() {
             const updatedProof = await latestData.json();
             setResult(updatedProof);
 
-            // Stop polling if complete
-            if (updatedProof.status === "CONFIRMED" || updatedProof.status === "VERIFIED") {
+            // Stop polling only when fully verified (HCS + HTS + EVM all done)
+            if (updatedProof.status === "VERIFIED") {
               clearInterval(pollInterval);
+              clearTimeout(pollTimeout);
               setIsPolling(false);
             }
           }
@@ -200,10 +203,18 @@ export default function DualPaneDashboard() {
 
       setIsPolling(true);
       pollInterval = setInterval(pollProof, 2000);
+
+      // Safety timeout: stop polling after 120s to prevent infinite loops
+      pollTimeout = setTimeout(() => {
+        clearInterval(pollInterval);
+        setIsPolling(false);
+        console.log("[Polling] Timed out after 120s — stopping.");
+      }, 120000);
     }
 
     return () => {
       if (pollInterval) clearInterval(pollInterval);
+      if (pollTimeout) clearTimeout(pollTimeout);
     };
   }, [result?.proofId, result?.status]);
 
@@ -219,10 +230,9 @@ export default function DualPaneDashboard() {
       // NEW AUTONOMOUS FLOW: Call Smart Contract requestAudit() if available
       if (pfConfig?.contractReady && pfConfig?.contractAddress && account) {
         setPaymentStatus('pending');
+        let paymentTxHash: string | undefined;
         try {
           const feeInWei = parseEther(pfConfig.serviceFeeHbar);
-
-          let paymentTxHash: string | undefined;
 
           if (account?.startsWith('0x')) {
             // MetaMask / OKX / injected EVM: Send native HBAR transfer
@@ -293,12 +303,6 @@ export default function DualPaneDashboard() {
             // Brief wait for mirror node indexing
             await new Promise(r => setTimeout(r, 2000));
             setPaymentStatus('done');
-
-            // Submit question with payment proof. The backend API will pick this up,
-            // verify payment, and execute the Agent pipeline (equivalent to the UI polling flow).
-            const res = await submitQuestion(question, account, paymentTxHash);
-            setResult(res);
-            setIsLoading(false);
           }
         } catch (payErr: any) {
           console.error('[Autonomous] Contract or Transfer call failed:', payErr);
@@ -316,6 +320,11 @@ export default function DualPaneDashboard() {
           alert(language === 'es' ? `Error en micropago: ${errorMsg}` : `Payment failed: ${errorMsg}`);
           return;
         }
+
+        // Submit question AFTER payment succeeds — errors here go to the general catch
+        const res = await submitQuestion(question, account, paymentTxHash);
+        setResult(res);
+        setIsLoading(false);
       } else {
         // If the contract isn't ready or user isn't fully connected, just try the direct API fallback
         let paymentTxHash = undefined;
@@ -327,7 +336,9 @@ export default function DualPaneDashboard() {
       if (err.message?.includes('429')) {
         alert("The AI is rate-limited. Please wait about 30 seconds and try again.");
       } else if (err.message?.includes('503') || err.message?.includes('500')) {
-        alert("AI service temporarily unavailable. Please wait a moment and try again.");
+        alert(language === 'es'
+          ? 'El Agente IA no pudo completar el razonamiento. Por favor, intenta de nuevo.'
+          : 'The AI Agent could not complete its reasoning. Please try again.');
       } else if (err.message?.includes('402') || err.message?.includes('Payment Required')) {
         alert(language === 'es' ? 'Verificación de pago fallida o requerida. Por favor, conecta tu wallet e inténtalo de nuevo.' : 'Payment verification failed or required. Please connect your wallet and try again.');
       } else {
@@ -499,6 +510,35 @@ export default function DualPaneDashboard() {
                       </div>
                     </div>
 
+                    {/* Loading state: show until Audit Passport is ready to render */}
+                    {isFinal && !((result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId) && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="mt-6 border border-border/40 rounded-xl p-5 bg-surface/30 backdrop-blur"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-white font-mono">
+                              {language === 'es' ? 'Asegurando en cadena...' : 'Securing on-chain...'}
+                            </p>
+                            <p className="text-[11px] text-text-muted mt-0.5">
+                              {language === 'es' ? 'Publicando en HCS → Acuñando $PFR → Anclando en EVM' : 'Publishing to HCS → Minting $PFR → Anchoring to EVM'}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-4 grid grid-cols-3 gap-2">
+                          <div className="h-1 rounded-full bg-emerald-500/40 animate-pulse" />
+                          <div className="h-1 rounded-full bg-emerald-500/20 animate-pulse [animation-delay:0.3s]" />
+                          <div className="h-1 rounded-full bg-emerald-500/10 animate-pulse [animation-delay:0.6s]" />
+                        </div>
+                      </motion.div>
+                    )}
+
                     {/* Show the Passport exactly after Final step IF confirmed */}
                     {isFinal && (result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId && (
                       <motion.div
@@ -619,7 +659,7 @@ export default function DualPaneDashboard() {
                     }}
                     placeholder={t('dash_placeholder')}
                     className="w-full bg-background/30 p-5 min-h-[140px] text-white placeholder-text-muted/20 focus:outline-none focus:ring-1 focus:ring-accent-primary/30 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
-                    disabled={isLoading || isPolling || !account}
+                    disabled={isLoading || !account}
                   />
 
                   {/* Disconnected Overlay - Refined Aesthetics */}
@@ -649,9 +689,9 @@ export default function DualPaneDashboard() {
                     ? 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
                     : 'bg-accent-primary hover:bg-accent-secondary text-black shadow-accent-primary/20'
                     }`}
-                  disabled={isLoading || isPolling || (!!account && !question.trim())}
+                  disabled={isLoading || (!!account && !question.trim())}
                 >
-                  {isLoading || isPolling ? (
+                  {isLoading ? (
                     <span className="flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" /> {t('dash_loading')}
                     </span>
@@ -680,7 +720,7 @@ export default function DualPaneDashboard() {
                   <button
                     key={i}
                     onClick={() => setQuestion(q)}
-                    disabled={isLoading || isPolling || !account}
+                    disabled={isLoading || !account}
                     className="px-3 py-1.5 rounded-lg border border-border/50 bg-background/50 text-[11px] text-text-muted hover:text-white hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {q}
@@ -759,7 +799,7 @@ export default function DualPaneDashboard() {
               }}
               placeholder={account ? "Type your query here..." : ""}
               className={`w-full bg-transparent py-4 px-5 min-h-[56px] max-h-[120px] text-white placeholder-text-muted/40 focus:outline-none transition-all resize-none disabled:cursor-not-allowed text-sm ${!account ? 'opacity-0' : ''}`}
-              disabled={isLoading || isPolling || !account}
+              disabled={isLoading || !account}
               rows={1}
             />
             {/* Si no hay cuenta, usamos el área como botón para conectar la wallet */}
@@ -776,13 +816,13 @@ export default function DualPaneDashboard() {
           <Button
             type={!account ? "button" : "submit"}
             onClick={!account ? connect : undefined}
-            className={`h-[56px] w-[56px] shrink-0 rounded-2xl shadow-xl flex items-center justify-center p-0 transition-all pointer-events-auto ${!account || (!question.trim() && !isLoading && !isPolling)
+            className={`h-[56px] w-[56px] shrink-0 rounded-2xl shadow-xl flex items-center justify-center p-0 transition-all pointer-events-auto ${!account || (!question.trim() && !isLoading)
               ? 'bg-surface-elevated/40 text-white/30 border border-white/5 cursor-not-allowed backdrop-blur-md'
-              : isLoading || isPolling ? 'bg-accent-primary/50 text-black' : 'bg-accent-primary hover:bg-accent-secondary text-black'
+              : isLoading ? 'bg-accent-primary/50 text-black' : 'bg-accent-primary hover:bg-accent-secondary text-black'
               }`}
-            disabled={isLoading || isPolling || (!!account && !question.trim())}
+            disabled={isLoading || (!!account && !question.trim())}
           >
-            {isLoading || isPolling ? (
+            {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
               <Send className="w-5 h-5 ml-0.5" />

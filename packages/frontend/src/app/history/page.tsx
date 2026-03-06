@@ -62,10 +62,10 @@ export default function HistoryPage() {
     const paginatedProofs = filteredProofs.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     return (
-        <div className="space-y-8 pb-10">
+        <div className="space-y-6 pb-10">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
                         <Activity className="w-8 h-8 text-accent-primary" /> {account ? t('history_title_personal') : t('history_title_global')}
@@ -85,7 +85,7 @@ export default function HistoryPage() {
                         <button
                             key={val}
                             onClick={() => setFilter(val as any)}
-                            className={`px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === val ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm' : 'text-text-muted hover:text-white'}`}
+                            className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${filter === val ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'}`}
                         >
                             {label}
                         </button>
@@ -99,7 +99,7 @@ export default function HistoryPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t('history_search')}
-                        className="w-full bg-surface/40 backdrop-blur-md border border-border/50 rounded-xl pl-9 pr-4 py-2 text-xs sm:text-sm text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-primary/50 transition-all shadow-inner"
+                        className="w-full bg-surface/40 backdrop-blur-md border border-border/50 rounded-xl pl-9 pr-4 py-2 text-xs sm:text-sm font-mono text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-primary/50 transition-all shadow-inner"
                     />
                 </div>
             </div>
@@ -110,13 +110,13 @@ export default function HistoryPage() {
                     <div className="overflow-x-auto w-full">
                         <table className="w-full text-left border-collapse min-w-[800px]">
                             <thead>
-                                <tr className="border-b border-border/50 bg-surface/50 text-xs uppercase tracking-wider text-text-muted font-semibold">
-                                    <th className="p-4 pl-6">{t('history_col_question')}</th>
-                                    <th className="p-4">{t('history_col_proof')}</th>
-                                    <th className="p-4">{t('history_col_steps')}</th>
-                                    <th className="p-4">{t('history_col_status')}</th>
-                                    <th className="p-4">{t('history_col_time')}</th>
-                                    <th className="p-4 pr-6 text-right">{t('history_col_actions')}</th>
+                                <tr className="bg-surface-elevated/50 border-b border-border/50">
+                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_question')}</th>
+                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_proof')}</th>
+                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_steps')}</th>
+                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_status')}</th>
+                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_time')}</th>
+                                    <th className="text-right text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_actions')}</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-border/30">

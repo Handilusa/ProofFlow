@@ -3,16 +3,17 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, ChevronRight, Hash, Clock } from 'lucide-react';
+import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, ChevronRight, Hash, Clock, Loader2 } from 'lucide-react';
 import { Card, Button, Input, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
+import AuditPassport from '@/components/proofflow/AuditPassport';
 import { getProof, StoredProof, getRecentProofs } from '@/lib/api';
 import { useLanguage } from '@/lib/language-context';
 
 function VerifyContent() {
     const searchParams = useSearchParams();
     const initialId = searchParams.get('id') || '';
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
 
     const [proofId, setProofId] = useState(initialId);
     const [isVerifying, setIsVerifying] = useState(false);
@@ -196,6 +197,49 @@ function VerifyContent() {
                                 )
                             })}
                         </div>
+
+                        {/* Audit Passport & EVM Anchor Status */}
+                        {(proof.status === "CONFIRMED" || proof.status === "VERIFIED") && proof.tokenTxId && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.4 }}
+                                className="space-y-4 mt-8"
+                            >
+                                <AuditPassport
+                                    tokenTxId={proof.tokenTxId}
+                                    proofId={proof.proofId}
+                                />
+
+                                {/* 5th Pillar: Autonomous Agent EVM Settlement */}
+                                <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div>
+                                        <h4 className="text-white text-sm font-semibold flex items-center gap-2">
+                                            <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
+                                        </h4>
+                                        <p className="text-xs text-text-muted mt-1 max-w-sm">
+                                            {language === 'es' ? 'El Agente Autónomo ancló este resultado en el Smart Contract de Hedera EVM automáticamente.' : 'The Autonomous Agent anchored this result on the Hedera EVM Smart Contract automatically.'}
+                                        </p>
+                                    </div>
+
+                                    {proof.status === 'VERIFIED' || (proof as any).evmSettled ? (
+                                        <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
+                                            <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
+                                        </Badge>
+                                    ) : (
+                                        <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 whitespace-nowrap animate-pulse">
+                                            <Loader2 className="w-3 h-3 mr-1 animate-spin" /> {language === 'es' ? 'Agente procesando...' : 'Agent processing...'}
+                                        </Badge>
+                                    )}
+                                </div>
+
+                                {(proof as any).evmTxHash && (
+                                    <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
+                                        EVM Tx: <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/tx/${(proof as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(proof as any).evmTxHash}</a>
+                                    </div>
+                                )}
+                            </motion.div>
+                        )}
                     </div>
 
                     {/* Right Summary Column */}

@@ -114,128 +114,141 @@ export default function LeaderboardPage() {
                 </motion.div>
 
                 {/* Controls */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 w-full sm:w-auto">
-                        <div className="flex-1 min-w-[200px] max-w-sm">
-                            <Input
-                                icon={<Search className="w-4 h-4 text-text-muted" />}
-                                placeholder={t('lb_search')}
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="font-mono text-sm bg-surface"
-                            />
-                        </div>
-                        <div className="flex p-1 bg-surface border border-border/50 rounded-lg">
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
+                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+                        <div className="flex items-center gap-1 bg-surface p-1 rounded-xl border border-border/50 w-fit shrink-0">
                             <button
                                 onClick={() => setShowPersonalOnly(false)}
-                                className={`px-3 py-1.5 text-xs font-mono rounded-md transition-all ${!showPersonalOnly ? 'bg-accent-primary text-black font-bold' : 'text-text-muted hover:text-white'}`}
+                                className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${!showPersonalOnly ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'}`}
                             >
                                 {t('lb_global')}
                             </button>
                             <button
                                 onClick={() => setShowPersonalOnly(true)}
                                 disabled={!account}
-                                className={`px-3 py-1.5 text-xs font-mono rounded-md transition-all ${showPersonalOnly ? 'bg-indigo-500 text-white font-bold' : 'text-text-muted hover:text-white'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${showPersonalOnly ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'} disabled:opacity-50 disabled:cursor-not-allowed`}
                                 title={!account ? "Connect wallet to view personal history" : ""}
                             >
                                 {t('lb_my')}
                             </button>
                         </div>
+
+                        <div className="flex items-center gap-2 text-[10px] font-mono text-text-muted shrink-0 ml-auto sm:ml-0 hidden sm:flex">
+                            <Terminal className="w-3 h-3" />
+                            <span>{t('lb_sync_ahead')} {secondsAgo}s</span>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-text-muted ml-auto sm:ml-0">
-                        <Terminal className="w-3 h-3" />
-                        <span>{t('lb_sync_ahead')} {secondsAgo}s</span>
+
+                    <div className="relative w-full sm:w-64 group shrink-0">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-accent-primary/60 group-focus-within:text-accent-primary transition-colors z-10 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder={t('lb_search')}
+                            className="w-full bg-surface/40 backdrop-blur-md border border-border/50 rounded-xl pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-primary/50 transition-all shadow-inner"
+                        />
                     </div>
+
+                    {/* Make Sync appear correctly on mobile down here if needed, or leave it hidden as I did with `hidden sm:flex` */}
                 </div>
 
-                {/* Data Dense Table */}
-                <Card className="p-0 border-border/50 overflow-hidden w-full max-w-full">
-                    <div className="overflow-x-auto w-full">
-                        <table className="w-full text-sm font-mono min-w-max md:min-w-full">
-                            <thead>
-                                <tr className="bg-surface-elevated/50 border-b border-border/50">
-                                    <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-20">POS</th>
-                                    <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6">{t('lb_col_identity')}</th>
-                                    <th className="text-right text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-32">{t('lb_col_tokens')}</th>
-                                    <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 hidden md:table-cell">{t('lb_col_dominance')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {loading
-                                    ? Array.from({ length: 5 }).map((_, i) => (
-                                        <tr key={i} className="border-b border-border/30">
-                                            <td className="py-4 px-6"><Skeleton className="h-4 w-6 bg-surface-elevated" /></td>
-                                            <td className="py-4 px-6"><Skeleton className="h-4 w-32 bg-surface-elevated" /></td>
-                                            <td className="py-4 px-6"><Skeleton className="h-4 w-12 bg-surface-elevated float-right" /></td>
-                                            <td className="py-4 px-6 hidden md:table-cell"><Skeleton className="h-2 w-full bg-surface-elevated" /></td>
-                                        </tr>
-                                    ))
-                                    : filtered.map((entry, i) => {
-                                        const rank = data.indexOf(entry) + 1;
-                                        const progress = (entry.balance / totalNetworkTokens) * 100;
-                                        const isMe = targetAccountId && entry.account.toLowerCase() === targetAccountId;
+                {/* Table Area — Desktop only */}
+                <div className="hidden lg:block">
+                    <Card className="p-0 border-border/50 overflow-hidden w-full max-w-full">
+                        <div className="overflow-x-auto w-full">
+                            <table className="w-full text-sm font-mono min-w-max md:min-w-full">
+                                <thead>
+                                    <tr className="bg-surface-elevated/50 border-b border-border/50">
+                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-20">POS</th>
+                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6">{t('lb_col_identity')}</th>
+                                        <th className="text-right text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-32">{t('lb_col_tokens')}</th>
+                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 hidden md:table-cell">{t('lb_col_dominance')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {loading
+                                        ? Array.from({ length: 5 }).map((_, i) => (
+                                            <tr key={i} className="border-b border-border/30">
+                                                <td className="py-4 px-6"><Skeleton className="h-4 w-6 bg-surface-elevated" /></td>
+                                                <td className="py-4 px-6"><Skeleton className="h-4 w-32 bg-surface-elevated" /></td>
+                                                <td className="py-4 px-6"><Skeleton className="h-4 w-12 bg-surface-elevated float-right" /></td>
+                                                <td className="py-4 px-6 hidden md:table-cell"><Skeleton className="h-2 w-full bg-surface-elevated" /></td>
+                                            </tr>
+                                        ))
+                                        : filtered.map((entry, i) => {
+                                            const rank = data.indexOf(entry) + 1;
+                                            const progress = (entry.balance / totalNetworkTokens) * 100;
+                                            const isMe = targetAccountId && entry.account.toLowerCase() === targetAccountId;
 
-                                        return (
-                                            <motion.tr
-                                                key={entry.account}
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ delay: i * 0.05 }}
-                                                className={`border-b group transition-colors ${isMe
-                                                    ? 'bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20'
-                                                    : 'border-border/30 hover:bg-surface-elevated/30'
-                                                    }`}
-                                            >
-                                                <td className="py-4 px-6">
-                                                    <span className={`text-xs ${rank <= 3 ? 'text-success font-bold' : isMe ? 'text-indigo-400 font-bold' : 'text-text-muted'}`}>
-                                                        {rank.toString().padStart(2, '0')}
-                                                    </span>
-                                                </td>
-                                                <td className="py-4 px-6 flex items-center gap-3">
-                                                    <div>
-                                                        {entry.username ? (
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-bold text-white">{entry.username}</span>
-                                                                <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 group-hover:bg-transparent text-text-muted scale-90 origin-left" />
-                                                            </div>
-                                                        ) : (
-                                                            <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent" />
-                                                        )}
-                                                        {isMe && (
-                                                            <span className="px-1.5 py-0.5 mt-1 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest block w-fit">
-                                                                YOU
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className={`py-4 px-6 text-right font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
-                                                    {entry.balance.toLocaleString()}
-                                                </td>
-                                                <td className="py-4 px-6 hidden md:table-cell">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-full bg-background border border-border/50 rounded-full h-1.5 overflow-hidden">
-                                                            <motion.div
-                                                                className={`${isMe ? 'bg-indigo-500' : 'bg-success'} h-full`}
-                                                                initial={{ width: 0 }}
-                                                                animate={{ width: `${progress}%` }}
-                                                                transition={{ duration: 1, delay: 0.2 + (i * 0.05) }}
-                                                            />
+                                            return (
+                                                <motion.tr
+                                                    key={entry.account}
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    transition={{ delay: i * 0.05 }}
+                                                    className={`border-b group transition-colors ${isMe
+                                                        ? 'bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20'
+                                                        : 'border-border/30 hover:bg-surface-elevated/30'
+                                                        }`}
+                                                >
+                                                    <td className="py-4 px-6">
+                                                        <span className={`text-xs ${rank <= 3 ? 'text-success font-bold' : isMe ? 'text-indigo-400 font-bold' : 'text-text-muted'}`}>
+                                                            {rank.toString().padStart(2, '0')}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-4 px-6 flex items-center gap-3">
+                                                        <div>
+                                                            {entry.username ? (
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="font-bold text-white">{entry.username}</span>
+                                                                    {isMe && (
+                                                                        <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 group-hover:bg-transparent text-text-muted scale-90 origin-left" />
+                                                                    )}
+                                                                </div>
+                                                            ) : (
+                                                                isMe ? (
+                                                                    <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent" />
+                                                                ) : (
+                                                                    <span className="text-text-muted font-mono">{entry.account.slice(0, 6)}...{entry.account.slice(-4)}</span>
+                                                                )
+                                                            )}
+                                                            {isMe && (
+                                                                <span className="px-1.5 py-0.5 mt-1 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest block w-fit">
+                                                                    YOU
+                                                                </span>
+                                                            )}
                                                         </div>
-                                                        <span className="text-[10px] text-text-muted w-8">{progress.toFixed(0)}%</span>
-                                                    </div>
-                                                </td>
-                                            </motion.tr>
-                                        );
-                                    })}
-                            </tbody>
-                        </table>
-                    </div>
-                    {!loading && filtered.length === 0 && (
-                        <div className="text-center py-16 text-text-muted text-xs font-mono uppercase tracking-widest border-t border-border/50 bg-background/50">
-                            <span className="cursor-blink" /> 0x_NULL_INDEX
+                                                    </td>
+                                                    <td className={`py-4 px-6 text-right font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
+                                                        {entry.balance.toLocaleString()}
+                                                    </td>
+                                                    <td className="py-4 px-6 hidden md:table-cell">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-full bg-background border border-border/50 rounded-full h-1.5 overflow-hidden">
+                                                                <motion.div
+                                                                    className={`${isMe ? 'bg-indigo-500' : 'bg-success'} h-full`}
+                                                                    initial={{ width: 0 }}
+                                                                    animate={{ width: `${progress}%` }}
+                                                                    transition={{ duration: 1, delay: 0.2 + (i * 0.05) }}
+                                                                />
+                                                            </div>
+                                                            <span className="text-[10px] text-text-muted w-8">{progress.toFixed(0)}%</span>
+                                                        </div>
+                                                    </td>
+                                                </motion.tr>
+                                            );
+                                        })}
+                                </tbody>
+                            </table>
                         </div>
-                    )}
-                </Card>
+                        {!loading && filtered.length === 0 && (
+                            <div className="text-center py-16 text-text-muted text-xs font-mono uppercase tracking-widest border-t border-border/50 bg-background/50">
+                                <span className="cursor-blink" /> 0x_NULL_INDEX
+                            </div>
+                        )}
+                    </Card>
+                </div>
             </div>
         </Tooltip.Provider>
     );
