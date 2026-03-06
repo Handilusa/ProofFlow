@@ -138,9 +138,9 @@ CRITICAL RULES:
 
                 console.warn(`[Gemini] ⚠️ Attempt ${attempt} incomplete: ${steps.length} steps, hasFinal=${this.hasFinalStep(steps)}. Retrying...`);
             } catch (err: any) {
-                // On rate limit (429), rotate to next API key and retry without burning an attempt
-                if (err.message?.includes('429') || err.message?.includes('RESOURCE_EXHAUSTED')) {
-                    console.warn(`[Gemini] ⚠️ Key #${this.currentKeyIndex + 1} rate-limited (429).`);
+                // On rate limit (429) or overload (503), rotate to next API key and retry without burning an attempt
+                if (err.message?.includes('429') || err.message?.includes('RESOURCE_EXHAUSTED') || err.message?.includes('503') || err.message?.includes('Service Unavailable')) {
+                    console.warn(`[Gemini] ⚠️ Key #${this.currentKeyIndex + 1} overloaded/rate-limited. Rotating...`);
                     if (this.rotateKey()) {
                         attempt--; // Don't count this as a failed attempt
                         continue;
