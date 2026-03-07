@@ -7,7 +7,7 @@ export default function VerificationBadge({ status }: { status: string }) {
     const { t } = useLanguage();
 
     return (
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold ${isPending ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'}`}>
+        <div className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border text-[10px] sm:text-xs font-semibold whitespace-nowrap ${isPending ? 'bg-amber-500/10 border-amber-500/30 text-amber-500' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500'}`}>
             {isPending ? (
                 <>
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

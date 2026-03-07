@@ -250,15 +250,15 @@ export default function HistoryPage() {
                                         <div className="flex items-center gap-1.5 shrink-0 ml-auto pt-0.5">
                                             {proof.explorerUrl && (
                                                 <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                                                    <Button variant="outline" size="icon" className="w-6 h-6 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
-                                                        <ExternalLink className="w-2.5 h-2.5" />
+                                                    <Button variant="outline" size="icon" className="w-7 h-7 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
+                                                        <ExternalLink className="w-3.5 h-3.5" />
                                                     </Button>
                                                 </a>
                                             )}
                                             <Link href={`/verify?id=${proof.proofId}`} className="shrink-0">
-                                                <Button size="sm" className="h-6 text-[9px] px-2 bg-accent-primary text-black font-bold hover:bg-white transition-all whitespace-nowrap shadow-glow-sm">
+                                                <Button size="sm" className="h-7 text-[10px] px-3 bg-accent-primary text-black font-bold hover:bg-white transition-all whitespace-nowrap shadow-glow-sm">
                                                     {t('nav_verify')}
-                                                    <ArrowRight className="w-2 h-2 ml-0.5" />
+                                                    <ArrowRight className="w-2.5 h-2.5 ml-1" />
                                                 </Button>
                                             </Link>
                                         </div>

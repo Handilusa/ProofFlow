@@ -358,14 +358,14 @@ export default function DualPaneDashboard() {
       initial={isMobile ? { opacity: 0, y: 20 } : { opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3 }}
-      className={`flex flex-col bg-[#0A0D14] border border-border/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] relative w-full overflow-hidden ${isMobile
-        ? "block lg:hidden my-4 min-h-[400px]"
-        : "hidden lg:flex flex-1 lg:flex-[4] lg:min-w-[320px] lg:h-full " + (isLoading || result ? 'min-h-[calc(100vh-14rem)]' : 'min-h-[500px]')
+      className={`flex flex-col bg-transparent lg:bg-[#0A0D14] relative overflow-hidden ${isMobile
+        ? "block lg:hidden my-0 -mx-4 sm:-mx-6 w-[100vw] min-h-[400px] border-y border-white/10 shadow-none rounded-none"
+        : "hidden lg:flex w-full flex-1 lg:flex-[4] lg:min-w-[320px] lg:h-full border border-border/50 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.5)] " + (isLoading || result ? 'min-h-[calc(100vh-14rem)]' : 'min-h-[500px]')
         }`}
     >
       {/* Header terminal style */}
-      <div className="p-4 border-b border-white/5 bg-black/40 flex justify-between items-center z-20">
-        <div>
+      <div className={isMobile ? "m-4 mb-2 p-3 sm:p-4 border border-white/10 rounded-2xl bg-white/[0.03] flex flex-wrap gap-3 justify-between items-start sm:items-center z-20 shadow-sm" : "p-4 border-b border-white/5 bg-black/40 flex justify-between items-center z-20"}>
+        <div className="min-w-0">
           <h2 className="text-sm font-mono font-bold text-white flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-400" /> {t('dash_terminal_title')}
           </h2>
@@ -376,8 +376,8 @@ export default function DualPaneDashboard() {
         )}
       </div>
 
-      {/* Terminal Window */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-40 lg:pb-6 font-mono text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+      {/* Terminal Window - Extra padding bottom on mobile for safe area / sticky input */}
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-12 lg:pb-6 font-mono text-xs md:text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
         {!result && !isLoading ? (
           <div className="h-full w-full min-h-[300px] flex flex-col items-center justify-center text-center opacity-30 relative">
             {isMobile && !account ? (
@@ -417,7 +417,7 @@ export default function DualPaneDashboard() {
             <div className="text-text-muted pl-4">{t('dash_negotiating')}</div>
           </div>
         ) : result ? (
-          <div className="space-y-6 pb-8">
+          <div className="space-y-6 pb-4 md:pb-8">
 
             {/* The Initialization Log */}
             <div className="bg-white/5 border border-white/10 rounded p-3 text-xs text-text-muted">
@@ -460,7 +460,7 @@ export default function DualPaneDashboard() {
                   >
                     <div className={`p-4 border-l-2 ${isFinal ? 'border-amber-400 bg-amber-400/5' : 'border-emerald-500 bg-emerald-500/5'}`}>
                       <div className="flex justify-between items-start mb-2">
-                        <span className={`text-[11px] font-bold ${isFinal ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        <span className={`text-[10px] md:text-[11px] font-bold ${isFinal ? 'text-amber-400' : 'text-emerald-400'}`}>
                           {isFinal ? '> EXECUTION_FINAL' : `> ${step.label}_INFERENCE`}
                         </span>
                         {result.status === "CONFIRMED" || result.status === "VERIFIED" ? (
@@ -480,7 +480,7 @@ export default function DualPaneDashboard() {
                         )}
                       </div>
 
-                      <div className="text-sm my-2 space-y-3">
+                      <div className="text-xs md:text-sm my-2 space-y-3">
                         {step.content.split(/\n{2,}/).map((block, bIdx) => {
                           const trimmed = block.trim();
                           if (!trimmed) return null;
@@ -501,7 +501,7 @@ export default function DualPaneDashboard() {
                         })}
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/5 text-[10px] text-text-muted/70">
+                      <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/5 text-[9px] md:text-[10px] text-text-muted/70">
                         <span className="text-emerald-500 shrink-0">SHA256:</span>
                         <span className="truncate max-w-[150px] sm:max-w-[300px]" title={step.hash}>{step.hash}</span>
                       </div>
@@ -595,7 +595,7 @@ export default function DualPaneDashboard() {
       <div className="flex-1 lg:flex-[3] flex flex-col min-w-0 sm:min-w-[320px] overflow-x-hidden overflow-y-auto pr-0 lg:pr-2 scrollbar-thin pb-6 lg:pb-0">
 
         {/* FIXED HEADER ROW — ALWAYS VISIBLE ON DESKTOP */}
-        <div className="flex justify-between items-center gap-4 mb-8 px-2 w-full min-h-[40px] z-30 min-w-0">
+        <div className="flex justify-between items-center gap-4 mb-4 lg:mb-8 px-2 w-full min-h-[40px] z-30 min-w-0">
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-success/30 bg-success/5 shrink-0 whitespace-nowrap">
             <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
             <span className="text-[9px] sm:text-[10px] font-mono font-bold text-success uppercase tracking-wider">
@@ -613,10 +613,13 @@ export default function DualPaneDashboard() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="block"
         >
-          <Card className={`flex flex-col p-5 sm:p-6 border-border/50 bg-surface/50 backdrop-blur-sm relative overflow-hidden shrink-0 ${isLoading || result ? 'min-h-[60vh] md:min-h-0' : ''}`}>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
+          {/* Note: In mobile view, this behaves as a plain div (no border/padding). On desktop (lg:), it has Card styles. */}
+          <div className={`flex flex-col relative overflow-hidden shrink-0 ${isLoading || result ? 'min-h-[60vh] lg:min-h-0' : ''} lg:p-6 lg:border lg:border-border/50 lg:bg-surface/50 lg:backdrop-blur-sm lg:rounded-xl`}>
+            {/* Background glow only on desktop */}
+            <div className="hidden lg:block absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
 
-            <div className={`mb-4 relative z-10 ${isLoading || result ? 'hidden md:block' : 'block'}`}>
+            {/* Header Content Wrapper: Adding px-4 on mobile to compensate for removed card padding */}
+            <div className={`mb-4 px-4 lg:px-0 relative z-10 ${isLoading || result ? 'hidden lg:block' : 'block'}`}>
               {!account && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
@@ -641,7 +644,7 @@ export default function DualPaneDashboard() {
             {renderTerminal(true)}
 
             {/* Form was moved to sticky bottom on mobile */}
-            <div className="hidden md:block">
+            <div className="hidden lg:block">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative group overflow-hidden rounded-xl border border-border/50">
                   <textarea
@@ -709,8 +712,8 @@ export default function DualPaneDashboard() {
               </form>
             </div>
 
-            {/* VECTORS MUST BE OUTSIDE hidden md:block TO SHOW ON MOBILE, BUT INSIDE CARD */}
-            <div className={`mt-4 relative z-10 w-full md:mt-6 ${isLoading || result ? 'hidden md:block' : 'block'}`}>
+            {/* VECTORS MUST BE OUTSIDE hidden lg:block TO SHOW ON MOBILE, BUT INSIDE CARD */}
+            <div className={`mt-4 px-4 lg:px-0 relative z-10 w-full lg:mt-6 ${isLoading || result ? 'hidden lg:block' : 'block'}`}>
               <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t('dash_vectors')}</p>
               <div className="flex flex-wrap gap-2">
                 {randomVectors.map((q, i) => (
@@ -725,7 +728,7 @@ export default function DualPaneDashboard() {
                 ))}
               </div>
             </div>
-          </Card>
+          </div>
         </motion.div>
 
         {/* GLOBAL RECENT FEED — Always visible on desktop & mobile */}
@@ -733,7 +736,7 @@ export default function DualPaneDashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25 }}
-          className="mt-6 px-2 space-y-3 max-w-full overflow-hidden shrink-0"
+          className="mt-4 lg:mt-6 px-2 space-y-3 max-w-full overflow-hidden shrink-0"
         >
           <h3 className="text-xs font-display font-semibold text-text-muted uppercase tracking-widest flex items-center gap-2">
             <Activity className="w-3.5 h-3.5 shrink-0" /> {t('dash_feed_global')}
