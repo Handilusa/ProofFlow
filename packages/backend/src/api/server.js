@@ -4,6 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
+import { createDDoSShield } from "./middleware/ddosShield.js";
+import { createCaptchaChallenge } from "./middleware/captchaChallenge.js";
 import { body, param, validationResult } from "express-validator";
 import { fetchLeaderboard, fetchStats } from "../services/mirrorNode.js";
 import { GeminiService } from "../services/gemini.service.js";
@@ -83,12 +85,34 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Rate Limiter
+// ═══════════════════════════════════════════════════════
+// 🛡️  3-LAYER API PROTECTION SYSTEM
+// Order: DDoS Shield → CAPTCHA Challenge → Rate Limiter
+// ═══════════════════════════════════════════════════════
+
+// Layer 2: DDoS Shield — detects coordinated multi-IP attacks
+const ddosShield = createDDoSShield();
+app.use(ddosShield);
+
+// Layer 3: Dynamic CAPTCHA — challenges suspicious bot-like traffic
+const { middleware: captchaMiddleware, verifyHandler: captchaVerifyHandler } = createCaptchaChallenge();
+app.use(captchaMiddleware);
+
+// Layer 1: Rate Limiter — 100 requests/min per IP, then HTTP 429
 const limiter = rateLimit({
     windowMs: 60 * 1000,
     max: 100,
     standardHeaders: true,
     legacyHeaders: false,
+    handler: (req, res) => {
+        console.warn(`[Rate Limit] 🚫 IP ${req.ip} exceeded 100 req/min — BLOCKED`);
+        return res.status(429).json({
+            success: false,
+            error: "Too many requests. You are limited to 100 requests per minute.",
+            reason: "RATE_LIMIT",
+            retryAfter: 60,
+        });
+    },
 });
 app.use(limiter);
 
@@ -430,6 +454,16 @@ app.get("/api/v1/health", (req, res) => {
         uptime: Math.floor((Date.now() - UPTIME_START) / 1000)
     });
 });
+
+// CAPTCHA verification endpoint
+app.post("/api/v1/captcha/verify",
+    [
+        body("captchaToken").isString().notEmpty().withMessage("captchaToken is required"),
+        body("captchaSolution").notEmpty().withMessage("captchaSolution is required")
+    ],
+    handleValidationErrors,
+    captchaVerifyHandler
+);
 
 // Config endpoint — tells frontend where to send micropayment
 app.get("/api/v1/config", (req, res) => {

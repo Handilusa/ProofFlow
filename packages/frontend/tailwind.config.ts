@@ -48,6 +48,7 @@ const config: Config = {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "float": "float 6s ease-in-out infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite alternate",
+        "heartbeat-ripple": "heartbeat-ripple 2s ease-out infinite",
       },
       keyframes: {
         float: {
@@ -57,6 +58,14 @@ const config: Config = {
         "glow-pulse": {
           "0%": { boxShadow: "0 0 20px rgba(6,182,212,0.1)" },
           "100%": { boxShadow: "0 0 40px rgba(6,182,212,0.3)" },
+        },
+        "heartbeat-ripple": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "10%": { transform: "scale(1.35)", opacity: "1" },
+          "20%": { transform: "scale(1)", opacity: "0.9" },
+          "30%": { transform: "scale(1.25)", opacity: "0.8" },
+          "40%": { transform: "scale(1)", opacity: "0.7" },
+          "100%": { transform: "scale(3)", opacity: "0" },
         },
       },
     },

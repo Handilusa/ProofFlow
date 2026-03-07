@@ -377,17 +377,32 @@ export default function DualPaneDashboard() {
       </div>
 
       {/* Terminal Window - Extra padding bottom on mobile for safe area / sticky input */}
-      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-12 lg:pb-6 font-mono text-xs md:text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
+      <div className="flex-1 overflow-y-auto p-4 sm:p-6 pb-4 lg:pb-6 font-mono text-xs md:text-sm scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
         {!result && !isLoading ? (
-          <div className="h-full w-full min-h-[300px] flex flex-col items-center justify-center text-center opacity-30 relative">
+          <div className={`h-full w-full min-h-[300px] flex flex-col items-center justify-center text-center relative ${isMobile && !account ? '' : 'opacity-30'}`}>
             {isMobile && !account ? (
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md rounded-xl border border-white/5 opacity-100">
-                <div className="p-3 bg-accent-primary/5 rounded-full border border-accent-primary/20 mb-3 shadow-[0_0_20px_rgba(45,212,191,0.1)]">
-                  <Lock className="w-5 h-5 text-accent-primary" />
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center overflow-hidden">
+                {/* Ghost Logs Background */}
+                <div className="absolute inset-0 flex flex-col gap-2 p-4 pb-12 opacity-[0.06] text-[10px] text-emerald-500 font-mono pointer-events-none select-none text-left z-0">
+                  <p>{`> init.sh --auth-required`}</p>
+                  <p>{`> [sys] establishing secure wss connection...`}</p>
+                  <p>{`> [sys] awaiting cryptographic signature from client`}</p>
+                  <p>{`> [net] connecting to mirror node... OK [14ms]`}</p>
+                  <p>{`> [auth] WARN: no active wallet session detected`}</p>
+                  <p>{`> [proc] suspend execution until auth event`}</p>
+                  <p className="animate-pulse">{`> _`}</p>
                 </div>
-                <p className="text-xs font-display font-medium text-white/90 px-8 text-center max-w-[280px] leading-relaxed tracking-wide">
-                  {t('dash_connect_first')}
-                </p>
+
+                <div className="z-10 flex flex-col items-center mt-[-20px]">
+                  <div className="p-4 bg-accent-primary/10 rounded-full border border-accent-primary/30 mb-4 shadow-[0_0_30px_rgba(6,182,212,0.25)] relative animate-pulse">
+                    <div className="absolute inset-0 rounded-full border-[3px] border-accent-primary animate-heartbeat-ripple pointer-events-none" />
+                    <div className="absolute inset-0 rounded-full border-[3px] border-accent-primary/70 animate-heartbeat-ripple pointer-events-none" style={{ animationDelay: '0.4s' }} />
+                    <Lock className="w-6 h-6 text-accent-primary" />
+                  </div>
+                  <p className="text-xs font-mono font-medium text-accent-primary px-8 text-center max-w-[280px] leading-relaxed tracking-widest uppercase">
+                    {t('dash_connect_first')}<span className="inline-block animate-pulse ml-0.5 relative top-0.5">_</span>
+                  </p>
+                </div>
               </div>
             ) : (
               <>
