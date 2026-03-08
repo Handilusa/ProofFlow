@@ -6,8 +6,8 @@ async function testWithModel(modelName) {
     process.env.GEMINI_MODEL = modelName;
     const gemini = new GeminiService();
     try {
-        const result = await gemini.reasonWithAudit("Hello, respond with [STEP 1] thought [FINAL] hi");
-        console.log(`Success with ${modelName}:`, result.answer);
+        const result = await gemini.reasonWithAudit("Identificación de las caídas fuertes de Bitcoin. Para analizar el comportamiento de HBAR durante las caídas de Bitcoin, es fundamental primero identificar las fechas de estas caídas. Utilizaré la búsqueda de Google para encontrar los tres eventos de caída más significativos de Bitcoin en un período reciente que permita un análisis relevante, probablemente durante los últimos 12-24 meses, dada la volatilidad del mercado de criptomonedas.");
+        console.log(`Success with ${modelName}:\n`, result.steps);
         return true;
     } catch (err) {
         console.error(`Failed with ${modelName}:`, err.message);

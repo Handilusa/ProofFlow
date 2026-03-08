@@ -66,7 +66,7 @@ export class GeminiService {
             throw new Error("GEMINI_API_KEY is not configured. Add it to your .env file.");
         }
 
-        const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+        const modelName = process.env.GEMINI_MODEL || "gemini-2.0-flash";
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
 
         console.log(`[Gemini REST] Calling ${modelName} on v1beta... (attempt ${retryCount + 1}/${MAX_RETRIES + 1})`);
