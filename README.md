@@ -68,6 +68,30 @@ Fetches community-defined usernames and reputation levels.
 *   **Integration**: Combines HCS (real-time audits), HTS (reputation economy), and EVM (permanent settlement) in a single unified flow.
 *   **Execution**: Fully functional MVP with support for native Hedera wallets (Hashpack) and EVM wallets (MetaMask/OKX).
 *   **Success**: Encourages HBAR micro-transactions and HTS token adoption, increasing network utility and account creation.
+*   **Feasibility**: See our full [Business Plan & Lean Canvas](./BUSINESS_PLAN.md) for revenue model, GTM strategy, and roadmap.
+*   **Validation**: See our [Market Validation Report](./VALIDATION.md) for early adopter feedback and traction metrics.
+
+---
+
+## 🤖 OpenClaw Bounty: Reasoning Oracle for the Agentic Society
+
+ProofFlow is not just a human-facing dApp — it is **public infrastructure for autonomous agents**.
+
+In the OpenClaw vision of an "Agentic Society," agents need to make complex decisions, but they can't all run their own AI. ProofFlow acts as a **Verifiable Reasoning Oracle** — any external agent can:
+
+1.  **Discover** ProofFlow via its public API endpoint.
+2.  **Pay** the micro-fee (0.02 HBAR) autonomously via a native HBAR transfer.
+3.  **Delegate** a complex reasoning task (risk analysis, market evaluation, security audit).
+4.  **Receive** a verifiable, HCS-anchored proof that the reasoning was performed correctly.
+5.  **Decide** based on the auditable result, with full on-chain accountability.
+
+**Run the simulation:**
+```bash
+# Ensure ProofFlow backend is running on localhost:3001
+node packages/backend/src/scripts/openclaw-client.js
+```
+
+This script creates 3 autonomous agents (DeFi Risk Analyst, Market Intelligence, Security Auditor) that independently pay and query ProofFlow — demonstrating agent-to-agent commerce on Hedera.
 
 ---
 

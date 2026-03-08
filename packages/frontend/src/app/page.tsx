@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ShieldCheck, Brain, FileCheck, Award, Github, Globe, Zap, Lock, Activity } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { AgentMarketplace } from '@/components/openclaw/AgentMarketplace';
 
 const features = [
   {
@@ -297,6 +298,9 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </section>
+
+      {/* ============ OPENCLAW AGENT MARKETPLACE ============ */}
+      <AgentMarketplace />
 
       {/* ============ HOW IT WORKS TIMELINE ============ */}
       <section id="lifecycle" className="relative py-24 px-6 bg-surface/20 border-t border-border/50">

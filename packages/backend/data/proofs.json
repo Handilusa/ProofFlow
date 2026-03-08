@@ -3142,5 +3142,238 @@
       "evmTxHash": "0xafe551828473c25e1c07ed1f39659a8130250a5d454fb6b3a3bbcfd4831dcec4",
       "evmSettled": true
     }
+  ],
+  [
+    "9cbfcb88-883f-49b8-8f95-52e5bedfe838",
+    {
+      "proofId": "9cbfcb88-883f-49b8-8f95-52e5bedfe838",
+      "question": "Analyze the risk profile of depositing into a new SaucerSwap V2 HBAR/USDC liquidity pool. Consider impermanent loss, smart contract risk, and current market volatility. Should I proceed?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identify the core components of the request and gather relevant data points.\nThe user wants an analysis of the risk profile for depositing into a new SaucerSwap V2 HBAR/USDC liquidity pool, specifically focusing on impermanent loss, smart contract risk, and current market volatility. I will extract data pertinent to HBAR and USDC price movements, SaucerSwap's TVL, and the broader market sentiment from the provided live data.",
+          "hash": "68fc97fe0fee3464e29c6d0981067a81dc80761e77de622ea77cb2061b5183bf",
+          "timestamp": 1772971337409
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analyze each risk factor using the provided live market data.\n**Impermanent Loss:** USDC is a stablecoin, with a price of $1 and negligible volatility (0.01% over 1h, 24h, and 7d, according to CoinGecko data). HBAR, however, shows recent negative price movements: -0.88% in 1h, -1.27% in 24h, and -3.98% in 7d (CoinGecko data). Furthermore, HBAR is currently at $0.09533, which is 83.3% down from its All-Time High (ATH) of $0.569229 (CoinGecko data). This significant historical divergence and recent downward trend for HBAR, while USDC remains pegged, indicates a high potential for impermanent loss if HBAR's price continues to fluctuate or decline relative to USDC.\n\n**Smart Contract Risk:** The prompt specifies this is a \"new\" SaucerSwap V2 liquidity pool. While SaucerSwap (SAUCE) itself has a Total Value Locked (TVL) of $39,963,598 on DefiLlama, the \"new\" V2 aspect suggests it might be less battle-tested than older versions or established protocols. The provided data does not include information on specific audits for SaucerSwap V2 contracts. Without audit reports or a proven track record for V2, there's an elevated inherent smart contract risk, including potential vulnerabilities, bugs, or exploits.\n\n**Current Market Volatility:** The Crypto Fear & Greed Index shows a consistent \"Extreme Fear\" sentiment throughout the past week, ranging from 10/100 to 22/100 (Fear & Greed Index data). This indicates a highly risk-averse and potentially volatile market environment. HBAR's recent negative price performance (-1.27% in 24h, -3.98% in 7d, CoinGecko data) aligns with this broader market sentiment, suggesting that HBAR's price could be subject to further downward pressure or significant swings. The overall Hedera DeFi Ecosystem TVL is $60,299,468.246 (DefiLlama), which is a relatively modest size compared to larger chains, potentially indicating a less mature or liquid market that could experience amplified volatility.",
+          "hash": "203d8a3cd798d5a91adbbd87da7cfe551fedd53ded87b461fdabca10a3dfbfea",
+          "timestamp": 1772971337409
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Synthesize the findings and identify overall risks and potential mitigating factors.\nThe combination of HBAR's current volatility and significant distance from its ATH creates a high risk for impermanent loss in an HBAR/USDC pool, especially given the \"Extreme Fear\" market sentiment (Fear & Greed Index data). The \"new\" status of the SaucerSwap V2 pool, without explicit audit information in the provided data, introduces an unquantified but certainly present smart contract risk. While USDC provides stability for half of the pair, HBAR's recent price action and the general market mood suggest that significant price depreciation for HBAR is a distinct possibility, exacerbating impermanent loss. The relatively smaller TVL of the Hedera ecosystem could also mean less liquidity to absorb large trades, potentially leading to more pronounced price swings for HBAR.",
+          "hash": "7db21cd77c4f04599e5a43b04267053378ee835447df0c912bad8ffbc2bef585",
+          "timestamp": 1772971337409
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Definitive Conclusion and Recommendation.\nGiven the analysis, proceeding with a deposit into a new SaucerSwap V2 HBAR/USDC liquidity pool at this time carries a **high risk profile**. The significant potential for impermanent loss due to HBAR's current volatility and its substantial drop from ATH, coupled with the prevailing \"Extreme Fear\" in the market, makes this a precarious investment. Furthermore, the inherent smart contract risk associated with a \"new\" V2 pool, for which no audit information was provided in the live data, adds another layer of unmitigated risk. It is **not recommended to proceed** with this deposit without further due diligence, specifically regarding comprehensive smart contract audits for SaucerSwap V2 and a clearer understanding of HBAR's short-to-medium term price outlook.",
+          "hash": "8abe66e6266b9f2a7e47078e6d566058f4e960374f312aca07977f3710d8e21f",
+          "timestamp": 1772971337409
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772971337410,
+      "dataSources": [
+        "DefiLlama API",
+        "Hedera Mirror Node",
+        "DexScreener API",
+        "CoinGecko API",
+        "Fear & Greed Index"
+      ],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0.0.8126148",
+      "rootHash": "23fc0f4717fe6fcc31a93b64d96c441a88321c4d6970013cbe8ce3c6ec679347",
+      "hcsSequenceNumbers": [
+        682,
+        683,
+        684,
+        685
+      ],
+      "evmTxHash": "0x43dabb45a409fb3b96c0160be094f297d0bbff5f838e7f2234d70dbe874238f6",
+      "evmSettled": true
+    }
+  ],
+  [
+    "2cf780fa-0850-46de-ae13-aee295c8612d",
+    {
+      "proofId": "2cf780fa-0850-46de-ae13-aee295c8612d",
+      "question": "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identify and define key financial metrics for analysis.\nTo address the user's request, it's crucial to first understand \"correlation\" and \"beta\" in the context of financial markets. Correlation measures the degree to which two assets move in relation to each other, ranging from -1 (perfect inverse correlation) to +1 (perfect positive correlation). Beta (β) quantifies an asset's volatility or systematic risk relative to the overall market (or a benchmark asset like Bitcoin in this case); a beta greater than 1 indicates higher volatility than the market, while a beta less than 1 suggests lower volatility.",
+          "hash": "ed25820d8c139c25cf747baddb097496c248733ff1f85794127e155340e2e3ca",
+          "timestamp": 1772971618768
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analyze short-term price movements and infer correlation.\nBased on the provided CoinGecko Market Data, we can observe the short-term price changes for both Bitcoin (BTC) and Hedera (HBAR). Over the last 24 hours, BTC decreased by -0.59%, while HBAR decreased by -1.20%. Over the last 7 days, BTC increased by 1.68%, whereas HBAR decreased by -3.94%. In the last hour, BTC saw a slight increase of 0.04%, while HBAR experienced a decrease of -0.34%. The general trend over 24 hours shows both assets moving in the same negative direction, suggesting a positive correlation. However, the 7-day performance shows divergent trends, with BTC up and HBAR down, indicating a potential weakening of this short-term positive correlation over a slightly longer period, or at least HBAR underperforming significantly during BTC's modest recovery.",
+          "hash": "55796eb149936883ed3bc50d74c90dbc24cabb87739f1e93a7caed5bb892da5c",
+          "timestamp": 1772971618768
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Estimate beta and assess decoupling potential.\nComparing the magnitude of price changes, HBAR exhibits higher volatility than BTC in the observed short-term periods. For instance, in the last 24 hours, HBAR's -1.20% drop is significantly larger than BTC's -0.59% drop (CoinGecko Market Data). Similarly, over 7 days, HBAR's -3.94% decline contrasts sharply with BTC's 1.68% gain (CoinGecko Market Data). This suggests that HBAR likely has a beta greater than 1 relative to BTC, meaning it tends to be more volatile and susceptible to larger price swings, particularly on the downside during market corrections. While the assets have shown some directional alignment (e.g., both down over 24h), the significantly larger negative movements for HBAR, even when BTC shows modest gains (7d), indicate that a full decoupling is not yet imminent. Instead, HBAR appears to be amplifying the market's movements, rather than moving independently.",
+          "hash": "459e042d102ce73be21ff75e26b87d4339f812724cc79423e3cbe33eca9b2027",
+          "timestamp": 1772971618768
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Definitive Conclusion and Recommendation:\nBased on the live market data, Hedera (HBAR) currently exhibits a positive, albeit somewhat inconsistent, short-term correlation with Bitcoin (BTC). Over the 24-hour period, both assets moved in the same negative direction, but HBAR's decline was proportionally larger (-1.20% vs. -0.59% for BTC). Over the 7-day period, HBAR significantly underperformed, declining by -3.94% while BTC saw a 1.68% gain. This indicates that HBAR possesses a beta greater than 1 relative to BTC, implying higher volatility and an amplified response to market movements. While there's no clear sign of an immediate, full decoupling where HBAR consistently moves inversely or completely independently of BTC, HBAR's amplified downside movements suggest it is not immune to broader market sentiment driven by BTC. Investors should anticipate HBAR to remain highly correlated with BTC, but with increased sensitivity to market downturns in the short term.",
+          "hash": "f63e5c78e05f6fb6c55da42183f1e260b192f0679f1b63949533a294f4fdbc76",
+          "timestamp": 1772971618768
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772971618769,
+      "dataSources": [
+        "Hedera Mirror Node",
+        "CoinGecko API",
+        "DexScreener API"
+      ],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "c4ece57f8229d57d6f52b33e6417ba485934d2a99535fcca6234165de586f2b8",
+      "hcsSequenceNumbers": [
+        687,
+        688,
+        689,
+        690
+      ],
+      "tokenTxId": "0.0.7986674@1772971623.933178573",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772971623.933178573",
+      "evmTxHash": "0xec3bb53f53e66aac5fa1e66e9e3197cae1ca30536bb9e422090df6afe0c7a9eb",
+      "evmSettled": true
+    }
+  ],
+  [
+    "f29d0e60-49da-4f90-a50f-1867864204d6",
+    {
+      "proofId": "f29d0e60-49da-4f90-a50f-1867864204d6",
+      "question": "If the total crypto market cap drops by 15% next week, project the specific downside support levels for HBAR using current circulating supply data.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identify current HBAR market data and the scenario parameters.\nThe current market capitalization for Hedera (HBAR) is $4,118,316,486, with a price of $0.095104 and a circulating supply of 43,303,421,564.792, according to CoinGecko Market Data. The scenario posits a 15% drop in the total crypto market cap next week, which we will assume HBAR's market cap will mirror proportionately for this projection. The Fear & Greed Index shows \"Extreme Fear\" with a score of 12/100 as of March 8, 2026, indicating a highly bearish sentiment in the broader market.",
+          "hash": "4029d9431e2daa329906f60265203b209e3de42616ebfb4ebcc245a935392613",
+          "timestamp": 1772971970179
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Calculate the projected HBAR market capitalization and corresponding price after a 15% drop.\nAssuming HBAR's market cap drops by 15% in line with the total crypto market, the projected market capitalization would be $4,118,316,486 * (1 - 0.15) = $3,500,569,013.10. Using the current circulating supply of 43,303,421,564.792 HBAR, the projected price per HBAR would be $3,500,569,013.10 / 43,303,421,564.792 = $0.080838.",
+          "hash": "daf270446a0f6554ccff40ce493c93f2deec284ffad6607351b383a27ad07a70",
+          "timestamp": 1772971970179
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Project the specific downside support level based on the calculated price and consider broader market sentiment.\nBased solely on a proportional 15% market cap drop, the primary projected downside support level for HBAR would be approximately $0.0808. This level represents the theoretical price point if HBAR's valuation perfectly tracks the overall market decline. The current \"Extreme Fear\" sentiment, as indicated by the Crypto Fear & Greed Index at 12/100, suggests that market participants are already highly risk-averse, which could exacerbate downward pressure or, conversely, imply that much of the fear is already priced in. Without historical chart data, identifying multiple distinct \"support levels\" is not possible; thus, the calculated price serves as the direct projection for a significant downside level.",
+          "hash": "f9849ca029a707a692e0b607e3aa9f14edf60910172b5afc3f8da70dfacd03a7",
+          "timestamp": 1772971970179
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "If the total crypto market cap drops by 15% next week, and assuming HBAR's market capitalization decreases proportionally, the projected downside support level for HBAR would be approximately **$0.0808**. This calculation is derived from HBAR's current market cap of $4,118,316,486 and circulating supply of 43,303,421,564.792, resulting in a projected market cap of $3,500,569,013.10 and a corresponding price of $0.080838. The prevailing market sentiment of \"Extreme Fear\" (Fear & Greed Index at 12/100) indicates a bearish environment that could influence how quickly and severely such a drop manifests.",
+          "hash": "be9dd5e4b122f17d2eb4394f74db9b40172c830aa8ede6ed3efad5dc8a2ab1cd",
+          "timestamp": 1772971970179
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772971970180,
+      "dataSources": [
+        "Hedera Mirror Node",
+        "DexScreener API",
+        "CoinGecko API",
+        "Fear & Greed Index"
+      ],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "d1810c6436ccf0274481462862f1a43903f659a6b3b68268037979f121f82e2b",
+      "hcsSequenceNumbers": [
+        692,
+        693,
+        694,
+        695
+      ],
+      "tokenTxId": "0.0.7986674@1772971975.873429060",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772971975.873429060",
+      "evmTxHash": "0x6f47813950fedd74e15c5a6e10cba56183926919b66d3ab9962ec0ff266c7eeb",
+      "evmSettled": true
+    }
+  ],
+  [
+    "85905b45-ef3c-48cb-8ba8-45063b62ea62",
+    {
+      "proofId": "85905b45-ef3c-48cb-8ba8-45063b62ea62",
+      "question": "Analiza el sentimiento y la actividad on-chain de HBAR durante las últimas 3 caídas fuertes de Bitcoin.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Identificación de las caídas fuertes de Bitcoin\nPara analizar el sentimiento y la actividad on-chain de HBAR durante las caídas fuertes de Bitcoin, primero se identificaron tres periodos históricos significativos de declive de Bitcoin. Estos eventos son cruciales para entender cómo HBAR reacciona en condiciones de estrés del mercado cripto.\n1.  **Caída de mayo de 2021:** Bitcoin experimentó una fuerte corrección en mayo de 2021, influenciada por factores como las preocupaciones regulatorias en China y los comentarios de figuras públicas.\n2.  **Colapso de Terra/LUNA en mayo de 2022:** Este evento desencadenó una \"purga\" significativa en el mercado de altcoins y contribuyó a una prolongada tendencia bajista para Bitcoin a lo largo de 2022.\n3.  **Colapso de FTX en noviembre de 2022:** La quiebra de FTX en noviembre de 2022 provocó una crisis de confianza aún mayor, arrastrando a Bitcoin a mínimos de alrededor de $15,500 y exacerbando el mercado bajista.",
+          "hash": "165a54e9c0f49109321affdd971d3e8b318b82b0b5e0e9cbdaf6e93ad697c298",
+          "timestamp": 1772976103870
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Análisis del rendimiento de HBAR (precio y sentimiento) durante las caídas de Bitcoin\nDurante estos periodos de caídas de Bitcoin, HBAR generalmente siguió la tendencia bajista del mercado, pero mostró algunas características distintivas en cuanto a sentimiento y resiliencia.\n*   **Caída de mayo de 2021:** HBAR vio su precio caer de aproximadamente $0.35 a $0.20 inicialmente, y luego a $0.15 para el 20 de julio de 2021, reflejando el declive general del mercado. Antes de esto, había alcanzado un máximo histórico (ATH) de $0.57 en septiembre de 2021, lo que indica que, a pesar de la caída inicial, tuvo una recuperación posterior antes del siguiente ciclo bajista.\n*   **Colapso de Terra/LUNA en mayo de 2022:** HBAR sufrió un impacto severo, cayendo por debajo de $0.10 en un mes y luego a menos de $0.04 en enero de 2023, perdiendo casi todas las ganancias de su corrida alcista de 2021. El sentimiento en el mercado era de pánico generalizado y una \"pérdida de confianza en el mercado\".\n*   **Colapso de FTX en noviembre de 2022:** El índice de fuerza relativa (RSI) de HBAR alcanzó mínimos extremos durante la capitulación total del mercado que siguió al colapso de FTX. Esto sugiere un sentimiento extremadamente bajista y una fuerte presión de venta, en línea con el resto del mercado.\n*   **Correlación con Bitcoin:** HBAR muestra una alta correlación con Bitcoin (0.98), lo que significa que sus movimientos de precio a menudo espejan los de BTC, especialmente durante caídas significativas.",
+          "hash": "7b11a86598c7d739bec2aca05a383625cc88d3ced29b9d91ec447ff682553de6",
+          "timestamp": 1772976103870
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Análisis de la actividad on-chain de HBAR durante las caídas de Bitcoin y en el contexto actual\nLa actividad on-chain de HBAR, aunque no siempre se detalla explícitamente para cada caída histórica, muestra una tendencia de resiliencia subyacente y un enfoque en el desarrollo institucional que contrasta con la volatilidad del precio.\n*   **Durante el colapso de FTX (noviembre de 2022):** La actividad de transacciones en Hedera regresó a niveles normales de aproximadamente 10 TPS, y las transacciones de HTS, NFTs, Contratos Inteligentes y nuevas cuentas se mantuvieron relativamente estables después de un periodo de mayor actividad en octubre. Esto sugiere que, a pesar de la turbulencia del mercado, la actividad fundamental de la red se mantuvo en un nivel base sin un colapso.\n*   **En periodos bajistas generales:** Hedera se enfoca en la construcción y el desarrollo de su infraestructura durante las caídas del mercado, priorizando la integración con organismos de políticas y proveedores de infraestructura financiera. Su estrategia se centra en la confianza institucional y la eficiencia a escala de máquina, en lugar de la volatilidad impulsada por el comercio minorista.\n*   **Actividad on-chain reciente (finales de 2025/principios de 2026):** A pesar de la debilidad del precio, se observó un aumento en la actividad on-chain de Hedera. En diciembre de 2025, las transacciones por segundo (TPS) en la red principal alcanzaron 100 y en la testnet 44, con un aumento del 72.9% en nuevas cuentas y un crecimiento del 2% en el Valor Total Bloqueado (TVL) hasta $67.1 millones. En febrero de 2026, a pesar de una caída del 15% en el precio de HBAR, los indicadores on-chain como el Chaikin Money Flow mostraron una divergencia significativa con entrada de capital a pesar de la caída de precios, y el RSI estaba en territorio de sobreventa, indicando acumulación en lugar de venta de pánico. Además, el TVL de Hedera aumentó más del 50% entre mediados de febrero y principios de marzo de 2026.\n*   **Sentimiento actual (8 de marzo de 2026):** El sentimiento en torno a HBAR es mixto, pero con una inclinación alcista a largo plazo debido a sus fundamentos. Los traders técnicos observan riesgos a corto plazo, pero los constructores del ecosistema e inversores se centran en la acumulación de utilidad a través de asociaciones y productos institucionales. Se destaca un creciente interés institucional, con bancos acumulando HBAR como un activo de RWA (Real-World Asset) y la incorporación de FedEx al Consejo de Gobierno.",
+          "hash": "e1b0e26eb40e9121d37c1a0e7172df70add83f290e74249072d744ec9fa3f08b",
+          "timestamp": 1772976103870
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Conclusión y Recomendación\nDurante las caídas fuertes de Bitcoin, HBAR ha demostrado una alta correlación de precios, lo que resulta en descensos significativos que a menudo eliminan gran parte de sus ganancias anteriores. El sentimiento general del mercado hacia HBAR se vuelve bajista en estos periodos de estrés. Sin embargo, los datos on-chain y las tendencias de desarrollo sugieren una resiliencia subyacente. A pesar de la volatilidad del precio, la actividad fundamental de la red de Hedera, como las transacciones por segundo y el crecimiento de nuevas cuentas y TVL, puede mantenerse o incluso crecer, especialmente en periodos más recientes. Esto se debe en parte al enfoque estratégico de Hedera en la adopción institucional y la construcción de infraestructura en lugar de depender únicamente de la especulación minorista.\n\nLa \"LIVE MARKET DATA\" actual (BTC a $67088, HBAR a $0.094906) muestra que ambos activos están significativamente por debajo de sus ATHs, con HBAR en -83.3% de su ATH y BTC en -46.8% de su ATH (CoinGecko Market Data). Esto sugiere que el mercado actual sigue siendo un entorno de corrección o \"mercado bajista\" en relación con los picos históricos, aunque no una \"caída fuerte\" inmediata en las últimas 24 horas. En este contexto, el sentimiento actual para HBAR es mixto pero con un optimismo a largo plazo impulsado por los fundamentos y la acumulación institucional.\n\n**Recomendación:** Para los inversores, el historial sugiere que HBAR es susceptible a las caídas de Bitcoin, dada su alta correlación. Sin embargo, la actividad on-chain y el enfoque institucional de Hedera durante los mercados bajistas podrían indicar una capacidad de recuperación y crecimiento a largo plazo. Es crucial monitorear la actividad de desarrollo, las asociaciones institucionales y las métricas on-chain (TPS, TVL, nuevas cuentas) como indicadores de la salud subyacente del proyecto, más allá de las fluctuaciones de precio a corto plazo impulsadas por Bitcoin.",
+          "hash": "b15aa9ca3d65e0bf97e72f18e1e6c44b306be3bde13ba74a3f26f781b9e4d748",
+          "timestamp": 1772976103870
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1772976103871,
+      "dataSources": [
+        "Hedera Mirror Node",
+        "CoinGecko API",
+        "DexScreener API"
+      ],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "1de0c4a998b4039b2398a08a0a4ca725dbc20c0b92b2e4cef64c438c46a7ba78",
+      "hcsSequenceNumbers": [
+        697,
+        698,
+        699,
+        700
+      ],
+      "tokenTxId": "0.0.7986674@1772976110.650418094",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1772976110.650418094",
+      "evmTxHash": "0xdf7894ca4c4f528decacbae049f309f79e78e9e9b7b2c7dacaea54143dffd5d3",
+      "evmSettled": true
+    }
   ]
 ]
