@@ -1,31 +1,31 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight, ShieldCheck, Brain, FileCheck, Award, Github, Globe, Zap, Lock, Activity } from 'lucide-react';
+import { ArrowRight, Network, Fingerprint, Gavel, Coins, Hexagon, Blocks, Scale, Github, Globe, Zap, Lock, Activity, ShieldAlert, HeartPulse, Truck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AgentMarketplace } from '@/components/openclaw/AgentMarketplace';
 
 const features = [
   {
-    icon: Brain,
-    title: 'Autonomous AI Agent',
-    description: 'Powered by Gemini. Users fund a Smart Contract bounty, and our backend AI agent autonomously picks it up to process the inference.',
+    icon: Network,
+    title: 'Multi-Agent Swarms',
+    description: 'Agents seamlessly compose verification graphs (DAGs) using UCP protocols. No more isolated black boxes.',
   },
   {
-    icon: ShieldCheck,
-    title: 'HCS Audit Logging',
-    description: 'The agent transparently publishes its internal reasoning steps to the Hedera Consensus Service, creating an immutable trail.',
+    icon: Fingerprint,
+    title: 'HCS Immutable Lineage',
+    description: 'Every thought, API call, and reasoning step is transparently logged to the Hedera Consensus Service for cryptographic auditability.',
   },
   {
-    icon: FileCheck,
+    icon: Gavel,
     title: 'Autonomous EVM Settlement',
-    description: 'Upon completion, the AI Agent connects to the EVM as an autonomous operator, executing the Smart Contract to permanently record the audit’s cryptographic hash.',
+    description: 'Backend agents act as autonomous operators, natively executing Solidity Smart Contracts to permanently record proof hashes.',
   },
   {
-    icon: Award,
-    title: 'HTS Reputation Passport',
-    description: 'Every verified audit automatically mints a Hedera Token Service (HTS) NFT credential to the user\'s wallet as an on-chain receipt.',
+    icon: Coins,
+    title: 'Agentic Commerce',
+    description: 'Frictionless, code-to-code service settlement at scale powered by native HBAR micro-transactions.',
   },
 ];
 
@@ -65,12 +65,27 @@ export default function LandingPage() {
             <span className="text-lg font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-cyan-500">ProofFlow</span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-sm font-medium text-text-muted">
-            <Link href="#terminal" className="hover:text-white transition-colors">Terminal</Link>
-            <Link href="#lifecycle" className="hover:text-white transition-colors">Lifecycle</Link>
-            <Link href="#capabilities" className="hover:text-white transition-colors">Capabilities</Link>
-            <Link href="#advantages" className="hover:text-white transition-colors">Advantages</Link>
-            <Link href="#use-cases" className="hover:text-white transition-colors">Use Cases</Link>
+          <div className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-sm font-medium text-text-muted">
+            {[
+              { label: 'Terminal', href: '#terminal' },
+              { label: 'Economy', href: '#economy' },
+              { label: 'Lifecycle', href: '#lifecycle' },
+              { label: 'Capabilities', href: '#capabilities' },
+              { label: 'Framework', href: '#advantages' },
+              { label: 'Industries', href: '#use-cases' },
+            ].map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="hover:text-cyan-400 transition-colors cursor-pointer"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
 
           <div className="flex items-center gap-4">
@@ -222,11 +237,11 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-2xl mx-auto px-4 hidden sm:block"
+          className="relative z-10 w-full max-w-2xl mx-auto px-2 sm:px-4"
         >
-          <div className="rounded-2xl border border-white/10 bg-[#0F172A]/80 backdrop-blur-xl shadow-2xl overflow-hidden p-1 relative">
+          <div className="rounded-2xl border border-white/10 bg-[#0F172A]/80 backdrop-blur-xl shadow-2xl overflow-hidden p-0.5 sm:p-1 relative">
             {/* Mac-like header */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-white/[0.02] border-b border-white/5">
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-white/[0.02] border-b border-white/5">
               <div className="w-3 h-3 rounded-full bg-red-500/80" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
               <div className="w-3 h-3 rounded-full bg-green-500/80" />
@@ -234,20 +249,20 @@ export default function LandingPage() {
             </div>
 
             {/* Terminal Body */}
-            <div className="p-6 font-mono text-sm leading-relaxed text-left">
-              <div className="flex items-start gap-3 text-text-muted">
+            <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed text-left">
+              <div className="flex items-start gap-2 sm:gap-3 text-text-muted">
                 <span className="text-cyan-400 shrink-0">~ $</span>
                 <motion.span
                   initial={{ clipPath: 'inset(0 100% 0 0)' }}
                   whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
                   transition={{ duration: 1.5, ease: 'linear', delay: 0.5 }}
                   viewport={{ once: true }}
-                  className="text-white inline-block"
+                  className="text-white inline-block break-all sm:break-normal"
                 >
                   analyze-sentiment "The Fed just cut rates by 50bps." --verify<span className="cursor-blink"></span>
                 </motion.span>
               </div>
-              <div className="mt-4 pl-6 border-l-2 border-accent-primary/20 flex flex-col gap-2">
+              <div className="mt-3 sm:mt-4 pl-3 sm:pl-6 border-l-2 border-accent-primary/20 flex flex-col gap-1.5 sm:gap-2">
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   whileInView={{ opacity: 1, height: 'auto' }}
@@ -255,8 +270,8 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   className="flex items-center gap-2 text-text-muted overflow-hidden"
                 >
-                  <Zap className="w-4 h-4 text-yellow-400 shrink-0" />
-                  <span className="truncate">Neural inference pipeline initiated...</span>
+                  <Network className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span className="truncate">Delegating to OpenClaw Market Intel...</span>
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -265,7 +280,7 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   className="flex items-center gap-2 text-text-muted overflow-hidden"
                 >
-                  <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <Fingerprint className="w-4 h-4 text-cyan-400 shrink-0" />
                   <span className="truncate">Hashing reasoning steps to SHA-256...</span>
                 </motion.div>
                 <motion.div
@@ -284,13 +299,13 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 5.2 }}
                 viewport={{ once: true }}
-                className="mt-5 flex items-center justify-between bg-black/40 rounded-lg p-3 border border-white/5"
+                className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 bg-black/40 rounded-lg p-3 border border-white/5"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
-                  <span className="text-xs text-text-muted">Anchored on Hedera Testnet</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+                  <span className="text-[10px] sm:text-xs text-text-muted">Anchored on Hedera Testnet</span>
                 </div>
-                <Link href="/dashboard" className="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors">
+                <Link href="/dashboard" className="text-[10px] sm:text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors w-full sm:w-auto justify-end">
                   View Proof <ArrowRight className="w-3 h-3" />
                 </Link>
               </motion.div>
@@ -300,61 +315,75 @@ export default function LandingPage() {
       </section>
 
       {/* ============ OPENCLAW AGENT MARKETPLACE ============ */}
-      <AgentMarketplace />
+      <div id="economy">
+        <AgentMarketplace />
+      </div>
 
       {/* ============ HOW IT WORKS TIMELINE ============ */}
-      <section id="lifecycle" className="relative py-24 px-6 bg-surface/20 border-t border-border/50">
-        <div className="max-w-5xl mx-auto">
+      <section id="lifecycle" className="relative py-24 px-6 bg-[#050914] border-t border-border/20 overflow-hidden">
+        {/* Glow */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="text-center mb-20"
           >
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">The Lifecycle of a Proof</h2>
-            <p className="text-text-muted max-w-2xl mx-auto">
-              From user prompt to immutable cryptographic consensus in seconds.
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/10 mb-6">
+              <Hexagon className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="text-xs font-mono text-cyan-300 font-medium tracking-wide uppercase">Workflow Protocol</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4 tracking-tight">The Lifecycle of a Proof</h2>
+            <p className="text-text-muted/90 max-w-2xl mx-auto font-light leading-relaxed">
+              From UCP request to immutable cryptographic consensus in seconds.
             </p>
           </motion.div>
 
           <div className="relative">
-            {/* Connection Line */}
-            <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-accent-primary/30 to-transparent -translate-y-1/2 hidden md:block" />
+            {/* Connection Line with Gradient */}
+            <div className="absolute top-1/6 md:top-1/2 left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent -translate-y-1/2 hidden md:block" />
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 lg:gap-8">
 
               {[
                 {
                   step: '01',
                   title: 'Native HBAR Micro-fee',
-                  desc: 'User pays a frictionless native HBAR fee to the Agent Operator account.',
-                  icon: Zap,
-                  color: 'text-blue-400',
-                  bg: 'bg-blue-400/10'
+                  desc: 'Machine-to-machine payment via frictionless native HBAR to the operator account.',
+                  icon: Coins,
+                  color: 'text-amber-400',
+                  bg: 'bg-amber-400/10',
+                  border: 'border-amber-400/20'
                 },
                 {
                   step: '02',
-                  title: 'Agent Inference',
-                  desc: 'The Backend AI Agent detects the request, runs Gemini, and decomposes the reasoning steps.',
-                  icon: Brain,
+                  title: 'Composable Inference',
+                  desc: 'The backend AI agent pulls the prompt and delegates sub-tasks to specialized peers.',
+                  icon: Network,
                   color: 'text-purple-400',
-                  bg: 'bg-purple-400/10'
+                  bg: 'bg-purple-400/10',
+                  border: 'border-purple-400/20'
                 },
                 {
                   step: '03',
-                  title: 'HCS & HTS Integration',
-                  desc: 'Agent logs reasoning transparently to HCS and mints a verifiable HTS NFT passport.',
-                  icon: Activity,
+                  title: 'HCS Traceability',
+                  desc: 'Agent logs every reasoning step transparently to HCS, building the public DAG.',
+                  icon: Fingerprint,
                   color: 'text-cyan-400',
-                  bg: 'bg-cyan-400/10'
+                  bg: 'bg-cyan-400/10',
+                  border: 'border-cyan-400/20'
                 },
                 {
                   step: '04',
-                  title: 'Autonomous EVM Execution',
-                  desc: 'The Backend Agent signs its own EVM transaction to record the final proof hash on the Solidity Smart Contract.',
-                  icon: ShieldCheck,
-                  color: 'text-yellow-400',
-                  bg: 'bg-yellow-400/10'
+                  title: 'EVM Execution',
+                  desc: 'The agent securely signs its EVM transaction to permanently anchor the proof root.',
+                  icon: Gavel,
+                  color: 'text-green-400',
+                  bg: 'bg-green-400/10',
+                  border: 'border-green-400/20'
                 }
               ].map((item, i) => (
                 <motion.div
@@ -365,15 +394,20 @@ export default function LandingPage() {
                   transition={{ delay: i * 0.15 }}
                   className="relative flex flex-col items-center text-center group"
                 >
-                  {/* Circle Node */}
-                  <div className={`w-16 h-16 rounded-2xl ${item.bg} border border-white/5 flex items-center justify-center mb-6 relative z-10 group-hover:-translate-y-2 transition-transform duration-300 shadow-xl backdrop-blur-md`}>
-                    <item.icon className={`w-7 h-7 ${item.color}`} />
-                    <div className="absolute -top-3 -right-3 w-6 h-6 rounded-full bg-surface border border-white/10 flex items-center justify-center text-[10px] font-bold text-white">
+                  {/* Hexagon Node */}
+                  <div className={`relative w-20 h-20 rounded-2xl ${item.bg} border ${item.border} flex items-center justify-center mb-6 z-10 group-hover:-translate-y-2 transition-transform duration-500 shadow-2xl backdrop-blur-xl group-hover:shadow-[0_0_30px_-5px_var(--tw-shadow-color)]`} style={{ '--tw-shadow-color': item.bg.split('/')[0].replace('bg-', '') } as any}>
+                    {/* Inner subtle glow */}
+                    <div className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    <item.icon className={`w-8 h-8 ${item.color} relative z-10 transition-transform duration-500 group-hover:scale-110`} />
+
+                    {/* Step badge */}
+                    <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#0a0f1a] border border-white/10 flex items-center justify-center text-[10px] font-bold text-white shadow-lg">
                       {item.step}
                     </div>
                   </div>
-                  <h3 className="text-xl font-display font-bold text-white mb-3">{item.title}</h3>
-                  <p className="text-sm text-text-muted leading-relaxed max-w-[200px]">{item.desc}</p>
+                  <h3 className="text-lg lg:text-xl font-display font-semibold text-white mb-3 tracking-tight">{item.title}</h3>
+                  <p className="text-sm text-text-muted/80 leading-relaxed font-light max-w-[220px]">{item.desc}</p>
                 </motion.div>
               ))}
 
@@ -402,9 +436,9 @@ export default function LandingPage() {
       </section>
 
       {/* ============ PLATFORM CAPABILITIES ============ */}
-      <section id="capabilities" className="relative py-24 px-6 border-t border-border/50 overflow-hidden">
+      <section id="capabilities" className="relative py-24 px-6 overflow-hidden bg-[#02040a]">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-0 w-[80vw] h-[80vw] sm:w-[400px] sm:h-[400px] bg-accent-primary/5 rounded-full blur-[80px] sm:blur-[120px]" />
+          <div className="absolute top-1/2 left-[-10%] w-[60%] h-[60%] bg-blue-500/5 rounded-full blur-[140px]" />
         </div>
 
         <div className="max-w-6xl mx-auto relative z-10">
@@ -414,13 +448,13 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">Core Capabilities</h2>
-            <p className="text-text-muted max-w-xl mx-auto">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4 tracking-tight">Core Capabilities</h2>
+            <p className="text-text-muted/90 max-w-xl mx-auto font-light lg:text-lg">
               Everything you need to orchestrate trustless AI agent economies.
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 gap-4 lg:gap-6">
             {features.map((feature, i) => (
               <motion.div
                 key={feature.title}
@@ -428,13 +462,16 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group p-6 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:border-accent-primary/30 hover:bg-white/[0.05] transition-all duration-300"
+                className="group relative p-8 lg:p-10 rounded-3xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl hover:border-cyan-500/20 hover:bg-cyan-500/[0.02] transition-colors duration-500 overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-xl bg-surface border border-white/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                  <feature.icon className="w-5 h-5 text-accent-primary" />
+                {/* Internal gradient decoration */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="w-14 h-14 rounded-2xl bg-[#0a0f1a] border border-white/[0.05] flex items-center justify-center mb-6 group-hover:bg-cyan-950/30 transition-colors duration-500">
+                  <feature.icon className="w-6 h-6 text-cyan-400" />
                 </div>
-                <h3 className="text-base font-display font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-text-muted leading-relaxed">{feature.description}</p>
+                <h3 className="text-xl lg:text-2xl font-display font-semibold text-white mb-3 tracking-tight">{feature.title}</h3>
+                <p className="text-sm lg:text-base text-text-muted/80 leading-relaxed font-light">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -442,13 +479,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============ ADVANTAGES BENTO ============ */}
-      <section id="advantages" className="relative py-24 px-6 overflow-hidden">
-        {/* Subtle background glow for depth */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 right-0 w-[100vw] h-[100vw] sm:w-[500px] sm:h-[500px] bg-cyan-500/5 rounded-full blur-[100px] sm:blur-[150px]" />
-          <div className="absolute bottom-0 left-1/4 w-[80vw] h-[80vw] sm:w-[300px] sm:h-[300px] bg-blue-500/5 rounded-full blur-[80px] sm:blur-[100px]" />
-        </div>
-
+      <section id="advantages" className="relative py-24 px-6 overflow-hidden bg-[#0a0f1a]">
         <div className="max-w-6xl mx-auto relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -456,48 +487,47 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border/50 bg-surface/30 backdrop-blur-sm mb-4">
-              <span className="text-xs font-mono text-cyan-400 tracking-wide uppercase">Hedera Apex Hackathon</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-teal-500/20 bg-teal-500/10 mb-6">
+              <Blocks className="w-3.5 h-3.5 text-teal-400" />
+              <span className="text-xs font-mono text-teal-300 tracking-wide uppercase">Hedera Apex Hackathon</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">Deep Hedera Integration</h2>
-            <p className="text-text-muted max-w-2xl mx-auto">
-              Combining HCS, HTS, and EVM to create a fully verifiable autonomous agent protocol.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4 tracking-tight">Deep Framework Integration</h2>
+            <p className="text-text-muted/90 max-w-2xl mx-auto font-light leading-relaxed lg:text-lg">
+              Native HCS, HTS, and EVM logic fused to create a purely decentralized agent protocol.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
 
-            {/* Card 1: Zero-Trust (Large) */}
+            {/* Card 1: Single Tx (Large) */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              className="md:col-span-2 relative group p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-cyan-500/30 hover:bg-white/[0.04]"
+              className="md:col-span-2 relative group p-8 lg:p-12 rounded-[2rem] border border-white/[0.05] bg-gradient-to-br from-[#111827] to-[#0a0f1a] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-blue-500/30"
             >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/10 rounded-full blur-[80px] -mr-20 -mt-20 transition-opacity group-hover:opacity-100 opacity-50" />
-              <Globe className="w-10 h-10 text-cyan-400 mb-6 relative z-10" />
-              <h3 className="text-2xl font-display font-bold text-white mb-3 relative z-10">Single-Transaction UX for Users</h3>
-              <p className="text-text-muted leading-relaxed relative z-10 max-w-md">
-                Users simply deposit HBAR into the EVM Smart Contract with their prompt. The agent abstracts away all the complexities of HCS logging, HTS token minting, and EVM settlement. It's truly "fire and forget".
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -mr-20 -mt-20" />
+              <Network className="w-12 h-12 text-blue-400 mb-6 relative z-10" />
+              <h3 className="text-2xl font-display font-semibold text-white mb-4 relative z-10 tracking-tight">Single-Transaction UX</h3>
+              <p className="text-text-muted/80 leading-relaxed font-light relative z-10 max-w-md">
+                Users simply deposit HBAR into the EVM Smart Contract with their prompt. The agent abstract away HCS parsing, subgraph tracing, and EVM callback responses.
               </p>
             </motion.div>
 
-            {/* Card 2: Privacy (Small) */}
+            {/* Card 2: Security (Small) */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              whileHover={{ scale: 1.02 }}
-              className="relative group p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-blue-400/30 hover:bg-white/[0.04]"
+              className="relative group p-8 rounded-[2rem] border border-white/[0.05] bg-gradient-to-b from-[#111827] to-[#0a0f1a] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-cyan-400/30"
             >
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-blue-400/10 rounded-full blur-[60px] -ml-10 -mb-10 transition-opacity group-hover:opacity-100 opacity-50" />
-              <Lock className="w-10 h-10 text-blue-400 mb-6 relative z-10" />
-              <h3 className="text-xl font-display font-bold text-white mb-3 relative z-10">DeFi Auditing</h3>
-              <p className="text-sm text-text-muted leading-relaxed relative z-10">
-                AI agents evaluating smart contracts can now prove their analysis paths on-chain before protocols automatically execute upgrades.
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-400/10 rounded-full blur-[60px] -ml-10 -mb-10" />
+              <ShieldAlert className="w-10 h-10 text-cyan-400 mb-6 relative z-10" />
+              <h3 className="text-xl font-display font-semibold text-white mb-3 relative z-10 tracking-tight">DeFi Auditing</h3>
+              <p className="text-sm text-text-muted/80 leading-relaxed font-light relative z-10">
+                Agents trace vulnerabilities before upgrades.
               </p>
             </motion.div>
 
@@ -507,14 +537,13 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              whileHover={{ scale: 1.02 }}
-              className="relative group p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-accent-primary/30 hover:bg-white/[0.04]"
+              className="relative group p-8 rounded-[2rem] border border-white/[0.05] bg-[#0c1322] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-purple-400/30"
             >
-              <div className="absolute top-0 left-0 w-40 h-40 bg-accent-primary/10 rounded-full blur-[60px] -ml-10 -mt-10 transition-opacity group-hover:opacity-100 opacity-50" />
-              <Activity className="w-10 h-10 text-accent-primary mb-6 relative z-10" />
-              <h3 className="text-xl font-display font-bold text-white mb-3 relative z-10">Sub-Second Finality</h3>
-              <p className="text-sm text-text-muted leading-relaxed relative z-10">
-                Powered by aBFT consensus, proofs are finalized in 3-5 seconds with 100% deterministic ordering. No more waiting for block confirmations.
+              <div className="absolute top-0 left-0 w-40 h-40 bg-purple-400/10 rounded-full blur-[60px] -ml-10 -mt-10" />
+              <HeartPulse className="w-10 h-10 text-purple-400 mb-6 relative z-10" />
+              <h3 className="text-xl font-display font-semibold text-white mb-3 relative z-10 tracking-tight">Sub-Second Finality</h3>
+              <p className="text-sm text-text-muted/80 leading-relaxed font-light relative z-10">
+                aBFT consensus means deterministic ordering instantly.
               </p>
             </motion.div>
 
@@ -524,14 +553,13 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              whileHover={{ scale: 1.02 }}
-              className="md:col-span-2 relative group p-8 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-cyan-400/30 hover:bg-white/[0.04]"
+              className="md:col-span-2 relative group p-8 lg:p-12 rounded-[2rem] border border-white/[0.05] bg-[#0c1424] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-green-400/30"
             >
-              <div className="absolute bottom-0 right-0 w-64 h-64 bg-cyan-400/10 rounded-full blur-[80px] -mr-20 -mb-20 transition-opacity group-hover:opacity-100 opacity-50" />
-              <Zap className="w-10 h-10 text-cyan-400 mb-6 relative z-10" />
-              <h3 className="text-2xl font-display font-bold text-white mb-3 relative z-10">$0.0001 per Proof</h3>
-              <p className="text-text-muted leading-relaxed relative z-10 max-w-md">
-                High-frequency AI decision making requires micro-transaction feasibility. Hedera&apos;s consensus guarantees predictably low, fixed fiat fees, making verifiable intelligence economically viable at scale.
+              <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] -mr-20 -mb-20" />
+              <Scale className="w-10 h-10 text-green-400 mb-6 relative z-10" />
+              <h3 className="text-2xl font-display font-semibold text-white mb-4 relative z-10 tracking-tight">$0.0001 per Proof</h3>
+              <p className="text-text-muted/80 leading-relaxed font-light relative z-10 max-w-md">
+                High-frequency AI decision making requires micro-transaction feasibility. Predictably fixed fiat fees make verifiable machine economies possible.
               </p>
             </motion.div>
 
@@ -540,7 +568,7 @@ export default function LandingPage() {
       </section>
 
       {/* ============ USE CASES (Target Industries) ============ */}
-      <section id="use-cases" className="relative py-24 px-6 bg-surface/5">
+      <section id="use-cases" className="relative py-24 px-6 bg-[#02050c] border-t border-white/[0.03]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -548,34 +576,34 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">Built for High-Stakes Industries</h2>
-            <p className="text-text-muted max-w-2xl mx-auto">
-              Where AI decisions have real-world consequences, cryptographic proof isn&apos;t optional—it&apos;s required.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4 tracking-tight">Built for Enterprise Finality</h2>
+            <p className="text-text-muted/80 max-w-2xl mx-auto font-light leading-relaxed lg:text-lg">
+              Where autonomous agents execute finance, compliance, or logistics, cryptographic trace isn&apos;t optional—it&apos;s required.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                title: 'DeFi Auditing',
-                desc: 'AI agents evaluating smart contract vulnerabilities can now prove their analysis paths on-chain before protocols upgrade.',
-                icon: ShieldCheck,
-                color: 'text-green-400',
-                bg: 'bg-green-400/10 hover:border-green-400/30 hover:shadow-[0_0_30px_rgba(74,222,128,0.1)]'
+                title: 'DeFi Autonomous Yield',
+                desc: 'AI agents evaluating smart contract variables prove their analytical heuristics on-chain prior to trading execution.',
+                icon: ShieldAlert,
+                color: 'text-indigo-400',
+                bg: 'bg-indigo-500/10 border-indigo-500/20 hover:border-indigo-500/40 hover:bg-indigo-500/10'
               },
               {
-                title: 'Medical Diagnostics',
-                desc: 'Diagnostic AI models can record immutable reasoning steps to HCS, ensuring full liability trace and FDA compliance.',
-                icon: Activity,
-                color: 'text-blue-400',
-                bg: 'bg-blue-400/10 hover:border-blue-400/30 hover:shadow-[0_0_30px_rgba(96,165,250,0.1)]'
+                title: 'Medical Compliance',
+                desc: 'Diagnostic AI pipelines record discrete execution states to HCS, ensuring 100% liability trace for regulatory scope.',
+                icon: HeartPulse,
+                color: 'text-rose-400',
+                bg: 'bg-rose-500/10 border-rose-500/20 hover:border-rose-500/40 hover:bg-rose-500/10'
               },
               {
-                title: 'Autonomous Supply Chain',
-                desc: 'Agents rerouting logistics based on predictive models can provide cryptographic receipts for their automated decisions.',
-                icon: Globe,
-                color: 'text-amber-400',
-                bg: 'bg-amber-400/10 hover:border-amber-400/30 hover:shadow-[0_0_30px_rgba(251,191,36,0.1)]'
+                title: 'Routing Logistics',
+                desc: 'Supply chains dynamically re-route inventory utilizing OpenClaw models generating immutable Hedera receipts per hop.',
+                icon: Truck,
+                color: 'text-orange-400',
+                bg: 'bg-orange-500/10 border-orange-500/20 hover:border-orange-500/40 hover:bg-orange-500/10'
               }
             ].map((useCase, i) => (
               <motion.div
@@ -584,11 +612,11 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className={`p-8 rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-sm transition-all duration-300 ${useCase.bg}`}
+                className={`p-10 rounded-3xl border border-white/[0.05] bg-[#0a0f1a] transition-all duration-300 hover:-translate-y-1 ${useCase.bg}`}
               >
-                <useCase.icon className={`w-8 h-8 ${useCase.color} mb-5`} />
-                <h3 className="text-xl font-display font-bold text-white mb-3">{useCase.title}</h3>
-                <p className="text-sm text-text-muted leading-relaxed">{useCase.desc}</p>
+                <useCase.icon className={`w-10 h-10 ${useCase.color} mb-6`} />
+                <h3 className="text-xl font-display font-semibold text-white mb-3 tracking-tight">{useCase.title}</h3>
+                <p className="text-sm text-text-muted/80 leading-relaxed font-light">{useCase.desc}</p>
               </motion.div>
             ))}
           </div>
