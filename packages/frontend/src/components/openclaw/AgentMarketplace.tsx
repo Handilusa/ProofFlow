@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Activity, Globe, Database } from 'lucide-react';
+import { ShieldCheck, Activity, Globe, Database, GitBranch, Search, Zap, Boxes, Star } from 'lucide-react';
 
 // --- AGENT CONFIG ---
 const AGENTS = [
@@ -14,6 +14,7 @@ const AGENTS = [
         bgClass: 'bg-purple-500/15',
         borderClass: 'border-purple-400/40',
         mockQuery: 'Analyzing SaucerSwap pool risk...',
+        parentDeps: ['🌱 DAG Origin — Step 1/3'], // Root
     },
     {
         id: 'agent-security',
@@ -22,7 +23,9 @@ const AGENTS = [
         color: '#60a5fa',        // blue-400
         bgClass: 'bg-blue-500/15',
         borderClass: 'border-blue-400/40',
-        mockQuery: 'Verifying DAO treasury hash...',
+        mockQuery: 'Verifying DAO treasury contracts...',
+        parentDeps: ['#1 Risk Analysis'], // Depends on DeFi Analyst
+        dagStep: 'Step 2/3',
     },
     {
         id: 'agent-market',
@@ -31,13 +34,15 @@ const AGENTS = [
         color: '#4ade80',        // green-400
         bgClass: 'bg-green-500/15',
         borderClass: 'border-green-400/40',
-        mockQuery: 'Evaluating HBAR volatility...',
+        mockQuery: 'Evaluating HBAR entry strategy...',
+        parentDeps: ['#1 Risk', '#2 Audit'], // Depends on both
+        dagStep: 'Step 3/3',
     }
 ];
 
 // Equilateral triangle positions (120° apart) on a circle
 // Angles: -90° (top), 30° (bottom-right), 150° (bottom-left)
-const ORBIT_RADIUS = 160; // px from center
+const ORBIT_RADIUS = 175; // px from center
 const AGENT_ANGLES = [-150, -30, 90]; // Top-left, Top-right, Bottom-center
 
 function getAgentPosition(angleDeg: number) {
@@ -49,20 +54,24 @@ function getAgentPosition(angleDeg: number) {
 }
 
 const LOG_MESSAGES = [
-    { text: "[Agent: DeFi Analyst] Initiating UCP payment of 0.02 HBAR...", type: "agent" },
-    { text: "[Sys] Transaction 0.0.98... confirmed ✓", type: "sys" },
-    { text: "[Agent: DeFi Analyst] POST /api/v1/reason", type: "agent" },
-    { text: "[ProofFlow] Gemini inference complete. Hashing...", type: "proof" },
-    { text: "[HCS] Topic msg logged → 0.0.1234@1709847264", type: "hcs" },
-    { text: "[ProofFlow] Proof dispatched to Agent.", type: "proof" },
+    { text: "🏦 [DeFi Analyst] Paying 0.02 HBAR → ProofFlow...", type: "agent" },
+    { text: "[Sys] Payment 0.0.798...confirmed ✓", type: "sys" },
+    { text: "🏦 [DeFi Analyst] POST /reason (root proof)", type: "agent" },
+    { text: "[ProofFlow] Gemini → HCS → Proof #1: pf-8a3f...", type: "proof" },
+    { text: "[HCS] 5 msgs → Topic 0.0.1234  rootHash: 0xab3f...", type: "hcs" },
     { text: "─────────────────────────────────────", type: "sep" },
-    { text: "[Agent: Security Auditor] Initiating UCP payment 0.02 HBAR...", type: "agent" },
-    { text: "[Sys] Transaction 0.0.99... confirmed ✓", type: "sys" },
-    { text: "[Agent: Security Auditor] POST /api/v1/reason", type: "agent" },
-    { text: "[ProofFlow] Verifying signature...", type: "proof" },
-    { text: "[HCS] Topic msg logged → 0.0.1235@1709847289", type: "hcs" },
-    { text: "[ProofFlow] Proof dispatched to Agent.", type: "proof" },
+    { text: "🔐 [Security Auditor] Paying 0.02 HBAR...", type: "agent" },
+    { text: "🔐 [Security Auditor] POST /reason", type: "agent" },
+    { text: "   🔗 parentProofIds: [\"pf-8a3f...\"]", type: "hcs" },
+    { text: "[ProofFlow] Injecting 1 parent proof as context...", type: "proof" },
+    { text: "[ProofFlow] Gemini → HCS → Proof #2: pf-c71b...", type: "proof" },
     { text: "─────────────────────────────────────", type: "sep" },
+    { text: "📊 [Market Strategist] POST /reason", type: "agent" },
+    { text: "   🔗 parents: [\"pf-8a3f\", \"pf-c71b\"]", type: "hcs" },
+    { text: "[ProofFlow] Injecting 2 parent proofs...", type: "proof" },
+    { text: "[ProofFlow] Gemini → HCS → Proof #3: pf-e40d...", type: "proof" },
+    { text: "─────────────────────────────────────", type: "sep" },
+    { text: "✅ DAG: #1→#2→#3 | Depth: 3 | All verified", type: "sys" },
 ];
 
 export function AgentMarketplace() {
@@ -119,30 +128,46 @@ export function AgentMarketplace() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="relative w-full aspect-square max-w-[480px] mx-auto"
+                        className="relative w-full aspect-square max-w-[480px] mx-auto lg:ml-0 lg:mr-auto lg:-translate-x-[42px]"
                     >
-                        {/* Orbit Ring */}
-                        <div
-                            className="absolute border border-white/[0.15] rounded-full"
-                            style={{
-                                width: ORBIT_RADIUS * 2 + 80,
-                                height: ORBIT_RADIUS * 2 + 80,
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                            }}
-                        />
-                        {/* Second subtle ring */}
-                        <div
-                            className="absolute border border-white/[0.08] rounded-full"
-                            style={{
-                                width: ORBIT_RADIUS * 2 + 160,
-                                height: ORBIT_RADIUS * 2 + 160,
-                                top: '50%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                            }}
-                        />
+                        {/* Animated Orbit Rings */}
+                        <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                        >
+                            {/* Inner Ring (Aligned with agents) */}
+                            <div
+                                className="absolute border border-white/[0.1] rounded-full"
+                                style={{
+                                    width: ORBIT_RADIUS * 2,
+                                    height: ORBIT_RADIUS * 2,
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    borderStyle: 'dashed',
+                                    borderWidth: '1px',
+                                }}
+                            />
+                        </motion.div>
+
+                        <motion.div
+                            className="absolute inset-0 pointer-events-none"
+                            animate={{ rotate: -360 }}
+                            transition={{ duration: 100, repeat: Infinity, ease: "linear" }}
+                        >
+                            {/* Outer Subtle Ring */}
+                            <div
+                                className="absolute border border-white/[0.05] rounded-full"
+                                style={{
+                                    width: ORBIT_RADIUS * 2 + 120,
+                                    height: ORBIT_RADIUS * 2 + 120,
+                                    top: '50%',
+                                    left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                }}
+                            />
+                        </motion.div>
 
                         {/* Center: ProofFlow */}
                         <motion.div
@@ -290,10 +315,26 @@ export function AgentMarketplace() {
                                                             animate={{ opacity: 1, scale: 1 }}
                                                             exit={{ opacity: 0, scale: 0.95 }}
                                                             transition={{ duration: 0.4 }}
-                                                            className="whitespace-nowrap px-3 py-1.5 rounded-md bg-black/80 border text-[9px] text-white font-mono shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-                                                            style={{ borderColor: `${agent.color}50` }}
+                                                            className="flex flex-col items-center gap-1"
                                                         >
-                                                            {agent.mockQuery}
+                                                            <div className="whitespace-nowrap px-3 py-1.5 rounded-md bg-black/80 border text-[9px] text-white font-mono shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                                                                style={{ borderColor: `${agent.color}50` }}>
+                                                                {agent.mockQuery}
+                                                            </div>
+                                                            {agent.parentDeps.length > 0 && (
+                                                                <div className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-[8px] text-white/50 font-mono flex items-center gap-1">
+                                                                    {agent.dagStep ? (
+                                                                        <>
+                                                                            <span style={{ color: '#a1a1aa' }}>{agent.dagStep}</span>
+                                                                            <span className="text-white/20">|</span>
+                                                                            <span>↳</span>
+                                                                            <span style={{ color: agent.color }}>{agent.parentDeps.join(', ')}</span>
+                                                                        </>
+                                                                    ) : (
+                                                                        <span style={{ color: '#a1a1aa' }}>{agent.parentDeps[0]}</span>
+                                                                    )}
+                                                                </div>
+                                                            )}
                                                         </motion.div>
                                                     )}
                                                 </AnimatePresence>
@@ -326,7 +367,7 @@ export function AgentMarketplace() {
                                 <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                                <span className="ml-3 text-[10px] font-mono text-text-muted/40">openclaw-agent-simulation.js</span>
+                                <span className="ml-3 text-[10px] font-mono text-text-muted/40">openclaw-swarm.js</span>
                             </div>
                             <div className="p-4 h-56 overflow-hidden font-mono text-[11px] leading-[1.8] flex flex-col justify-end">
                                 <AnimatePresence initial={false}>
@@ -359,7 +400,7 @@ export function AgentMarketplace() {
                         {/* CTA */}
                         <div className="mt-6">
                             <a
-                                href="https://github.com/Handilusa/ProofFlow/blob/main/packages/backend/src/scripts/openclaw-client.js"
+                                href="https://github.com/Handilusa/ProofFlow/blob/main/packages/backend/src/scripts/openclaw-swarm.js"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-all"
@@ -370,7 +411,106 @@ export function AgentMarketplace() {
                     </motion.div>
 
                 </div >
-            </div >
-        </section >
+
+                {/* PROTOCOL ADVANTAGES */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                >
+                    {[
+                        {
+                            icon: GitBranch,
+                            title: 'Composable DAG',
+                            desc: 'Agents quote each other via Parent IDs, building an immutable Directed Acyclic Graph of reasoning.',
+                            color: 'text-purple-400'
+                        },
+                        {
+                            icon: Search,
+                            title: 'Trustless Lineage',
+                            desc: 'Recursive verification traces every "thought" back to its HCS origin and EVM settlement.',
+                            color: 'text-blue-400'
+                        },
+                        {
+                            icon: Zap,
+                            title: 'Agentic Commerce',
+                            desc: 'Native HBAR micro-fees enable autonomous, code-to-code service settlement at enterprise scale.',
+                            color: 'text-yellow-400'
+                        },
+                        {
+                            icon: Boxes,
+                            title: 'Verifiable Oracle',
+                            desc: 'ProofFlow removes the "Black Box" of AI, acting as a secure reasoning layer for the Agentic Society.',
+                            color: 'text-teal-400'
+                        }
+                    ].map((feature, i) => (
+                        <div key={i} className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/20 transition-all group">
+                            <feature.icon className={`w-6 h-6 ${feature.color} mb-4 group-hover:scale-110 transition-transform`} />
+                            <h4 className="text-white font-semibold mb-2 text-sm uppercase tracking-wider">{feature.title}</h4>
+                            <p className="text-xs text-text-muted leading-relaxed">
+                                {feature.desc}
+                            </p>
+                        </div>
+                    ))}
+                </motion.div>
+
+                {/* THE KILLER EDGE / COMPARISON */}
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="mt-24 p-8 lg:p-12 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-transparent to-purple-500/10 border border-white/10 relative overflow-hidden"
+                >
+                    <div className="absolute top-0 right-0 p-8 opacity-10">
+                        <Star className="w-32 h-32 text-cyan-400 rotate-12" />
+                    </div>
+
+                    <div className="relative z-10 max-w-3xl">
+                        <h3 className="text-2xl lg:text-3xl font-display font-bold text-white mb-6 flex items-center gap-3">
+                            <span className="px-2 py-1 rounded bg-cyan-500 text-black text-xs uppercase tracking-tighter">Killer Edge</span>
+                            Why ProofFlow?
+                        </h3>
+
+                        <div className="space-y-6 text-sm lg:text-base text-text-muted leading-relaxed">
+                            <p>
+                                Traditional AI agents (AutoGPT, LangChain) operate in a <strong className="text-white">Black Box</strong>. You have to trust the developer, the server, and the state. In high-stakes environments like DeFi or Enterprise Security, "trust" is a vulnerability.
+                            </p>
+
+                            <div className="grid sm:grid-cols-2 gap-8 mt-8">
+                                <div className="space-y-3">
+                                    <h5 className="text-white font-semibold flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                                        Professional Agents
+                                    </h5>
+                                    <ul className="space-y-2 text-xs opacity-70 list-disc ml-4">
+                                        <li>Centralized API dependencies</li>
+                                        <li>Private, opaque reasoning logs</li>
+                                        <li>No cross-agent verification</li>
+                                        <li>Web2 subscription models (Credit Cards)</li>
+                                    </ul>
+                                </div>
+                                <div className="space-y-3">
+                                    <h5 className="text-cyan-400 font-semibold flex items-center gap-2">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                                        ProofFlow (The Killer Edge)
+                                    </h5>
+                                    <ul className="space-y-2 text-xs text-cyan-100/80 list-disc ml-4">
+                                        <li><strong>Verifiable DAG</strong>: Inmutable reasoning chain</li>
+                                        <li><strong>On-Chain Proofs</strong> (HCS + EVM settlement)</li>
+                                        <li><strong>Protocol Native</strong>: HBAR micro-fees per step</li>
+                                        <li><strong>Audit-First</strong>: Every "thought" is a public hash</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <p className="mt-8 italic text-xs border-l-2 border-cyan-500/30 pl-4 bg-cyan-500/5 py-3 rounded-r-lg">
+                                "ProofFlow is the <strong>Git of Reasoning</strong>. It transforms AI from a chat interface into a verifiable infrastructure for the Agentic Society."
+                            </p>
+                        </div>
+                    </div>
+                </motion.div>
+            </div>
+        </section>
     );
 }

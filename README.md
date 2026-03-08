@@ -1,4 +1,4 @@
-# ProofFlow (v1.0.1)
+# ProofFlow (v1.0.4)
 
 ### The Autonomous "Agentic Web3" Trust Layer
 > Verifiable reasoning, immutable audit trails, and autonomous settlement on Hedera.
@@ -16,12 +16,21 @@ When a user interacts with ProofFlow, they aren't just talking to a chatbot. The
 
 ---
 
+## 🛡️ Enterprise-Grade Protection
+
+ProofFlow incorporates a robust 3-layer security system to protect the autonomous infrastructure:
+1. **Hedera Micropayments**: Every request requires an on-chain HBAR fee settlement.
+2. **hCaptcha Enterprise**: Prevents bot-net spam while dynamically ignoring valid on-chain agent requests.
+3. **Decentralized Rate Limiting**: Request throttling tied to the connected Hedera Wallet Address.
+
+---
+
 ## 🏗️ Architectural Flow: "The Lifecycle of a Proof"
 
 ProofFlow demonstrates a true **multi-service integration** on Hedera:
 
 1.  **Autonomous Trigger**: User deposits a native HBAR micro-fee ($0.0001 equivalent) into the platform.
-2.  **AI Inference**: The Backend Agent detects the payment, fetches live market context, and uses **Gemini 1.5 Pro** to decompose the problem into logical reasoning steps.
+2.  **AI Inference**: The Backend Agent detects the payment, fetches live market context, and uses **Gemini 2.5 Flash** to decompose the problem into logical reasoning steps.
 3.  **HCS Audit Logging**: Every internal "thought" and step is hashed and published to the **Hedera Consensus Service (HCS)** topic in real-time. This creates an immutable, timestamped trail of *how* the AI reached its conclusion.
 4.  **HTS Reputation Minting**: Upon successful completion, the agent mints a **Hedera Token Service (HTS)** NFT/Badge called a "Reputation Passport" to the user's wallet as an on-chain receipt.
 5.  **EVM Settlement**: The Agent acts as its own operator, signing a transaction to the `ProofValidator.sol` **EVM Smart Contract** to record the cryptographic hash of the final result, ensuring permanent availability.
@@ -32,7 +41,7 @@ ProofFlow demonstrates a true **multi-service integration** on Hedera:
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Logic** | Gemini 1.5 Pro | Higher-order reasoning and autonomous step decomposition. |
+| **Logic** | Gemini 2.5 Flash | Higher-order reasoning and autonomous step decomposition. |
 | **Blockchain** | Hedera (HCS, HTS, EVM) | The backbone for consensus, identity, and settlement. |
 | **Frontend** | Next.js 14, Tailwind, Framer Motion | Premium dashboard with interactive terminal and live audit feed. |
 | **Backend** | Node.js, Express | Autonomous orchestrator and Hedera service manager. |
@@ -48,50 +57,36 @@ The ProofFlow backend exposes a robust API for agent coordination:
 Fetch network configuration, contract addresses, and current operator fee (HBAR).
 
 ### `POST /api/v1/reason`
-**Body**: `{ question: string, requesterAddress?: string, paymentTxHash?: string }`
-Triggers the full autonomous pipeline. Returns the reasoning result immediately.
+**Body**: `{ question: string, requesterAddress?: string, paymentTxHash?: string, parentProofIds?: string[] }`
+Triggers the full autonomous pipeline. Accepts optional `parentProofIds` to inject cryptographically verified HCS context from other agents. Returns the reasoning result.
 
 ### `GET /api/v1/proof/:id`
 Retrieves the full HCS reasoning chain and metadata for a specific proof.
 
+### `GET /api/v1/verify/:proofId`
+Returns deep lineage verification data, tracing the full DAG of proof dependencies down to their root EVM transaction hashes.
+
 ### `GET /api/v1/leaderboard`
 Ranks users based on their HTS Reputation Token balances indexed via the Mirror Node.
 
-### `GET /api/v1/user/profile/:address`
-Fetches community-defined usernames and reputation levels.
-
 ---
 
-## 🎨 Judging Criteria Alignment
+## 🤖 OpenClaw: Multi-Agent Reasoning Chain
 
-*   **Innovation (AI & Agents)**: ProofFlow moves beyond "chat" into "autonomous operation," where the agent handles payments, consensus logging, and contract settlement without human intervention.
-*   **Integration**: Combines HCS (real-time audits), HTS (reputation economy), and EVM (permanent settlement) in a single unified flow.
-*   **Execution**: Fully functional MVP with support for native Hedera wallets (Hashpack) and EVM wallets (MetaMask/OKX).
-*   **Success**: Encourages HBAR micro-transactions and HTS token adoption, increasing network utility and account creation.
-*   **Feasibility**: See our full [Business Plan & Lean Canvas](./BUSINESS_PLAN.md) for revenue model, GTM strategy, and roadmap.
-*   **Validation**: See our [Market Validation Report](./VALIDATION.md) for early adopter feedback and traction metrics.
+ProofFlow is public infrastructure for autonomous agents. In the OpenClaw vision, agents need to make complex decisions collaboratively. 
 
----
+ProofFlow acts as a **Verifiable Reasoning Oracle**. With the new **Multi-Agent Chain**, agents can pay for a proof and *cryptographically reference* the proofs of other agents, building an immutable DAG of reasoning.
 
-## 🤖 OpenClaw Bounty: Reasoning Oracle for the Agentic Society
+1. **Bank Agent** pays and requests Risk Analysis → `Proof #1`
+2. **Security Agent** passes `Proof #1` hash and requests Audit → `Proof #2 (depends on #1)`
+3. **Market Agent** passes `Proof #1, #2` hashes and requests Strategy → `Proof #3 (depends on #1, #2)`
 
-ProofFlow is not just a human-facing dApp — it is **public infrastructure for autonomous agents**.
-
-In the OpenClaw vision of an "Agentic Society," agents need to make complex decisions, but they can't all run their own AI. ProofFlow acts as a **Verifiable Reasoning Oracle** — any external agent can:
-
-1.  **Discover** ProofFlow via its public API endpoint.
-2.  **Pay** the micro-fee (0.02 HBAR) autonomously via a native HBAR transfer.
-3.  **Delegate** a complex reasoning task (risk analysis, market evaluation, security audit).
-4.  **Receive** a verifiable, HCS-anchored proof that the reasoning was performed correctly.
-5.  **Decide** based on the auditable result, with full on-chain accountability.
-
-**Run the simulation:**
+**Run the DAG simulation:**
 ```bash
 # Ensure ProofFlow backend is running on localhost:3001
-node packages/backend/src/scripts/openclaw-client.js
+node packages/backend/src/scripts/openclaw-swarm.js
 ```
-
-This script creates 3 autonomous agents (DeFi Risk Analyst, Market Intelligence, Security Auditor) that independently pay and query ProofFlow — demonstrating agent-to-agent commerce on Hedera.
+This script creates a swarm of autonomous agents that independently pay and query ProofFlow, demonstrating agent-to-agent composability on Hedera.
 
 ---
 

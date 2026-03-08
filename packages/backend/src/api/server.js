@@ -128,12 +128,13 @@ app.post("/api/v1/reason",
     [
         body("question").isString().notEmpty().withMessage("question is required"),
         body("requesterAddress").optional().isString(),
-        body("paymentTxHash").optional().isString()
+        body("paymentTxHash").optional().isString(),
+        body("parentProofIds").optional().isArray().withMessage("parentProofIds must be an array")
     ],
     handleValidationErrors,
     async (req, res, next) => {
         try {
-            const { question, requesterAddress, paymentTxHash } = req.body;
+            const { question, requesterAddress, paymentTxHash, parentProofIds } = req.body;
 
             // Enforce micropayment when Smart Contract is active
             const contractActive = isContractReady();
@@ -164,6 +165,44 @@ app.post("/api/v1/reason",
                 console.log(`[API] Payment verified (legacy mode): ${paymentTxHash}`);
             }
 
+            // 0. Resolve parent proofs for Multi-Agent Reasoning Chain
+            let parentContext = "";
+            const resolvedParents = [];
+            if (parentProofIds && parentProofIds.length > 0) {
+                console.log(`[API] 🔗 Multi-Agent Chain: resolving ${parentProofIds.length} parent proof(s)...`);
+                for (const pid of parentProofIds) {
+                    const parentProof = await hcsAuditService.getProofById(pid);
+                    if (parentProof) {
+                        const parentAnswer = parentProof.steps?.find(s => s.label === "FINAL")?.content || "(no final answer)";
+                        const parentHash = parentProof.rootHash || "(pending)";
+                        resolvedParents.push({
+                            proofId: pid,
+                            question: parentProof.question,
+                            answer: parentAnswer.substring(0, 500),
+                            rootHash: parentHash,
+                        });
+                        console.log(`[API]   ✓ Parent ${pid}: hash=${parentHash?.substring(0, 16)}...`);
+                    } else {
+                        console.warn(`[API]   ⚠ Parent ${pid} not found — skipping`);
+                    }
+                }
+
+                if (resolvedParents.length > 0) {
+                    parentContext = "\n\n══════ VERIFIED PARENT PROOFS (On-Chain) ══════\n"
+                        + "The following conclusions were produced by other autonomous agents and are "
+                        + "cryptographically anchored on Hedera Consensus Service (HCS). "
+                        + "You MUST incorporate these verified findings into your analysis.\n\n"
+                        + resolvedParents.map((p, i) =>
+                            `── Parent Proof #${i + 1} ──\n`
+                            + `  Proof ID:   ${p.proofId}\n`
+                            + `  Root Hash:  ${p.rootHash}\n`
+                            + `  Question:   ${p.question}\n`
+                            + `  Conclusion: ${p.answer}\n`
+                        ).join("\n")
+                        + "\n══════════════════════════════════════════════\n";
+                }
+            }
+
             // 1. Enrich question with live market data
             let enrichedPrompt = question;
             let sources = [];
@@ -174,6 +213,12 @@ app.post("/api/v1/reason",
                 console.log(`[API] Enriched with sources: ${sources.join(", ") || "none"}`);
             } catch (enrichErr) {
                 console.warn("[API] Market data enrichment failed, using raw question:", enrichErr.message);
+            }
+
+            // Inject parent proof context into the prompt
+            if (parentContext) {
+                enrichedPrompt = parentContext + "\n" + enrichedPrompt;
+                console.log(`[API] 🔗 Injected ${resolvedParents.length} parent proof(s) into prompt context`);
             }
 
             // 2. Call Gemini for reasoning with enriched context
@@ -191,6 +236,8 @@ app.post("/api/v1/reason",
             // Store the original question, not the enriched one
             reasoningResult.question = question;
             reasoningResult.dataSources = sources;
+            reasoningResult.parentProofIds = parentProofIds || [];
+            reasoningResult.parentProofs = resolvedParents;
 
             // 3. Ensure the model actually completed its reasoning
             const finalAnswerStep = reasoningResult.steps.find(s => s.label === "FINAL");
@@ -215,6 +262,8 @@ app.post("/api/v1/reason",
                 dataSources: sources,
                 createdAt: reasoningResult.createdAt,
                 requesterAddress: requesterAddress,
+                parentProofIds: reasoningResult.parentProofIds,
+                parentProofs: resolvedParents,
             };
 
             res.status(201).json(responseData);
@@ -413,6 +462,61 @@ app.get("/api/v1/user/profile/:address",
 
             const status = userService.getProfileStatus(hederaAccountId);
             return res.status(200).json(status);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
+// ═══════════════════════════════════════════════════════
+// 🔗  Proof Verification & Lineage (Multi-Agent Chain)
+// ═══════════════════════════════════════════════════════
+app.get("/api/v1/verify/:proofId",
+    [param("proofId").isString().notEmpty()],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { proofId } = req.params;
+            const proof = await hcsAuditService.getProofById(proofId);
+
+            if (!proof) {
+                return res.status(404).json({ error: "Proof not found" });
+            }
+
+            // Build lineage chain by walking parent proofs
+            const lineage = [];
+            const visited = new Set();
+            const buildLineage = async (pid) => {
+                if (visited.has(pid)) return;
+                visited.add(pid);
+                const p = await hcsAuditService.getProofById(pid);
+                if (!p) return;
+                lineage.push({
+                    proofId: pid,
+                    question: p.question,
+                    rootHash: p.rootHash || null,
+                    hcsTopicId: p.hcsTopicId || null,
+                    evmTxHash: p.evmTxHash || null,
+                    status: p.status,
+                    parentProofIds: p.parentProofIds || [],
+                    createdAt: p.createdAt,
+                });
+                for (const parentId of (p.parentProofIds || [])) {
+                    await buildLineage(parentId);
+                }
+            };
+            await buildLineage(proofId);
+
+            return res.status(200).json({
+                proofId,
+                rootHash: proof.rootHash || null,
+                hcsTopicId: proof.hcsTopicId || null,
+                evmTxHash: proof.evmTxHash || null,
+                status: proof.status,
+                parentProofIds: proof.parentProofIds || [],
+                lineage,
+                chainDepth: lineage.length,
+            });
         } catch (error) {
             next(error);
         }
