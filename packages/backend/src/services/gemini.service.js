@@ -112,6 +112,8 @@ RULES:
 - Do NOT use any other format. Do NOT output plain prose without step labels.
 - Each step should be substantive — at least 2-3 sentences of real analysis.
 - If you use live data (prices, volumes, market cap), explicitly cite the source in the step (e.g. "CoinGecko data shows...").
+- CRITICAL: Jamás uses lenguaje vago, teórico o de relleno. Ve directo a los datos técnicos duros y análisis cuantitativo.
+- CRITICAL: Si no tienes datos numéricos suficientes en tu contexto para hacer un análisis profundo, indícalo explícitamente como "Datos Insuficientes" y detén la divagación. No inventes justificaciones teóricas largas si te faltan datos duros.
 
 VIOLATION OF THIS FORMAT WILL RESULT IN AN AUDIT FAILURE.`
                         }]
