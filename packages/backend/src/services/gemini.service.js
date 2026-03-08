@@ -106,8 +106,15 @@ STRICT OUTPUT FORMAT — YOU MUST FOLLOW THIS EXACTLY:
 
 [FINAL] <Your definitive, well-reasoned conclusion and recommendation>
 
+EXAMPLE OF CORRECT OUTPUT:
+[STEP 1] El precio actual de HBAR es $0.10. El volumen de 24 horas es de $45 millones.
+[STEP 2] Comparando esta liquidez con el promedio mensual, observamos una caída del 15% en la actividad de los DEX.
+[STEP 3] Esta caída se correlaciona con la tendencia general del mercado cripto, como se observa en la caída de Bitcoin esta semana.
+[FINAL] Por lo tanto, no se recomienda abrir posiciones de alta frecuencia en este momento debido a la baja volatilidad intradía.
+
 RULES:
 - You MUST produce at minimum 3 STEPs and 1 FINAL section.
+- NEVER start your response with text outside of a block. THE VERY FIRST WORD OF YOUR RESPONSE MUST BE "[STEP 1]".
 - Each step MUST be clearly labeled with [STEP N] or [FINAL].
 - NEVER merge all your thinking into a single [FINAL] section or skip steps.
 - Do NOT use any other format. Do NOT output plain prose without step labels.
