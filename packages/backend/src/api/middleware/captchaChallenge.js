@@ -91,13 +91,39 @@ export function createCaptchaChallenge(userConfig = {}) {
         return lowJitterCount >= Math.floor((config.jitterSampleSize - 1) * 0.7);
     }
 
+    // ── Safe paths that should NEVER trigger CAPTCHA ──
+    // These are read-only endpoints the frontend polls regularly.
+    // Without this whitelist, normal frontend usage triggers CAPTCHA on production.
+    const SAFE_PATHS = [
+        "/api/v1/config",
+        "/api/v1/stats",
+        "/api/v1/health",
+        "/api/v1/proofs",
+        "/api/v1/leaderboard",
+        "/api/v1/captcha/verify",
+    ];
+
+    function isSafePath(method, path) {
+        // All GET requests to safe paths are whitelisted
+        if (method === "GET") {
+            // Exact match
+            if (SAFE_PATHS.includes(path)) return true;
+            // Prefix match for dynamic routes like /api/v1/proof/:id, /api/v1/proofs?address=...
+            if (path.startsWith("/api/v1/proof/") || path.startsWith("/api/v1/proofs")) return true;
+            if (path.startsWith("/api/v1/user/")) return true;
+        }
+        // Always skip the captcha verify endpoint
+        if (path === "/api/v1/captcha/verify" && method === "POST") return true;
+        return false;
+    }
+
     // ── Main middleware ──
     function middleware(req, res, next) {
         const ip = req.ip || req.connection?.remoteAddress || "unknown";
         const now = Date.now();
 
-        // Skip CAPTCHA verification endpoint itself
-        if (req.path === "/api/v1/captcha/verify" && req.method === "POST") {
+        // Skip CAPTCHA for safe read-only endpoints & verification
+        if (isSafePath(req.method, req.path)) {
             return next();
         }
 
