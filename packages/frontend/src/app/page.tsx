@@ -67,9 +67,9 @@ export default function LandingPage() {
 
           <div className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2 text-sm font-medium text-text-muted">
             {[
-              { label: 'Terminal', href: '#terminal' },
-              { label: 'Economy', href: '#economy' },
               { label: 'Lifecycle', href: '#lifecycle' },
+              { label: 'Economy', href: '#economy' },
+              { label: 'Terminal', href: '#terminal' },
               { label: 'Capabilities', href: '#capabilities' },
               { label: 'Framework', href: '#advantages' },
               { label: 'Industries', href: '#use-cases' },
@@ -224,102 +224,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ============ TERMINAL SIMULATOR ============ */}
-      <section id="terminal" className="relative py-24 px-6 bg-surface/10 border-t border-border/30">
-        <div className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-display font-medium text-white mb-3">Experience the Agent CLI</h2>
-          <p className="text-text-muted">A live look at how reasoning proofs are anchored in real time.</p>
-        </div>
-
-        {/* Interactive Try-it-Out Mini Terminal */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10 w-full max-w-2xl mx-auto px-2 sm:px-4"
-        >
-          <div className="rounded-2xl border border-white/10 bg-[#0F172A]/80 backdrop-blur-xl shadow-2xl overflow-hidden p-0.5 sm:p-1 relative">
-            {/* Mac-like header */}
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-white/[0.02] border-b border-white/5">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
-              <span className="ml-4 text-xs font-mono text-text-muted/60">proofflow-agent-cli</span>
-            </div>
-
-            {/* Terminal Body */}
-            <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed text-left">
-              <div className="flex items-start gap-2 sm:gap-3 text-text-muted">
-                <span className="text-cyan-400 shrink-0">~ $</span>
-                <motion.span
-                  initial={{ clipPath: 'inset(0 100% 0 0)' }}
-                  whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
-                  transition={{ duration: 1.5, ease: 'linear', delay: 0.5 }}
-                  viewport={{ once: true }}
-                  className="text-white inline-block break-all sm:break-normal"
-                >
-                  analyze-sentiment "The Fed just cut rates by 50bps." --verify<span className="cursor-blink"></span>
-                </motion.span>
-              </div>
-              <div className="mt-3 sm:mt-4 pl-3 sm:pl-6 border-l-2 border-accent-primary/20 flex flex-col gap-1.5 sm:gap-2">
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  whileInView={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.3, delay: 2.5 }}
-                  viewport={{ once: true }}
-                  className="flex items-center gap-2 text-text-muted overflow-hidden"
-                >
-                  <Network className="w-4 h-4 text-purple-400 shrink-0" />
-                  <span className="truncate">Delegating to OpenClaw Market Intel...</span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  whileInView={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.3, delay: 3.5 }}
-                  viewport={{ once: true }}
-                  className="flex items-center gap-2 text-text-muted overflow-hidden"
-                >
-                  <Fingerprint className="w-4 h-4 text-cyan-400 shrink-0" />
-                  <span className="truncate">Hashing reasoning steps to SHA-256...</span>
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  whileInView={{ opacity: 1, height: 'auto' }}
-                  transition={{ duration: 0.3, delay: 4.5 }}
-                  viewport={{ once: true }}
-                  className="flex items-center gap-2 overflow-hidden"
-                >
-                  <Activity className="w-4 h-4 text-green-400 shrink-0" />
-                  <span className="text-white truncate">Analysis: BULLISH (Confidence: 94%)</span>
-                </motion.div>
-              </div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 5.2 }}
-                viewport={{ once: true }}
-                className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 bg-black/40 rounded-lg p-3 border border-white/5"
-              >
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
-                  <span className="text-[10px] sm:text-xs text-text-muted">Anchored on Hedera Testnet</span>
-                </div>
-                <Link href="/dashboard" className="text-[10px] sm:text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors w-full sm:w-auto justify-end">
-                  View Proof <ArrowRight className="w-3 h-3" />
-                </Link>
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ============ OPENCLAW AGENT MARKETPLACE ============ */}
-      <div id="economy">
-        <AgentMarketplace />
-      </div>
-
-      {/* ============ HOW IT WORKS TIMELINE ============ */}
+      {/* ============ HOW IT WORKS TIMELINE (Moved Up) ============ */}
       <section id="lifecycle" className="relative py-24 px-6 bg-[#050914] border-t border-border/20 overflow-hidden">
         {/* Glow */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
@@ -414,6 +319,101 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* ============ OPENCLAW AGENT MARKETPLACE ============ */}
+      <div id="economy">
+        <AgentMarketplace />
+      </div>
+
+      {/* ============ TERMINAL SIMULATOR (Moved Down) ============ */}
+      <section id="terminal" className="relative py-24 px-6 bg-surface/10 border-t border-border/30">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-display font-medium text-white mb-3">Experience the Agent CLI</h2>
+          <p className="text-text-muted">A live look at how reasoning proofs are anchored in real time.</p>
+        </div>
+
+        {/* Interactive Try-it-Out Mini Terminal */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 w-full max-w-2xl mx-auto px-2 sm:px-4"
+        >
+          <div className="rounded-2xl border border-white/10 bg-[#0F172A]/80 backdrop-blur-xl shadow-2xl overflow-hidden p-0.5 sm:p-1 relative">
+            {/* Mac-like header */}
+            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-white/[0.02] border-b border-white/5">
+              <div className="w-3 h-3 rounded-full bg-red-500/80" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+              <div className="w-3 h-3 rounded-full bg-green-500/80" />
+              <span className="ml-4 text-xs font-mono text-text-muted/60">proofflow-agent-cli</span>
+            </div>
+
+            {/* Terminal Body */}
+            <div className="p-4 sm:p-6 font-mono text-xs sm:text-sm leading-relaxed text-left">
+              <div className="flex items-start gap-2 sm:gap-3 text-text-muted">
+                <span className="text-cyan-400 shrink-0">~ $</span>
+                <motion.span
+                  initial={{ clipPath: 'inset(0 100% 0 0)' }}
+                  whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
+                  transition={{ duration: 1.5, ease: 'linear', delay: 0.5 }}
+                  viewport={{ once: true }}
+                  className="text-white inline-block break-all sm:break-normal"
+                >
+                  analyze-sentiment "The Fed just cut rates by 50bps." --verify<span className="cursor-blink"></span>
+                </motion.span>
+              </div>
+              <div className="mt-3 sm:mt-4 pl-3 sm:pl-6 border-l-2 border-accent-primary/20 flex flex-col gap-1.5 sm:gap-2">
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  whileInView={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3, delay: 2.5 }}
+                  viewport={{ once: true }}
+                  className="flex items-center gap-2 text-text-muted overflow-hidden"
+                >
+                  <Network className="w-4 h-4 text-purple-400 shrink-0" />
+                  <span className="truncate">Delegating to OpenClaw Market Intel...</span>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  whileInView={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3, delay: 3.5 }}
+                  viewport={{ once: true }}
+                  className="flex items-center gap-2 text-text-muted overflow-hidden"
+                >
+                  <Fingerprint className="w-4 h-4 text-cyan-400 shrink-0" />
+                  <span className="truncate">Hashing reasoning steps to SHA-256...</span>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  whileInView={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3, delay: 4.5 }}
+                  viewport={{ once: true }}
+                  className="flex items-center gap-2 overflow-hidden"
+                >
+                  <Activity className="w-4 h-4 text-green-400 shrink-0" />
+                  <span className="text-white truncate">Analysis: BULLISH (Confidence: 94%)</span>
+                </motion.div>
+              </div>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 5.2 }}
+                viewport={{ once: true }}
+                className="mt-4 sm:mt-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 bg-black/40 rounded-lg p-3 border border-white/5"
+              >
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
+                  <span className="text-[10px] sm:text-xs text-text-muted">Anchored on Hedera Testnet</span>
+                </div>
+                <Link href="/dashboard" className="text-[10px] sm:text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors w-full sm:w-auto justify-end">
+                  View Proof <ArrowRight className="w-3 h-3" />
+                </Link>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* ============ STATS BAR ============ */}
