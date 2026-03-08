@@ -5,6 +5,35 @@ const MAX_RETRIES = 2;
 const FETCH_TIMEOUT = 60000; // 60 seconds — Gemini 2.5 Flash needs time for thinking
 
 /**
+ * Build a pool of all available Gemini API keys from environment.
+ * Supports GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3, etc.
+ */
+function buildKeyPool() {
+    const keys = [];
+    const primary = (process.env.GEMINI_API_KEY || "").trim().replace(/['"]/g, '');
+    if (primary) keys.push(primary);
+
+    // Check for additional numbered keys (GEMINI_API_KEY_2, _3, _4, ...)
+    for (let i = 2; i <= 10; i++) {
+        const key = (process.env[`GEMINI_API_KEY_${i}`] || "").trim().replace(/['"]/g, '');
+        if (key) keys.push(key);
+    }
+    return keys;
+}
+
+const API_KEYS = buildKeyPool();
+let currentKeyIndex = 0;
+
+function getNextApiKey() {
+    if (API_KEYS.length === 0) return null;
+    const key = API_KEYS[currentKeyIndex];
+    currentKeyIndex = (currentKeyIndex + 1) % API_KEYS.length;
+    return key;
+}
+
+console.log(`[Gemini] Loaded ${API_KEYS.length} API key(s) for rotation.`);
+
+/**
  * Parses Gemini's raw text response into structured reasoning steps.
  * Expects format: [STEP 1] content [STEP 2] content [FINAL] content
  */
@@ -59,8 +88,8 @@ function parseSteps(rawText) {
 }
 
 export class GeminiService {
-    async reasonWithAudit(question, retryCount = 0) {
-        const apiKey = (process.env.GEMINI_API_KEY || "").trim().replace(/['"]/g, '');
+    async reasonWithAudit(question, retryCount = 0, keysTriedThisRound = 0) {
+        const apiKey = getNextApiKey();
 
         if (!apiKey) {
             throw new Error("GEMINI_API_KEY is not configured. Add it to your .env file.");
@@ -134,11 +163,20 @@ VIOLATION OF THIS FORMAT WILL RESULT IN AN AUDIT FAILURE.`
             if (!response.ok) {
                 const errorText = await response.text().catch(() => "No error body");
 
-                if (response.status === 429 && retryCount < MAX_RETRIES) {
-                    const waitTime = Math.min(10000 * (retryCount + 1), 30000);
-                    console.warn(`[Gemini REST] Rate limited (429). Waiting ${waitTime / 1000}s before retry ${retryCount + 1}/${MAX_RETRIES}...`);
-                    await new Promise(r => setTimeout(r, waitTime));
-                    return this.reasonWithAudit(question, retryCount + 1);
+                if (response.status === 429) {
+                    // Try next API key immediately if we haven't exhausted the pool
+                    if (keysTriedThisRound + 1 < API_KEYS.length) {
+                        console.warn(`[Gemini REST] Key rate-limited (429). Rotating to next key (${keysTriedThisRound + 1}/${API_KEYS.length - 1} remaining)...`);
+                        return this.reasonWithAudit(question, retryCount, keysTriedThisRound + 1);
+                    }
+
+                    // All keys exhausted for this round — apply backoff and retry
+                    if (retryCount < MAX_RETRIES) {
+                        const waitTime = Math.min(10000 * (retryCount + 1), 30000);
+                        console.warn(`[Gemini REST] All ${API_KEYS.length} keys rate-limited. Waiting ${waitTime / 1000}s before retry round ${retryCount + 1}/${MAX_RETRIES}...`);
+                        await new Promise(r => setTimeout(r, waitTime));
+                        return this.reasonWithAudit(question, retryCount + 1, 0);
+                    }
                 }
 
                 console.error("[Gemini REST Error]:", response.status, errorText);

@@ -258,6 +258,46 @@ async function fetchDexScreenerData(tokenSymbol) {
     }
 }
 
+/**
+ * Fetches SaucerSwap DEX data from DefiLlama (free, no API key needed).
+ * DexScreener does NOT index Hedera chain, so this replaces it for HBAR queries.
+ */
+async function fetchSaucerSwapData() {
+    try {
+        const url = `${DEFILLAMA_BASE}/protocol/saucerswap`;
+        const response = await fetchWithTimeout(url, {}, 8000);
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        const currentTvl = data.currentChainTvls?.Hedera || null;
+
+        // Extract top tokens by USD value from the latest tokensInUsd entry
+        const tokensInUsd = data.chainTvls?.Hedera?.tokensInUsd;
+        let topPairs = [];
+        if (tokensInUsd && tokensInUsd.length > 0) {
+            const latest = tokensInUsd[tokensInUsd.length - 1];
+            if (latest?.tokens) {
+                topPairs = Object.entries(latest.tokens)
+                    .filter(([name]) => name !== 'WHBAR') // Exclude WHBAR itself
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 6)
+                    .map(([token, usdValue]) => ({ token, usdValue }));
+            }
+        }
+
+        return {
+            name: data.name || "SaucerSwap",
+            tvl: currentTvl,
+            category: "DEX",
+            chain: "Hedera",
+            topTokensByLiquidity: topPairs,
+        };
+    } catch (error) {
+        console.error("[MarketData] SaucerSwap/DefiLlama error:", error.message);
+        return null;
+    }
+}
+
 async function fetchDefiLlamaProtocol(slug) {
     try {
         const url = `${DEFILLAMA_BASE}/protocol/${slug}`;
@@ -317,13 +357,20 @@ async function fetchFearGreedIndex() {
 
 async function fetchHederaNetworkStats() {
     try {
-        const network = process.env.HEDERA_NETWORK || "testnet";
-        const url = `https://${network}.mirrornode.hedera.com/api/v1/network/supply`;
+        // Always use mainnet for market-facing supply data (not testnet)
+        const url = `https://mainnet.mirrornode.hedera.com/api/v1/network/supply`;
         const response = await fetch(url);
         if (!response.ok) return null;
 
         const data = await response.json();
-        return { totalSupply: data.total_supply, releasedSupply: data.released_supply };
+        // Mirror Node returns tinybars (1 HBAR = 10^8 tinybars), convert to HBAR
+        const TINYBAR_DIVISOR = 100_000_000;
+        const totalHbar = Math.round(Number(BigInt(data.total_supply) / BigInt(TINYBAR_DIVISOR)));
+        const releasedHbar = Math.round(Number(BigInt(data.released_supply) / BigInt(TINYBAR_DIVISOR)));
+        return {
+            totalSupply: totalHbar,
+            releasedSupply: releasedHbar,
+        };
     } catch (error) {
         console.error("[MarketData] Hedera Mirror Node error:", error.message);
         return null;
@@ -505,19 +552,39 @@ export async function enrichQuestionWithMarketData(question) {
                 })
             );
 
-            // DexScreener for the primary token
-            const primarySymbol = detectedTokens[0] === "hedera-hashgraph" ? "HBAR" : detectedTokens[0];
-            fetchPromises.push(
-                fetchDexScreenerData(primarySymbol).then(data => {
-                    if (data && data.length > 0) {
-                        sources.push("DexScreener API");
-                        contextBlock += "\n\n📈 DexScreener Top Pairs:\n";
-                        for (const pair of data) {
-                            contextBlock += `  ${pair.baseToken}/${pair.quoteToken} on ${pair.dex} (${pair.chain}): $${pair.priceUsd} | Vol: $${pair.volume24h?.toLocaleString()} | Liq: $${pair.liquidity?.toLocaleString()} | 24h: ${pair.priceChange24h}%\n`;
+            // DEX data: use SaucerSwap (via DefiLlama) for HBAR, DexScreener for other tokens
+            const isHbar = detectedTokens.includes("hedera-hashgraph");
+            if (isHbar) {
+                // DexScreener does NOT index Hedera — use SaucerSwap data from DefiLlama
+                fetchPromises.push(
+                    fetchSaucerSwapData().then(data => {
+                        if (data) {
+                            sources.push("SaucerSwap (DefiLlama)");
+                            contextBlock += `\n\n📈 SaucerSwap — Hedera's Primary DEX:\n`;
+                            contextBlock += `  Total Value Locked (TVL): $${data.tvl?.toLocaleString()}\n`;
+                            if (data.topTokensByLiquidity?.length > 0) {
+                                contextBlock += `  Top Tokens by Liquidity:\n`;
+                                for (const t of data.topTokensByLiquidity) {
+                                    contextBlock += `    ${t.token}: $${t.usdValue?.toLocaleString()}\n`;
+                                }
+                            }
                         }
-                    }
-                })
-            );
+                    })
+                );
+            } else {
+                const primarySymbol = detectedTokens[0];
+                fetchPromises.push(
+                    fetchDexScreenerData(primarySymbol).then(data => {
+                        if (data && data.length > 0) {
+                            sources.push("DexScreener API");
+                            contextBlock += "\n\n📈 DexScreener Top Pairs:\n";
+                            for (const pair of data) {
+                                contextBlock += `  ${pair.baseToken}/${pair.quoteToken} on ${pair.dex} (${pair.chain}): $${pair.priceUsd} | Vol: $${pair.volume24h?.toLocaleString()} | Liq: $${pair.liquidity?.toLocaleString()} | 24h: ${pair.priceChange24h}%\n`;
+                            }
+                        }
+                    })
+                );
+            }
         }
     }
 
@@ -596,9 +663,9 @@ export async function enrichQuestionWithMarketData(question) {
         fetchPromises.push(
             fetchHederaNetworkStats().then(data => {
                 if (data) {
-                    sources.push("Hedera Mirror Node");
-                    contextBlock += `\n\n🌐 Hedera Network Supply:\n`;
-                    contextBlock += `  Total: ${data.totalSupply} | Released: ${data.releasedSupply}\n`;
+                    sources.push("Hedera Mirror Node (mainnet)");
+                    contextBlock += `\n\n🌐 Hedera Network Supply (Mainnet):\n`;
+                    contextBlock += `  Total Supply: ${data.totalSupply?.toLocaleString()} HBAR | Circulating (Released): ${data.releasedSupply?.toLocaleString()} HBAR\n`;
                 }
             })
         );

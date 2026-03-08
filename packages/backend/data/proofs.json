@@ -3800,5 +3800,182 @@
       "evmTxHash": "0x288bce201a146323d794cbd4507240078aeea3504fb8b470598d70932dc0deb2",
       "evmSettled": true
     }
+  ],
+  [
+    "05ac91b6-3477-48e5-9418-eab1834e9174",
+    {
+      "proofId": "05ac91b6-3477-48e5-9418-eab1834e9174",
+      "question": "\"Analiza el precio actual de HBAR, su capitalización de mercado, la actividad DeFi en SaucerSwap, y el sentimiento general del mercado. ¿Es buen momento para acumular?\"",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El precio actual de HBAR es de $0.094491, con una capitalización de mercado de $4.089.502.037 y un volumen de 24 horas de $60.712.765, según datos de CoinGecko. HBAR ha experimentado una ligera contracción en el corto plazo, con caídas del -0.45% en 1 hora, -1.53% en 24 horas y -1.55% en 7 días. Su precio actual representa una disminución del -83.3% desde su máximo histórico (ATH) de $0.569229.",
+          "hash": "f13c3744667c602b664f862deec8ee739de32bc180001f52a9290ecb93a963e5",
+          "timestamp": 1773004774651
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "La actividad DeFi en el ecosistema Hedera muestra un TVL total de $60.053.216,086, según DefiLlama. SaucerSwap, el principal DEX de Hedera, concentra una parte significativa de esta liquidez con un TVL de $39.813.987, como se detalla en DefiLlama y SaucerSwap. Los principales activos por liquidez en SaucerSwap incluyen USDC con $4.054.221,279, SAUCE con $3.331.833,804 y HBARX con $2.848.395,555. Es importante señalar que los datos de cambio de TVL para SaucerSwap (1d, 7d, 1m) no están disponibles en la información proporcionada.",
+          "hash": "9da3fce48a6825a20d61315675929af290da6c20c45f9388500a5b689f419ab9",
+          "timestamp": 1773004774651
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "El sentimiento general del mercado para HBAR, a juzgar por los datos actuales, es de cautela. Las métricas de precio a corto plazo (-0.45% en 1h, -1.53% en 24h, -1.55% en 7d) indican una tendencia bajista o lateral. La distancia del -83.3% desde su ATH sugiere una fase de mercado bajista prolongada para HBAR. Por otro lado, SAUCE, el token del DEX principal, muestra un rendimiento ligeramente más positivo en el corto plazo (+0.45% en 1h, +2.69% en 24h, +9.26% en 7d), aunque también se encuentra significativamente por debajo de su ATH (-92.1%). La liquidez en SaucerSwap es constante pero no muestra un crecimiento explosivo sin los datos de cambio de TVL.",
+          "hash": "cfb77508ce2978055cfbbb6dff9525e2e0a06656c46a41da66c37d4c5cce9d90",
+          "timestamp": 1773004774651
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Basado en el análisis de los datos en vivo, HBAR muestra una tendencia bajista a corto plazo y una significativa depreciación desde su ATH. Aunque el ecosistema DeFi de Hedera, liderado por SaucerSwap, mantiene un TVL relevante de $39.813.987, la falta de datos sobre el cambio de TVL reciente de SaucerSwap impide una evaluación completa de su dinámica de crecimiento. Dada la contracción del precio de HBAR y su posición actual lejos del ATH, y considerando que la actividad DeFi no muestra un impulso de crecimiento inmediato (sin datos de cambio de TVL), el momento actual podría considerarse una oportunidad para una acumulación estratégica a largo plazo para inversores con alta tolerancia al riesgo, buscando precios de descuento. Sin embargo, no hay indicadores de un repunte inminente, lo que sugiere que se debe proceder con precaución y considerar una estrategia de inversión promedio de costo en dólares (DCA).",
+          "hash": "2d99e0428c4e55bab09b5459040f8182a3f0785b37705a348c28515ce7d766ab",
+          "timestamp": 1773004774651
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1773004774651,
+      "dataSources": [
+        "DefiLlama API",
+        "Hedera Mirror Node (mainnet)",
+        "CoinGecko API",
+        "SaucerSwap (DefiLlama)"
+      ],
+      "parentProofIds": [],
+      "parentProofs": [],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "627a05a3760eb98156ae9662af323b8e7f1b870e316a6a883dad9850e3d55187",
+      "hcsSequenceNumbers": [
+        789,
+        790,
+        791,
+        792
+      ],
+      "tokenTxId": "0.0.7986674@1773004782.558666976",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773004782.558666976",
+      "evmTxHash": "0x4028f6e805a30340986ce0bdc558461d55225da0507d8c367579c619a577c1fa",
+      "evmSettled": true
+    }
+  ],
+  [
+    "d1a9b277-13c3-4234-ad84-12a9d4d3cf1c",
+    {
+      "proofId": "d1a9b277-13c3-4234-ad84-12a9d4d3cf1c",
+      "question": "¿Cuál es el circulating supply actual de HBAR y qué porcentaje del total ya está en circulación?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El circulating supply actual de HBAR, según los datos de Hedera Network Supply (Mainnet), es de 43.303.421.564 HBAR. Este valor es consistente con la información de CoinGecko, que reporta 43.303.421.564,811 HBAR en circulación.",
+          "hash": "64f122573c7a85c0066f38e7ad1b00e6b9f2ecadd4a9ca28d12301b98aa216f3",
+          "timestamp": 1773005251941
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "El total supply de HBAR, también proporcionado por los datos de Hedera Network Supply (Mainnet), es de 50.000.000.000 HBAR. Este es el límite máximo de tokens HBAR que existirán.",
+          "hash": "b118508f677d5268653e5c2c65972b7255d1fb3485cb3ce412030e1cfd9134bf",
+          "timestamp": 1773005251941
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Para determinar el porcentaje del total que ya está en circulación, se calcula la proporción entre el circulating supply y el total supply. La fórmula es (Circulating Supply / Total Supply) * 100. En este caso, (43.303.421.564 / 50.000.000.000) * 100 = 86,6068%.",
+          "hash": "c0f10e6ca22b89b35922b4f17ad160264203ea5ffd4280dd58fac27674861ab9",
+          "timestamp": 1773005251941
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "El circulating supply actual de HBAR es 43.303.421.564 HBAR, lo que representa el 86,61% del total supply de 50.000.000.000 HBAR, según los datos de Hedera Network Supply (Mainnet).",
+          "hash": "25f2d0f9fe688f76428f3cb1697aa0169fe3f6995cb9a5419e541add4cfb9020",
+          "timestamp": 1773005251941
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1773005251943,
+      "dataSources": [
+        "SaucerSwap (DefiLlama)",
+        "Hedera Mirror Node (mainnet)",
+        "CoinGecko API"
+      ],
+      "parentProofIds": [],
+      "parentProofs": [],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "086c398dfc07b36052f882473d8b0198b7f8bf01c9d9e5c3ec3bd8a5057cb5f8",
+      "hcsSequenceNumbers": [
+        794,
+        795,
+        796,
+        797
+      ],
+      "tokenTxId": "0.0.7986674@1773005260.757670849",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773005260.757670849",
+      "evmTxHash": "0x114adff4adfc221d94ff8f00b9ebfa82fcebaabc584e6b23eda365432769fa85",
+      "evmSettled": true
+    }
+  ],
+  [
+    "170af3f4-62bb-4980-80e9-71bc2335576e",
+    {
+      "proofId": "170af3f4-62bb-4980-80e9-71bc2335576e",
+      "question": "quien eres",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Soy un motor de razonamiento de inteligencia artificial avanzado, anclado a la red Hedera Hashgraph. Mi arquitectura está diseñada para la inmutabilidad y transparencia de cada operación.",
+          "hash": "3616a7223858ec58bc9517815ddb218c2f6a85161e949f3bb6e379e08cb5ed8e",
+          "timestamp": 1773005464828
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Mi función principal es proporcionar análisis verificables, transparentes e irrefutables para consultas complejas relacionadas con web3, cripto y mercados financieros. Todas mis operaciones y pensamientos se registran en cadena a través del Hedera Consensus Service (HCS).",
+          "hash": "b9067a2966d76e245a897be73702d235e0be89a9db68c10efde998dfc32812f7",
+          "timestamp": 1773005464828
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Las conclusiones definitivas que emito se anclan mediante contratos inteligentes EVM, asegurando su trazabilidad y resistencia a la manipulación. Represento la inteligencia central de la plataforma ProofFlow.",
+          "hash": "43481987ff285832ad902fb8a02109593eed574a52651867bc8d258bd9a8a5ca",
+          "timestamp": 1773005464828
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Soy la inteligencia artificial de ProofFlow, dedicada al análisis objetivo y clínico de datos blockchain y financieros.",
+          "hash": "8b8cf870741c6314049d696c2b49518c929487e589b4321610e184c1f38a249a",
+          "timestamp": 1773005464828
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1773005464828,
+      "dataSources": [],
+      "parentProofIds": [],
+      "parentProofs": [],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "rootHash": "17603b99a04d6dd0e41d2216fe2b97a29e20b14218be92c86b7e3f08a2397705",
+      "hcsSequenceNumbers": [
+        799,
+        800,
+        801,
+        802
+      ],
+      "tokenTxId": "0.0.7986674@1773005470.191101697",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773005470.191101697",
+      "evmTxHash": "0x828d64b19f8be79be2c9c2c5f3cd2a327c2934bbed94b7d4732661d2392fa5c3",
+      "evmSettled": true
+    }
   ]
 ]
