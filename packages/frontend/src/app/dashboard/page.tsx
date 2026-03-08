@@ -19,7 +19,7 @@ import { useLanguage } from '@/lib/language-context';
 import { API_URL, formatTimeAgoI18n } from '@/lib/utils';
 import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
 import { getSignClient } from "@/lib/hedera-walletconnect";
-import { CaptchaModal } from '@/components/ui';
+import CaptchaModal from '@/components/ui/CaptchaModal';
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
   "Evaluate Hedera's Fully Diluted Valuation (FDV) against its real-world enterprise adoption metrics.",

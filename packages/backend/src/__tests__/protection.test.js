@@ -171,7 +171,7 @@ describe("3-Layer API Protection System", () => {
             for (let i = 0; i < 10; i++) {
                 const mockReq = {
                     ip: "10.0.0.1",
-                    path: "/api/v1/health",
+                    path: "/api/v1/reason",
                     method: "GET",
                     connection: {},
                     headers: { "user-agent": "Mozilla/5.0" },
@@ -216,7 +216,7 @@ describe("3-Layer API Protection System", () => {
             for (let i = 0; i < 5; i++) {
                 const mockReq = {
                     ip: "10.0.0.2",
-                    path: "/api/v1/health",
+                    path: "/api/v1/reason",
                     method: "GET",
                     connection: {},
                     headers: { "user-agent": "Mozilla/5.0" },
@@ -293,7 +293,7 @@ describe("3-Layer API Protection System", () => {
             for (let i = 0; i < 5; i++) {
                 const mockReq = {
                     ip: "10.0.0.3",
-                    path: "/api/v1/health",
+                    path: "/api/v1/reason",
                     method: "GET",
                     connection: {},
                     headers: { "user-agent": "Mozilla/5.0" },
