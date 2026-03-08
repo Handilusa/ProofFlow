@@ -47,6 +47,14 @@ function parseSteps(rawText) {
         });
     }
 
+    // Safety net: If Gemini produced steps but got cut off before [FINAL],
+    // promote the last step to FINAL so the response still completes.
+    const hasFinal = steps.some(s => s.label === "FINAL");
+    if (!hasFinal && steps.length > 0) {
+        console.warn(`[Gemini Parser] No [FINAL] tag found — promoting last step (${steps[steps.length - 1].label}) to FINAL`);
+        steps[steps.length - 1].label = "FINAL";
+    }
+
     return steps;
 }
 
@@ -78,9 +86,9 @@ export class GeminiService {
                     }],
                     generationConfig: {
                         temperature: 0.7,
-                        maxOutputTokens: 8192,
+                        maxOutputTokens: 16384,
                         thinkingConfig: {
-                            thinkingBudget: 2048
+                            thinkingBudget: 4096
                         }
                     },
                     systemInstruction: {
