@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity } from 'lucide-react';
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
-import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig } from '@/lib/api';
+import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha } from '@/lib/api';
 import { useWallet } from '@/lib/wallet-context';
 import { useSendTransaction } from 'wagmi';
 import { parseEther } from 'viem';
@@ -19,6 +19,7 @@ import { useLanguage } from '@/lib/language-context';
 import { API_URL, formatTimeAgoI18n } from '@/lib/utils';
 import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
 import { getSignClient } from "@/lib/hedera-walletconnect";
+import { CaptchaModal } from '@/components/ui';
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
   "Evaluate Hedera's Fully Diluted Valuation (FDV) against its real-world enterprise adoption metrics.",
@@ -77,6 +78,12 @@ export default function DualPaneDashboard() {
   const [randomVectors, setRandomVectors] = useState<string[]>([]);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'pending' | 'confirming' | 'done' | 'cancelled'>('idle');
   const [pfConfig, setPfConfig] = useState<ProofFlowConfig | null>(null);
+
+  // CAPTCHA State
+  const [captchaData, setCaptchaData] = useState<{ token: string; question: string } | null>(null);
+  const [isCaptchaOpen, setIsCaptchaOpen] = useState(false);
+  const [isVerifyingCaptcha, setIsVerifyingCaptcha] = useState(false);
+  const [captchaError, setCaptchaError] = useState<string | undefined>();
 
   // Wagmi hooks — Native HBAR transfer to bypass WalletConnect contract simulation bugs
   const { sendTransactionAsync, isPending: isSubmittingToContract } = useSendTransaction();
@@ -327,7 +334,16 @@ export default function DualPaneDashboard() {
       }
     } catch (err: any) {
       console.error(err);
-      if (err.message?.includes('429')) {
+
+      // Check for CAPTCHA Challenge
+      if (err instanceof ApiError && err.data?.captchaRequired) {
+        setCaptchaData({ token: err.data.captchaToken, question: err.data.captchaQuestion });
+        setIsCaptchaOpen(true);
+        setIsLoading(false);
+        return;
+      }
+
+      if (err.message?.includes('429') || err.message?.includes('RATE_LIMIT') || (err instanceof ApiError && err.data?.reason === 'RATE_LIMIT')) {
         const detail = err.message.replace('API Error: ', '');
         alert(language === 'es'
           ? `Límite de capacidad IA: ${detail}. Por favor, espera unos segundos.`
@@ -349,6 +365,34 @@ export default function DualPaneDashboard() {
     }
     // We intentionally removed the finally block here to prevent it from resetting
     // the UI state immediately while the 2-second 'cancelled' timeout is running.
+  };
+
+  const handleVerifyCaptcha = async (solution: string) => {
+    if (!captchaData) return;
+    setIsVerifyingCaptcha(true);
+    setCaptchaError(undefined);
+
+    try {
+      const isValid = await verifyCaptcha(captchaData.token, solution);
+      if (isValid) {
+        setIsCaptchaOpen(false);
+        setCaptchaData(null);
+        // Retry the original question submission now that we have a 15min bypass
+        handleSubmit();
+      } else {
+        setCaptchaError('Incorrect answer. Please try again.');
+      }
+    } catch (err: any) {
+      console.error('Captcha Verification Error:', err);
+      // Usually means token expired
+      if (err.message?.includes('expired') || err.message?.includes('not found')) {
+        setCaptchaError('Captcha expired. Please close this and submit again to get a new challenge.');
+      } else {
+        setCaptchaError(err.message || 'Verification failed');
+      }
+    } finally {
+      setIsVerifyingCaptcha(false);
+    }
   };
 
   const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
@@ -797,6 +841,16 @@ export default function DualPaneDashboard() {
 
       {/* RIGHT PANEL (Desktop Only) — Audit Feed Terminal via renderTerminal */}
       {renderTerminal(false)}
+
+      {/* Modals */}
+      <CaptchaModal
+        isOpen={isCaptchaOpen}
+        onClose={() => { setIsCaptchaOpen(false); setCaptchaData(null); }}
+        onVerify={handleVerifyCaptcha}
+        question={captchaData?.question || ""}
+        isLoading={isVerifyingCaptcha}
+        error={captchaError}
+      />
 
       {/* MOBILE STICKY INPUT FORM (Hidden on Desktop) */}
       <div className="lg:hidden fixed bottom-[4.8rem] left-0 right-0 p-4 bg-gradient-to-t from-background via-background/95 to-transparent z-50 pointer-events-none">

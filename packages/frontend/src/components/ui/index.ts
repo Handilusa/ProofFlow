@@ -5,3 +5,4 @@ export { default as Input } from './Input';
 export { default as Textarea } from './Textarea';
 export { default as Skeleton } from './Skeleton';
 export { ConfirmModal } from './ConfirmModal';
+export { default as CaptchaModal } from './CaptchaModal';

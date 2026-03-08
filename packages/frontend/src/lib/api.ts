@@ -53,6 +53,18 @@ export async function getConfig(): Promise<ProofFlowConfig> {
     return response.json();
 }
 
+export class ApiError extends Error {
+    public status: number;
+    public data: any;
+
+    constructor(status: number, message: string, data?: any) {
+        super(message);
+        this.status = status;
+        this.data = data;
+        this.name = 'ApiError';
+    }
+}
+
 export async function submitQuestion(question: string, address?: string, paymentTxHash?: string): Promise<ReasoningResult> {
     const response = await fetch(`${API_URL}/reason`, {
         method: "POST",
@@ -64,14 +76,38 @@ export async function submitQuestion(question: string, address?: string, payment
 
     if (!response.ok) {
         let serverMsg = response.statusText;
+        let jsonData = {};
         try {
-            const errorData = await response.json();
-            if (errorData.error) serverMsg = errorData.error;
+            jsonData = await response.json();
+            if ((jsonData as any).error) serverMsg = (jsonData as any).error;
         } catch (_) { /* ignore parse error */ }
-        throw new Error(`API Error: ${serverMsg}`);
+
+        throw new ApiError(response.status, `API Error: ${serverMsg}`, jsonData);
     }
 
     return response.json();
+}
+
+export async function verifyCaptcha(token: string, solution: string): Promise<boolean> {
+    const response = await fetch(`${API_URL}/captcha/verify`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token, solution }),
+    });
+
+    if (!response.ok) {
+        let serverMsg = response.statusText;
+        try {
+            const errorData = await response.json();
+            if (errorData.error) serverMsg = errorData.error;
+        } catch (_) { }
+        throw new Error(`Captcha Error: ${serverMsg}`);
+    }
+
+    const data = await response.json();
+    return !!data.success;
 }
 
 export interface ContractTxData {
