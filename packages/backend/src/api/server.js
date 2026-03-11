@@ -13,8 +13,10 @@ import { HCSAuditService } from "../services/hcsAudit.service.js";
 import { AuditPassService } from "../services/auditPass.service.js";
 import { enrichQuestionWithMarketData } from "../services/marketData.service.js";
 import { UserService } from "../services/userService.js";
+import { mintAndTransferGenesis } from "../services/genesisMint.service.js";
 import { isContractReady, getContractAddress, recordAuditInEVM } from "../services/hedera/proofflow.js";
 import { startContractListener } from "../services/hedera/contractListener.js";
+import { getNetwork, getMirrorNodeUrl } from "../services/hedera/networkManager.js";
 import { ethers } from "ethers";
 import fs from "fs";
 import path from "path";
@@ -22,6 +24,11 @@ import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Helper to extract network from request
+const extractNetwork = (req) => {
+    return getNetwork(req.headers['x-network'] || req.query.network || 'testnet');
+};
 
 process.on("unhandledRejection", (reason, promise) => {
     console.error("[CRITICAL] Unhandled Rejection at:", promise, "reason:", reason);
@@ -32,23 +39,44 @@ process.on("uncaughtException", (err) => {
 });
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 const UPTIME_START = Date.now();
 
 // Micropayment config
-const OPERATOR_EVM_ADDRESS = process.env.EVM_ADDRESS || '';
-const SERVICE_FEE_HBAR = process.env.SERVICE_FEE_HBAR || '0.02';
-const HEDERA_NETWORK = process.env.HEDERA_NETWORK || 'testnet';
-const MIRROR_NODE_URL = `https://${HEDERA_NETWORK}.mirrornode.hedera.com`;
+const EVM_ADDRESS_MAINNET = process.env.EVM_ADDRESS_MAINNET || '';
+const EVM_ADDRESS_TESTNET = process.env.EVM_ADDRESS_TESTNET || '';
+
+const getOperatorEvmAddress = (network) => {
+    return network === 'mainnet' ? EVM_ADDRESS_MAINNET : EVM_ADDRESS_TESTNET;
+};
+
+// Calculate realistic fee:
+// HTS Mint: ~$0.01
+// HCS Submit (2-3 messages): ~$0.0005
+// EVM Smart Contract (gas): ~$0.03
+// Base cost ~ $0.05 (approx 0.5 HBAR)
+const getServiceFee = (network, tierId = 'free') => {
+    const isMainnet = network === 'mainnet';
+    const baseFee = isMainnet ? 1.6 : 0.16; // 0.16 HBAR for testnet (realistic cost)
+    const costBase = isMainnet ? 0.5 : 0.01; // covers network costs
+
+    if (tierId === 'gold') return costBase.toString();
+    if (tierId === 'silver') return (baseFee * 0.8).toFixed(2); // 20% discount
+    if (tierId === 'bronze') return (baseFee * 0.9).toFixed(2); // 10% discount
+
+    return baseFee.toFixed(2);
+};
 
 // Verify a payment transaction on Mirror Node
-async function verifyPayment(txHash, _expectedPayerAddress) {
+async function verifyPayment(txHash, _expectedPayerAddress, networkStr) {
+    const network = getNetwork(networkStr);
+    const mirrorNodeUrl = getMirrorNodeUrl(network);
     try {
         // Give mirror node time to index the transaction
         await new Promise(r => setTimeout(r, 3000));
 
         // Hedera EVM tx hashes need to be looked up via the mirror node
-        const res = await fetch(`${MIRROR_NODE_URL}/api/v1/contracts/results/${txHash}`);
+        const res = await fetch(`${mirrorNodeUrl}/contracts/results/${txHash}`);
         if (!res.ok) {
             console.log(`[Payment] Mirror node returned ${res.status} for tx ${txHash}`);
             // On testnet, mirror node indexing can be slow — accept payment optimistically
@@ -124,6 +152,21 @@ const handleValidationErrors = (req, res, next) => {
     next();
 };
 
+app.get("/api/v1/user/tier/:address",
+    [param("address").isString().notEmpty()],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { address } = req.params;
+            const network = extractNetwork(req);
+            const tier = await auditPassService.getUserTier(address, network);
+            return res.status(200).json(tier);
+        } catch (error) {
+            next(error);
+        }
+    }
+);
+
 app.post("/api/v1/reason",
     [
         body("question").isString().notEmpty().withMessage("question is required"),
@@ -135,17 +178,28 @@ app.post("/api/v1/reason",
     async (req, res, next) => {
         try {
             const { question, requesterAddress, paymentTxHash, parentProofIds } = req.body;
+            const network = extractNetwork(req);
 
-            // Enforce micropayment when Smart Contract is active
-            const contractActive = isContractReady();
-            if (OPERATOR_EVM_ADDRESS && contractActive) {
+            let userTier = { id: 'free', discount: 0 };
+            if (requesterAddress) {
+                try {
+                    userTier = await auditPassService.getUserTier(requesterAddress, network);
+                } catch (e) {
+                    console.error("[API] Failed to fetch user tier for validation:", e.message);
+                }
+            }
+
+            // Enforce micropayment when OPERATOR_EVM_ADDRESS is configured
+            const operatorAddress = getOperatorEvmAddress(network);
+            if (operatorAddress) {
                 if (!paymentTxHash) {
                     return res.status(402).json({
                         success: false,
                         error: "Payment required. Please connect a wallet and complete the micropayment.",
+                        expectedFee: getServiceFee(network, userTier.id)
                     });
                 }
-                const verified = await verifyPayment(paymentTxHash, requesterAddress);
+                const verified = await verifyPayment(paymentTxHash, requesterAddress, network);
                 if (!verified) {
                     return res.status(402).json({
                         success: false,
@@ -153,16 +207,6 @@ app.post("/api/v1/reason",
                     });
                 }
                 console.log(`[API] Payment verified: ${paymentTxHash}`);
-            } else if (OPERATOR_EVM_ADDRESS && paymentTxHash) {
-                // Contract not active but payment was provided — still verify it
-                const verified = await verifyPayment(paymentTxHash, requesterAddress);
-                if (!verified) {
-                    return res.status(402).json({
-                        success: false,
-                        error: "Payment verification failed. Please try again.",
-                    });
-                }
-                console.log(`[API] Payment verified (legacy mode): ${paymentTxHash}`);
             }
 
             // 0. Resolve parent proofs for Multi-Agent Reasoning Chain
@@ -264,6 +308,8 @@ app.post("/api/v1/reason",
                 requesterAddress: requesterAddress,
                 parentProofIds: reasoningResult.parentProofIds,
                 parentProofs: resolvedParents,
+                network: network,
+                tier: userTier.id
             };
 
             res.status(201).json(responseData);
@@ -272,41 +318,80 @@ app.post("/api/v1/reason",
             setImmediate(async () => {
                 try {
                     const { proofsStore, saveProofsToDisk } = await import("../services/hcsAudit.service.js");
+
                     proofsStore.set(reasoningResult.proofId, {
                         ...reasoningResult,
                         status: "PUBLISHING",
                         hcsTopicId: "unknown",
-                        requesterAddress: requesterAddress
+                        requesterAddress: requesterAddress,
+                        network: network
                     });
+
                     saveProofsToDisk();
 
-                    await hcsAuditService.publishReasoningChain(reasoningResult.proofId, reasoningResult.steps);
+                    await hcsAuditService.publishReasoningChain(reasoningResult.proofId, reasoningResult.steps, network);
 
                     if (requesterAddress) {
                         try {
-                            await auditPassService.mintAuditPass(reasoningResult.proofId, requesterAddress);
+                            let resolveAddress = requesterAddress;
+                            if (resolveAddress.startsWith('0x')) {
+                                try {
+                                    const { getMirrorNodeUrl } = await import("../services/hedera/networkManager.js");
+                                    const mirrorNodeUrl = getMirrorNodeUrl(network);
+                                    const res = await fetch(`${mirrorNodeUrl}/accounts/${resolveAddress}`);
+                                    if (res.ok) {
+                                        const data = await res.json();
+                                        if (data.account) resolveAddress = data.account;
+                                    }
+                                } catch (e) {
+                                    console.log(`[API] Could not resolve EVM address ${resolveAddress} to Hedera ID:`, e.message);
+                                }
+                            }
+                            await auditPassService.mintAuditPass(reasoningResult.proofId, resolveAddress, null, network);
                         } catch (e) {
-                            console.error("Failed to mint audit pass", e);
+                            console.error("[Async] Failed to mint audit pass", e);
                         }
                     }
 
                     try {
                         const stored = proofsStore.get(reasoningResult.proofId);
                         const finalRootHash = stored ? stored.rootHash : ethers.id("fallback-hash");
-                        const evmTxHash = await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress);
-                        if (evmTxHash && stored) {
-                            stored.evmTxHash = evmTxHash;
-                            stored.evmSettled = true;
+
+                        const evmTxHash = await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress, network);
+
+                        if (stored) {
+                            if (evmTxHash) {
+                                stored.evmTxHash = evmTxHash;
+                                stored.evmSettled = true;
+                            }
                             stored.status = "VERIFIED";
                             proofsStore.set(reasoningResult.proofId, stored);
                             saveProofsToDisk();
-                            console.log(`[EVM] ✅ Proof ${reasoningResult.proofId} marked as VERIFIED (tx: ${evmTxHash})`);
+                            console.log(`[EVM - ${network.toUpperCase()}] Proof ${reasoningResult.proofId} reached VERIFIED state. ${evmTxHash ? `(tx: ${evmTxHash})` : '(EVM registration skipped)'}`);
                         }
                     } catch (e) {
-                        console.error("[EVM] Async recording failed:", e);
+                        console.error("[EVM] Async recording error:", e.message);
+                        const stored = proofsStore.get(reasoningResult.proofId);
+                        if (stored) {
+                            stored.status = "VERIFIED";
+                            proofsStore.set(reasoningResult.proofId, stored);
+                            saveProofsToDisk();
+                        }
                     }
                 } catch (err) {
-                    console.error("Async Hedera operation failed:", err);
+                    console.error("[Async] Fatal Hedera operation failed:", err.message);
+                    try {
+                        const { proofsStore, saveProofsToDisk } = await import("../services/hcsAudit.service.js");
+                        const stored = proofsStore.get(reasoningResult.proofId);
+                        if (stored) {
+                            stored.status = "FAILED";
+                            stored.error = err.message;
+                            proofsStore.set(reasoningResult.proofId, stored);
+                            saveProofsToDisk();
+                        }
+                    } catch (e) {
+                        console.error("[Async] Could not update failure status:", e);
+                    }
                 }
             });
 
@@ -350,8 +435,9 @@ app.get("/api/v1/proof/:proofId/tx-data",
     async (req, res, next) => {
         try {
             const { proofId } = req.params;
+            const network = extractNetwork(req);
 
-            if (!isContractReady()) {
+            if (!isContractReady(network)) {
                 return res.status(503).json({ error: "Smart contract not deployed or configured" });
             }
 
@@ -382,7 +468,7 @@ app.get("/api/v1/proof/:proofId/tx-data",
 
             // 4. Return data needed for `wagmi` useWriteContract
             return res.status(200).json({
-                contractAddress: getContractAddress(),
+                contractAddress: getContractAddress(network),
                 abi: artifact.abi,
                 args: [proofId, resultHash],
                 functionName: "registerProof"
@@ -407,8 +493,9 @@ app.post("/api/v1/user/profile",
             // Resolve EVM mapping to Hedera ID if necessary
             if (address.startsWith("0x")) {
                 try {
-                    const network = process.env.HEDERA_NETWORK || "testnet";
-                    const mnRes = await fetch(`https://${network}.mirrornode.hedera.com/api/v1/accounts/${address}`);
+                    const network = extractNetwork(req);
+                    const mirrorNodeUrl = getMirrorNodeUrl(network);
+                    const mnRes = await fetch(`${mirrorNodeUrl}/accounts/${address}`);
                     if (mnRes.ok) {
                         const mnData = await mnRes.json();
                         if (mnData.account) {
@@ -447,8 +534,9 @@ app.get("/api/v1/user/profile/:address",
             // Resolve EVM mapping to Hedera ID if necessary
             if (address.startsWith("0x")) {
                 try {
-                    const network = process.env.HEDERA_NETWORK || "testnet";
-                    const mnRes = await fetch(`https://${network}.mirrornode.hedera.com/api/v1/accounts/${address}`);
+                    const network = extractNetwork(req);
+                    const mirrorNodeUrl = getMirrorNodeUrl(network);
+                    const mnRes = await fetch(`${mirrorNodeUrl}/accounts/${address}`);
                     if (mnRes.ok) {
                         const mnData = await mnRes.json();
                         if (mnData.account) {
@@ -526,7 +614,8 @@ app.get("/api/v1/verify/:proofId",
 app.get("/api/v1/proofs", async (req, res, next) => {
     try {
         const address = req.query.address;
-        const proofs = await hcsAuditService.getRecentProofs(address);
+        const network = extractNetwork(req);
+        const proofs = await hcsAuditService.getRecentProofs(address, network);
         return res.status(200).json(proofs);
     } catch (error) {
         next(error);
@@ -535,7 +624,8 @@ app.get("/api/v1/proofs", async (req, res, next) => {
 
 app.get("/api/v1/leaderboard", async (req, res, next) => {
     try {
-        const leaderboard = await fetchLeaderboard(userService);
+        const network = extractNetwork(req);
+        const leaderboard = await fetchLeaderboard(userService, network);
         return res.status(200).json(leaderboard);
     } catch (error) {
         next(error);
@@ -544,7 +634,8 @@ app.get("/api/v1/leaderboard", async (req, res, next) => {
 
 app.get("/api/v1/stats", async (req, res, next) => {
     try {
-        const stats = await fetchStats();
+        const network = extractNetwork(req);
+        const stats = await fetchStats(network);
         return res.status(200).json(stats);
     } catch (error) {
         next(error);
@@ -552,9 +643,10 @@ app.get("/api/v1/stats", async (req, res, next) => {
 });
 
 app.get("/api/v1/health", (req, res) => {
+    const network = extractNetwork(req);
     return res.status(200).json({
         status: "ok",
-        network: HEDERA_NETWORK,
+        network: network,
         uptime: Math.floor((Date.now() - UPTIME_START) / 1000)
     });
 });
@@ -569,16 +661,58 @@ app.post("/api/v1/captcha/verify",
     captchaVerifyHandler
 );
 
+// Mint Genesis Endpoint
+app.post("/api/v1/mint-genesis",
+    [
+        body("address").isString().notEmpty().withMessage("Wallet address is required")
+    ],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { address } = req.body;
+            const network = extractNetwork(req);
+            
+            console.log(`[API] Received Genesis Mint request for ${address} on ${network}`);
+            
+            const result = await mintAndTransferGenesis(address, network);
+            
+            return res.status(200).json({
+                success: true,
+                ...result
+            });
+        } catch (error) {
+            console.error("[API] Mint Genesis Failed:", error.message);
+            return res.status(500).json({
+                success: false,
+                error: error.message
+            });
+        }
+    }
+);
+
 // Config endpoint — tells frontend where to send micropayment
-app.get("/api/v1/config", (req, res) => {
+app.get("/api/v1/config", async (req, res) => {
+    const network = extractNetwork(req);
+    const address = req.query.address;
+    const isMainnet = network === "mainnet";
+    const operatorAddress = getOperatorEvmAddress(network);
+
+    let userTier = { id: 'free', discount: 0 };
+    if (address) {
+        try {
+            userTier = await auditPassService.getUserTier(address, network);
+        } catch (e) { }
+    }
+
     return res.status(200).json({
-        operatorEvmAddress: OPERATOR_EVM_ADDRESS,
-        operatorAccountId: process.env.HEDERA_ACCOUNT_ID,
-        serviceFeeHbar: SERVICE_FEE_HBAR,
-        network: HEDERA_NETWORK,
-        paymentRequired: !!OPERATOR_EVM_ADDRESS,
-        contractAddress: getContractAddress(),
-        contractReady: isContractReady(),
+        operatorEvmAddress: operatorAddress,
+        operatorAccountId: isMainnet ? process.env.HEDERA_ACCOUNT_ID_MAINNET : process.env.HEDERA_ACCOUNT_ID_TESTNET,
+        serviceFeeHbar: getServiceFee(network, userTier.id),
+        network: network,
+        paymentRequired: !!operatorAddress,
+        contractAddress: getContractAddress(network),
+        contractReady: isContractReady(network),
+        userTier: userTier
     });
 });
 

@@ -35,12 +35,12 @@ import "dotenv/config";
 
 // ─── Configuration ──────────────────────────────────────────────────────────────
 
-const PROOFFLOW_API = process.env.PROOFFLOW_API || "http://127.0.0.1:3001/api/v1";
-const HEDERA_ACCOUNT_ID = process.env.HEDERA_ACCOUNT_ID;
-const HEDERA_PRIVATE_KEY = process.env.HEDERA_PRIVATE_KEY;
+const PROOFFLOW_API = process.env.PROOFFLOW_API || "https://proofflow-z8fx.onrender.com/api/v1";
+const HEDERA_ACCOUNT_ID = process.env.HEDERA_ACCOUNT_ID_TESTNET;
+const HEDERA_PRIVATE_KEY = process.env.HEDERA_PRIVATE_KEY_TESTNET;
 
 if (!HEDERA_ACCOUNT_ID || !HEDERA_PRIVATE_KEY) {
-    throw new Error("HEDERA_ACCOUNT_ID and HEDERA_PRIVATE_KEY must be set in .env");
+    throw new Error("HEDERA_ACCOUNT_ID_TESTNET and HEDERA_PRIVATE_KEY_TESTNET must be set in .env");
 }
 
 const operatorClient = Client.forTestnet();
@@ -106,7 +106,7 @@ async function createAgentWallet() {
 
 async function payProofFlowFee(agentAccountId, agentPrivateKey) {
     try {
-        const configRes = await fetch(`${PROOFFLOW_API}/config`);
+        const configRes = await fetch(`${PROOFFLOW_API}/config`, { headers: { 'x-network': 'testnet' } });
         const config = await configRes.json();
 
         const operatorAccountId = config.operatorAccountId;
@@ -150,7 +150,7 @@ async function requestChainedReasoning(question, agentAccountId, paymentTxId, pa
 
     const res = await fetch(`${PROOFFLOW_API}/reason`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-network": "testnet" },
         body: JSON.stringify(body),
     });
 
@@ -167,7 +167,7 @@ async function requestChainedReasoning(question, agentAccountId, paymentTxId, pa
  */
 async function verifyProofLineage(proofId) {
     try {
-        const res = await fetch(`${PROOFFLOW_API}/verify/${proofId}`);
+        const res = await fetch(`${PROOFFLOW_API}/verify/${proofId}`, { headers: { 'x-network': 'testnet' } });
         if (!res.ok) return null;
         return await res.json();
     } catch {

@@ -9,11 +9,13 @@ import Badge from '@/components/ui/Badge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
 import { getProof, StoredProof, getRecentProofs } from '@/lib/api';
 import { useLanguage } from '@/lib/language-context';
+import { useWallet } from '@/lib/wallet-context';
 
 function VerifyContent() {
     const searchParams = useSearchParams();
     const initialId = searchParams.get('id') || '';
     const { t, language } = useLanguage();
+    const { network } = useWallet();
 
     const [proofId, setProofId] = useState(initialId);
     const [isVerifying, setIsVerifying] = useState(false);
@@ -23,7 +25,7 @@ function VerifyContent() {
 
     useEffect(() => {
         // Fetch some recent IDs for the "Try these" suggestions
-        getRecentProofs().then(res => {
+        getRecentProofs(undefined, network).then(res => {
             if (res && res.length > 0) {
                 setRecentIds(res.slice(0, 3).map(p => p.proofId));
             }
@@ -32,7 +34,7 @@ function VerifyContent() {
         if (initialId) {
             handleVerify(initialId);
         }
-    }, [initialId]);
+    }, [initialId, network]);
 
     const handleVerify = async (idToVerify: string = proofId) => {
         if (!idToVerify.trim()) return;
@@ -42,7 +44,7 @@ function VerifyContent() {
         setProof(null);
 
         try {
-            const result = await getProof(idToVerify);
+            const result = await getProof(idToVerify, network);
             setProof(result);
         } catch (err: any) {
             console.error(err);
@@ -170,7 +172,7 @@ function VerifyContent() {
                                             <span>{isFinal ? "★ FINAL ANSWER" : `● ${step.label}`}</span>
                                             {seqNum !== undefined && (
                                                 <a
-                                                    href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${proof.hcsTopicId}?sequenceNumber=${seqNum}`} target="_blank" rel="noopener noreferrer"
+                                                    href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}?sequenceNumber=${seqNum}`} target="_blank" rel="noopener noreferrer"
                                                     className="font-mono bg-surface-elevated px-2 py-0.5 rounded border border-border flex items-center gap-1.5 hover:bg-accent-primary/10 hover:border-accent-primary/50 transition-colors"
                                                 >
                                                     #SEQ {seqNum} <ExternalLink className="w-3 h-3" />
@@ -235,7 +237,7 @@ function VerifyContent() {
 
                                 {(proof as any).evmTxHash && (
                                     <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
-                                        EVM Tx: <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/tx/${(proof as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(proof as any).evmTxHash}</a>
+                                        EVM Tx: <a href={`https://hashscan.io/${network}/tx/${(proof as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(proof as any).evmTxHash}</a>
                                     </div>
                                 )}
                             </motion.div>
@@ -264,7 +266,7 @@ function VerifyContent() {
                                 <div>
                                     <span className="text-xs text-text-muted block mb-1">{t('verify_topic')}</span>
                                     <a
-                                        href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
+                                        href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
                                         className="h-9 px-4 inline-flex items-center justify-center rounded-lg border border-border/50 bg-[#0F1116] text-sm font-medium hover:bg-white/5 hover:border-border transition-all"
                                     >
                                         {proof.hcsTopicId} <ExternalLink className="w-3 h-3" />

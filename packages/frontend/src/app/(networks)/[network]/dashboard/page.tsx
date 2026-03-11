@@ -4,21 +4,21 @@ import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity } from 'lucide-react';
+import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity, Trophy, AlertTriangle } from 'lucide-react';
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha } from '@/lib/api';
 import { useWallet } from '@/lib/wallet-context';
-import { useSendTransaction } from 'wagmi';
+import { useSendTransaction, useChainId } from 'wagmi';
 import { parseEther } from 'viem';
 import Link from 'next/link';
 import VerificationBadge from '@/components/proofflow/VerificationBadge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
 import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import { useLanguage } from '@/lib/language-context';
-import { API_URL, formatTimeAgoI18n } from '@/lib/utils';
+import { API_URL, formatTimeAgoI18n, cn } from '@/lib/utils';
 import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
-import { getSignClient } from "@/lib/hedera-walletconnect";
+import { getSignClient, initHederaWalletConnect } from "@/lib/hedera-walletconnect";
 import CaptchaModal from '@/components/ui/CaptchaModal';
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
@@ -66,9 +66,20 @@ const ALL_VECTORS_ES = [
   "Desmonta (o confirma) con datos la narrativa de que la gobernanza corporativa de Hedera frena el crecimiento retail descentralizado."
 ];
 
-export default function DualPaneDashboard() {
-  const { account, connect } = useWallet();
+export default function DualPaneDashboard({ params }: { params: { network: string } }) {
+  const { account, connect, network, setNetwork, userTier } = useWallet();
   const { t, language } = useLanguage();
+
+  // URL Network
+  const urlNetwork = params.network === 'mainnet' ? 'mainnet' : 'testnet';
+
+  // Sync global state with URL
+  useEffect(() => {
+    if (network !== urlNetwork && setNetwork) {
+      setNetwork(urlNetwork);
+    }
+  }, [urlNetwork, network, setNetwork]);
+
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<ReasoningResult | null>(null);
@@ -87,6 +98,12 @@ export default function DualPaneDashboard() {
 
   // Wagmi hooks — Native HBAR transfer to bypass WalletConnect contract simulation bugs
   const { sendTransactionAsync, isPending: isSubmittingToContract } = useSendTransaction();
+  const walletChainId = useChainId();
+
+  // Network mismatch detection: Hedera Testnet = 296, Hedera Mainnet = 295
+  const expectedChainId = network === 'mainnet' ? 295 : 296;
+  const isNetworkMismatch = account?.startsWith('0x') && walletChainId && walletChainId !== expectedChainId;
+  const walletNetworkName = walletChainId === 295 ? 'Mainnet' : walletChainId === 296 ? 'Testnet' : `Chain ${walletChainId}`;
 
   // Minimal ABI for the ProofValidator contract (only what the frontend needs)
   const PROOF_VALIDATOR_ABI = [
@@ -121,10 +138,10 @@ export default function DualPaneDashboard() {
     }
   ] as const;
 
-  // Fetch platform config on mount
+  // Fetch platform config on mount — now includes account for tier-specific fees
   useEffect(() => {
-    getConfig().then(setPfConfig).catch(() => { });
-  }, []);
+    getConfig(network, account || undefined).then(setPfConfig).catch(() => { });
+  }, [network, account]);
 
   // Pick 3 random vectors on mount or language change
   useEffect(() => {
@@ -139,11 +156,11 @@ export default function DualPaneDashboard() {
     const fetchRecent = async () => {
       try {
         // Step 1: Try fetching personal audits
-        let proofs = await getRecentProofs(account || undefined);
+        let proofs = await getRecentProofs(account || undefined, network);
 
         // Step 2: If personal is empty and we have an account, fallback to global
         if (proofs.length === 0 && account) {
-          proofs = await getRecentProofs();
+          proofs = await getRecentProofs(undefined, network);
         }
 
         if (isMounted) {
@@ -167,7 +184,7 @@ export default function DualPaneDashboard() {
     let isMounted = true;
     const fetchGlobal = async () => {
       try {
-        const proofs = await getRecentProofs();
+        const proofs = await getRecentProofs(undefined, network);
         if (isMounted) setGlobalFeed(proofs.slice(0, 3));
       } catch (e) {
         console.error("Failed to load global feed", e);
@@ -191,7 +208,9 @@ export default function DualPaneDashboard() {
     if (result && result.status !== "VERIFIED") {
       const pollProof = async () => {
         try {
-          const latestData = await fetch(`${API_URL}/proof/${result.proofId}`);
+          const latestData = await fetch(`${API_URL}/proof/${result.proofId}`, {
+            headers: { 'x-network': network }
+          });
           if (latestData.ok) {
             const updatedProof = await latestData.json();
             setResult(updatedProof);
@@ -234,57 +253,94 @@ export default function DualPaneDashboard() {
     setPaymentStatus('idle');
 
     try {
-      // NEW AUTONOMOUS FLOW: Call Smart Contract requestAudit() if available
-      if (pfConfig?.contractReady && pfConfig?.contractAddress && account) {
+      // NEW AUTONOMOUS FLOW: Enforce payment if required by config
+      if (pfConfig?.paymentRequired && account) {
         setPaymentStatus('pending');
         let paymentTxHash: string | undefined;
         try {
           const feeInWei = parseEther(pfConfig.serviceFeeHbar);
 
-          if (account?.startsWith('0x')) {
-            // MetaMask / OKX / injected EVM: Send native HBAR transfer
-            // We use standard EVM transfer to bypass the `eth_estimateGas` 'null fee' 
-            // WalletConnect parsing bug on Hedera Testnet RPC.
-            // EVM Smart Contract logging is deferred to the Backend Agent.
-            paymentTxHash = await sendTransactionAsync({
-              to: pfConfig.operatorEvmAddress as `0x${string}`,
-              value: feeInWei,
-            });
-            console.log('[Payment] Native EVM transfer sent for audit request:', paymentTxHash);
-            setPaymentStatus('confirming');
+          // ── EVM-First Unified Payment Flow ──
+          // For 0x accounts: try EVM first, fallback to native Hedera if provider is incompatible.
+          // For native Hedera accounts (0.0.x): go directly to native Hedera transfer.
+          let evmFailed = !account?.startsWith('0x'); // Native accounts skip EVM entirely
 
-            // Wait for mirror node indexing before submitting to backend
-            await new Promise(r => setTimeout(r, 3000));
-            setPaymentStatus('done');
-          } else {
-            // Hashpack / Native Hedera via WalletConnect
-            // Hashpack WC bridge currently drops `payableAmount` on ContractExecutions.
-            // Workaround: Send standard HBAR transfer to Operator, then Operator automatically
-            // proxies the `requestAudit` execution on the Smart Contract.
-            const client = getSignClient();
+          if (!evmFailed) {
+            try {
+              paymentTxHash = await sendTransactionAsync({
+                to: pfConfig.operatorEvmAddress as `0x${string}`,
+                value: feeInWei,
+              });
+              console.log('[Payment] EVM transfer succeeded:', paymentTxHash);
+              setPaymentStatus('confirming');
+              await new Promise(r => setTimeout(r, 3000));
+              setPaymentStatus('done');
+            } catch (evmErr: any) {
+              const msg = (evmErr?.message || evmErr?.shortMessage || '').toLowerCase();
+              const isUnsupported = msg.includes('does not support') ||
+                msg.includes('not implemented') ||
+                msg.includes('method not found') ||
+                msg.includes('unsupported method') ||
+                msg.includes('not available') ||
+                msg.includes('ecdsa') ||
+                msg.includes('connector not connected');
+
+              // If user explicitly rejected, don't fallback — just rethrow
+              if (msg.includes('rejected') || msg.includes('denied') || msg.includes('cancel')) {
+                throw evmErr;
+              }
+
+              if (isUnsupported) {
+                console.warn('[Payment] EVM provider unsupported, falling back to native Hedera transfer...');
+                evmFailed = true;
+              } else {
+                throw evmErr; // Unknown error — rethrow
+              }
+            }
+          }
+
+          // ── Native Hedera Fallback (Hashpack / WalletConnect) ──
+          if (evmFailed) {
+            const { signClient: client } = await initHederaWalletConnect();
             if (!client || !account) throw new Error("WalletConnect Client not active. Please reconnect.");
 
             const hbarFee = parseFloat(pfConfig.serviceFeeHbar);
 
             if (!pfConfig.operatorAccountId) {
-              console.error("[Payment] Config missing operatorAccountId. Ensure backend is running and config endpoint is not cached.", pfConfig);
+              console.error("[Payment] Config missing operatorAccountId.", pfConfig);
               throw new Error("Missing operator account ID configuration. Please refresh the page.");
             }
 
+            // Derive Hedera account ID from EVM address if needed
+            let signerAccountId = account;
+            if (account.startsWith('0x')) {
+              // When Hashpack connects via EVM, account is 0x address.
+              // We need the Hedera account ID for the native transfer.
+              // Hashpack exposes this in the WalletConnect session.
+              const sessions = client.session.getAll();
+              const hederaSession = sessions.find((s: any) => s.namespaces.hedera);
+              if (hederaSession?.namespaces?.hedera?.accounts?.[0]) {
+                const parts = hederaSession.namespaces.hedera.accounts[0].split(':');
+                signerAccountId = parts[parts.length - 1]; // e.g. "0.0.12345"
+              } else {
+                throw new Error("Could not resolve Hedera account ID from EVM wallet. Please connect via the Hedera option instead.");
+              }
+            }
+
             const tx = new TransferTransaction()
-              .addHbarTransfer(account, new Hbar(-hbarFee))
+              .addHbarTransfer(signerAccountId, new Hbar(-hbarFee))
               .addHbarTransfer(pfConfig.operatorAccountId, new Hbar(hbarFee))
-              .setTransactionId(TransactionId.generate(account))
+              .setTransactionId(TransactionId.generate(signerAccountId))
               .setNodeAccountIds([AccountId.fromString("0.0.3")]);
 
             tx.freeze();
             const txBytes = Buffer.from(tx.toBytes()).toString('base64');
 
             const sessions = client.session.getAll();
-            const hederaSession = sessions.find(s => s.namespaces.hedera);
-            if (!hederaSession) throw new Error("No active Hedera WalletConnect session found.");
+            const hederaSession = sessions.find((s: any) => s.namespaces.hedera);
+            if (!hederaSession) throw new Error("No active Hedera WalletConnect session found. Please reconnect via the Hedera option.");
 
-            console.log('[Payment] Triggering native Hedera transfer request (Hashpack compatibility)...');
+            console.log('[Payment] Native Hedera fallback transfer (Hashpack compatibility)...');
             const response = await client.request({
               topic: hederaSession.topic,
               chainId: 'hedera:testnet',
@@ -292,16 +348,15 @@ export default function DualPaneDashboard() {
                 method: 'hedera_signAndExecuteTransaction',
                 params: {
                   transactionList: txBytes,
-                  signerAccountId: `hedera:testnet:${account}`
+                  signerAccountId: `hedera:testnet:${signerAccountId}`
                 }
               }
             }) as any;
 
             paymentTxHash = response?.transactionId || response?.response?.transactionId;
-            console.log('[Payment] Micropayment sent natively:', paymentTxHash);
+            console.log('[Payment] Native Hedera fallback succeeded:', paymentTxHash);
 
             setPaymentStatus('confirming');
-            // Brief wait for mirror node indexing
             await new Promise(r => setTimeout(r, 2000));
             setPaymentStatus('done');
           }
@@ -323,13 +378,13 @@ export default function DualPaneDashboard() {
         }
 
         // Submit question AFTER payment succeeds — errors here go to the general catch
-        const res = await submitQuestion(question, account, paymentTxHash);
+        const res = await submitQuestion(question, account, paymentTxHash, undefined, network);
         setResult(res);
         setIsLoading(false);
       } else {
         // If the contract isn't ready or user isn't fully connected, just try the direct API fallback
         let paymentTxHash = undefined;
-        const res = await submitQuestion(question, account || undefined, paymentTxHash);
+        const res = await submitQuestion(question, account || undefined, paymentTxHash, undefined, network);
         setResult(res);
       }
     } catch (err: any) {
@@ -373,7 +428,7 @@ export default function DualPaneDashboard() {
     setCaptchaError(undefined);
 
     try {
-      const isValid = await verifyCaptcha(captchaData.token, solution);
+      const isValid = await verifyCaptcha(captchaData.token, solution, network);
       if (isValid) {
         setIsCaptchaOpen(false);
         setCaptchaData(null);
@@ -394,8 +449,6 @@ export default function DualPaneDashboard() {
       setIsVerifyingCaptcha(false);
     }
   };
-
-  const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
 
   const renderTerminal = (isMobile: boolean) => (
     <motion.div
@@ -462,7 +515,7 @@ export default function DualPaneDashboard() {
             {paymentStatus !== 'idle' && (
               <div className={`flex items-center gap-2 ${paymentStatus === 'done' ? 'text-emerald-400' : paymentStatus === 'cancelled' ? 'text-red-400' : 'text-amber-400 animate-pulse'}`}>
                 {paymentStatus === 'done' ? (
-                  <><CheckCircle2 className="w-4 h-4" /> {language === 'es' ? 'Micropago verificado' : 'Micropayment verified'} ({pfConfig?.serviceFeeHbar} HBAR)</>
+                  <><CheckCircle2 className="w-4 h-4" /> {language === 'es' ? 'Micropago verificado' : 'Micropayment verified'} ({pfConfig?.serviceFeeHbar} HBAR{userTier && userTier.id !== 'free' ? ` - ${userTier.name} Discount` : ''})</>
                 ) : paymentStatus === 'cancelled' ? (
                   <><Lock className="w-4 h-4" /> {language === 'es' ? 'Transacción cancelada' : 'Transaction cancelled'}</>
                 ) : paymentStatus === 'confirming' ? (
@@ -484,7 +537,7 @@ export default function DualPaneDashboard() {
               <div className="flex items-center gap-2">
                 <span className="text-emerald-400">TOPIC ID:</span>
                 {result.hcsTopicId !== "pending" ? (
-                  <a href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}`} target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent-primary underline decoration-accent-primary/50 underline-offset-2 flex items-center gap-1 transition-colors">
+                  <a href={`https://hashscan.io/${network}/topic/${result.hcsTopicId}`} target="_blank" rel="noopener noreferrer" className="text-white hover:text-accent-primary underline decoration-accent-primary/50 underline-offset-2 flex items-center gap-1 transition-colors">
                     {result.hcsTopicId} <ExternalLink className="w-3 h-3" />
                   </a>
                 ) : "Awaiting assignment..."}
@@ -524,7 +577,7 @@ export default function DualPaneDashboard() {
                         </span>
                         {result.status === "CONFIRMED" || result.status === "VERIFIED" ? (
                           <a
-                            href={`https://hashscan.io/${process.env.NEXT_PUBLIC_HEDERA_NETWORK || 'testnet'}/topic/${result.hcsTopicId}?sequenceNumber=${seqNum}`}
+                            href={`https://hashscan.io/${network}/topic/${result.hcsTopicId}?sequenceNumber=${seqNum}`}
                             target="_blank" rel="noopener noreferrer"
                             className="text-[10px] text-emerald-400 flex items-center gap-1 bg-emerald-500/10 hover:bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30 transition-colors group cursor-pointer"
                             title="Verify on HashScan"
@@ -654,11 +707,33 @@ export default function DualPaneDashboard() {
       <div className="flex-1 lg:flex-[3] flex flex-col min-w-0 sm:min-w-[320px] overflow-x-hidden overflow-y-auto pr-0 lg:pr-2 scrollbar-thin pb-6 lg:pb-0">
 
         {/* FIXED HEADER ROW — ALWAYS VISIBLE ON DESKTOP */}
+        {/* Network Mismatch Warning */}
+        {isNetworkMismatch && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mx-2 mb-4 p-3 rounded-xl border border-amber-500/30 bg-amber-500/10 backdrop-blur-sm flex items-start gap-3"
+          >
+            <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-semibold text-amber-300">
+                {language === 'es' ? '⚠ Red incorrecta detectada' : '⚠ Wrong Network Detected'}
+              </p>
+              <p className="text-xs text-amber-200/70 mt-1">
+                {language === 'es'
+                  ? `Tu wallet está en ${walletNetworkName}, pero la app espera ${network === 'mainnet' ? 'Mainnet' : 'Testnet'}. Cambia la red en tu extensión de wallet y reconecta.`
+                  : `Your wallet is on ${walletNetworkName}, but the app expects ${network === 'mainnet' ? 'Mainnet' : 'Testnet'}. Switch the network in your wallet extension and reconnect.`
+                }
+              </p>
+            </div>
+          </motion.div>
+        )}
+
         <div className="flex justify-between items-center gap-4 mb-4 lg:mb-8 px-2 w-full min-h-[40px] z-30 min-w-0">
           <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-success/30 bg-success/5 shrink-0 whitespace-nowrap">
             <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
             <span className="text-[9px] sm:text-[10px] font-mono font-bold text-success uppercase tracking-wider">
-              Hedera {network.toUpperCase()} Live
+              {network === 'mainnet' ? 'Hedera MAINNET Live' : 'Hedera TESTNET Live'}
             </span>
           </div>
           <div className="min-w-0 flex-1 flex justify-end overflow-hidden">
@@ -704,6 +779,30 @@ export default function DualPaneDashboard() {
 
             {/* Form was moved to sticky bottom on mobile */}
             <div className="hidden lg:block">
+              {/* User Tier Status Info - Before Submit */}
+              {account && pfConfig && (
+                <div className="mb-4 flex items-center justify-between px-1">
+                  <div className="flex items-center gap-2">
+                    <div className={cn(
+                      "flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider",
+                      userTier?.id === 'gold' ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-500" :
+                        userTier?.id === 'silver' ? "bg-slate-400/10 border-slate-400/30 text-slate-300" :
+                          userTier?.id === 'bronze' ? "bg-amber-600/10 border-amber-600/30 text-amber-600" :
+                            "bg-white/5 border-white/10 text-white/40"
+                    )}>
+                      <Trophy className="w-3 h-3" />
+                      {userTier?.name || 'Member'}
+                    </div>
+                    {userTier && userTier.id !== 'free' && (
+                      <span className="text-[10px] text-success font-bold">-{Math.round(userTier.discount * 100)}% DISCOUNT APPLIED</span>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[10px] text-text-muted/60 block uppercase font-mono tracking-tighter">Current Network Fee</span>
+                    <span className="text-xs font-mono font-bold text-white">{pfConfig.serviceFeeHbar} HBAR</span>
+                  </div>
+                </div>
+              )}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative group overflow-hidden rounded-xl border border-border/50">
                   <textarea

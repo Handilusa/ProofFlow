@@ -3,6 +3,7 @@
 import { ExternalLink, Copy, Check } from 'lucide-react';
 import { useState } from 'react';
 import { truncateAddress } from '@/lib/utils';
+import { useWallet } from '@/lib/wallet-context';
 
 interface TxHashLinkProps {
     hash: string;
@@ -14,8 +15,8 @@ interface TxHashLinkProps {
 
 export default function TxHashLink({ hash, type = 'transaction', topicId, sequenceNumber, label }: TxHashLinkProps) {
     const [copied, setCopied] = useState(false);
+    const { network } = useWallet();
 
-    const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
     const url = type === 'topic' && topicId
         ? `https://hashscan.io/${network}/topic/${topicId}`
         : `https://hashscan.io/${network}/transaction/${hash}`;

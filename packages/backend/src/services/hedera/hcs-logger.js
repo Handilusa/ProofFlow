@@ -1,69 +1,61 @@
 import {
-    Client,
-    PrivateKey,
     TopicCreateTransaction,
     TopicMessageSubmitTransaction,
 } from "@hashgraph/sdk";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { getClient, getConfigDirPath, getNetwork } from "./networkManager.js";
 import "dotenv/config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 1. Connect to Hedera Testnet
-const myAccountId = process.env.HEDERA_ACCOUNT_ID;
-const myPrivateKey = process.env.HEDERA_PRIVATE_KEY;
-
-if (!myAccountId || !myPrivateKey) {
-    throw new Error("Environment variables HEDERA_ACCOUNT_ID and HEDERA_PRIVATE_KEY must be present");
-}
-
-const client = Client.forTestnet();
-client.setOperator(myAccountId, PrivateKey.fromStringECDSA(myPrivateKey));
-
-const configPath = path.join(__dirname, "../../../../config");
-const topicFilePath = path.join(configPath, "topic.json");
-
 // Helper to ensure config directory exists
-function ensureConfigDir() {
+function ensureConfigDir(network) {
+    const configPath = getConfigDirPath(network);
     if (!fs.existsSync(configPath)) {
         fs.mkdirSync(configPath, { recursive: true });
     }
+    return configPath;
 }
 
-// 2 & 3. Create a new HCS Topic and save to /config/topic.json (if it doesn't exist)
-export async function getOrCreateTopic() {
-    ensureConfigDir();
+// 2 & 3. Create a new HCS Topic and save to config/{network}/topic.json (if it doesn't exist)
+export async function getOrCreateTopic(networkStr = "testnet") {
+    const network = getNetwork(networkStr);
+    const client = getClient(network);
+    const configPath = ensureConfigDir(network);
+    const topicFilePath = path.join(configPath, "topic.json");
 
     if (fs.existsSync(topicFilePath)) {
         const data = JSON.parse(fs.readFileSync(topicFilePath, "utf8"));
         if (data.topicId) {
-            console.log(`Using existing Topic ID: ${data.topicId}`);
+            console.log(`[${network.toUpperCase()}] Using existing Topic ID: ${data.topicId}`);
             return data.topicId;
         }
     }
 
-    console.log("Creating new HCS Topic...");
+    console.log(`[${network.toUpperCase()}] Creating new HCS Topic...`);
     const transaction = new TopicCreateTransaction();
 
     const txResponse = await transaction.execute(client);
     const receipt = await txResponse.getReceipt(client);
     const newTopicId = receipt.topicId.toString();
 
-    console.log(`New Topic ID created: ${newTopicId}`);
+    console.log(`[${network.toUpperCase()}] New Topic ID created: ${newTopicId}`);
 
     fs.writeFileSync(topicFilePath, JSON.stringify({ topicId: newTopicId }, null, 2));
-    console.log(`Topic ID saved to ${topicFilePath}`);
+    console.log(`[${network.toUpperCase()}] Topic ID saved to ${topicFilePath}`);
 
     return newTopicId;
 }
 
 // 4. Export function to publish a hash
-export async function publishHash(taskId, resultHash) {
+export async function publishHash(taskId, resultHash, networkStr = "testnet") {
     try {
-        const topicId = await getOrCreateTopic();
+        const network = getNetwork(networkStr);
+        const client = getClient(network);
+        const topicId = await getOrCreateTopic(network);
 
         const payload = {
             taskId,
@@ -71,7 +63,7 @@ export async function publishHash(taskId, resultHash) {
             timestamp: Date.now(),
         };
 
-        console.log(`Publishing message to topic ${topicId}:`, payload);
+        console.log(`[${network.toUpperCase()}] Publishing message to topic ${topicId}:`, payload);
 
         const submitTx = new TopicMessageSubmitTransaction({
             topicId: topicId,
@@ -81,29 +73,10 @@ export async function publishHash(taskId, resultHash) {
         const submitResponse = await submitTx.execute(client);
         const receipt = await submitResponse.getReceipt(client);
 
-        console.log(`Message published successfully! Status: ${receipt.status.toString()}`);
+        console.log(`[${network.toUpperCase()}] Message published successfully! Status: ${receipt.status.toString()}`);
         return receipt;
     } catch (error) {
         console.error("Error publishing hash:", error);
         throw error;
     }
-}
-
-// 5. Test at the bottom
-async function test() {
-    try {
-        console.log("Starting HCS Logger test...");
-        await publishHash("task-123", "0xabc123def456hashedresult");
-        console.log("Test complete. Exiting...");
-        process.exit(0);
-    } catch (error) {
-        console.error("Test failed:", error);
-        process.exit(1);
-    }
-}
-
-// Run the test if this file is executed directly
-import { argv } from "process";
-if (argv[1] === __filename) {
-    test();
 }

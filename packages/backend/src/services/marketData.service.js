@@ -259,41 +259,36 @@ async function fetchDexScreenerData(tokenSymbol) {
 }
 
 /**
- * Fetches SaucerSwap DEX data from DefiLlama (free, no API key needed).
- * DexScreener does NOT index Hedera chain, so this replaces it for HBAR queries.
+ * Fetches exact Liquidity Pools from SaucerSwap's Native V2 API.
+ * This provides precise APRs (Yields) required for DeFi calculations.
  */
-async function fetchSaucerSwapData() {
+async function fetchSaucerSwapNativePools() {
     try {
-        const url = `${DEFILLAMA_BASE}/protocol/saucerswap`;
+        const url = `https://api.saucerswap.finance/pools`;
+        // SaucerSwap API sometimes takes a moment
         const response = await fetchWithTimeout(url, {}, 8000);
         if (!response.ok) return null;
 
         const data = await response.json();
-        const currentTvl = data.currentChainTvls?.Hedera || null;
+        
+        // Filter out zero-liquidity pools and sort by TVL descending
+        const validPools = data
+            .filter(p => p.tvl && p.tvl > 1000)
+            .sort((a, b) => b.tvl - a.tvl)
+            .slice(0, 5); // Take Top 5 biggest pools
 
-        // Extract top tokens by USD value from the latest tokensInUsd entry
-        const tokensInUsd = data.chainTvls?.Hedera?.tokensInUsd;
-        let topPairs = [];
-        if (tokensInUsd && tokensInUsd.length > 0) {
-            const latest = tokensInUsd[tokensInUsd.length - 1];
-            if (latest?.tokens) {
-                topPairs = Object.entries(latest.tokens)
-                    .filter(([name]) => name !== 'WHBAR') // Exclude WHBAR itself
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 6)
-                    .map(([token, usdValue]) => ({ token, usdValue }));
-            }
-        }
-
-        return {
-            name: data.name || "SaucerSwap",
-            tvl: currentTvl,
-            category: "DEX",
-            chain: "Hedera",
-            topTokensByLiquidity: topPairs,
-        };
+        return validPools.map(pool => ({
+            name: `${pool.tokenA?.symbol || 'Unknown'} / ${pool.tokenB?.symbol || 'Unknown'}`,
+            tvl: pool.tvl,
+            volume24h: pool.volume24h,
+            tokenAReserve: pool.tokenAReserve,
+            tokenBReserve: pool.tokenBReserve,
+            feeTier: pool.feeTier,
+            // Calculate total APR if available (trading fees + farm emissions)
+            apr: pool.farmApr || pool.apr || 'Variable'
+        }));
     } catch (error) {
-        console.error("[MarketData] SaucerSwap/DefiLlama error:", error.message);
+        console.error("[MarketData] SaucerSwap Native API error:", error.message);
         return null;
     }
 }
@@ -358,18 +353,41 @@ async function fetchFearGreedIndex() {
 async function fetchHederaNetworkStats() {
     try {
         // Always use mainnet for market-facing supply data (not testnet)
-        const url = `https://mainnet.mirrornode.hedera.com/api/v1/network/supply`;
-        const response = await fetch(url);
-        if (!response.ok) return null;
+        const supplyUrl = `https://mainnet.mirrornode.hedera.com/api/v1/network/supply`;
+        const stakeUrl = `https://mainnet.mirrornode.hedera.com/api/v1/network/stake`;
+        
+        const [supplyRes, stakeRes] = await Promise.all([
+            fetch(supplyUrl),
+            fetch(stakeUrl)
+        ]);
+        
+        if (!supplyRes.ok || !stakeRes.ok) return null;
 
-        const data = await response.json();
+        const supplyData = await supplyRes.json();
+        const stakeData = await stakeRes.json();
+        
         // Mirror Node returns tinybars (1 HBAR = 10^8 tinybars), convert to HBAR
         const TINYBAR_DIVISOR = 100_000_000;
-        const totalHbar = Math.round(Number(BigInt(data.total_supply) / BigInt(TINYBAR_DIVISOR)));
-        const releasedHbar = Math.round(Number(BigInt(data.released_supply) / BigInt(TINYBAR_DIVISOR)));
+        const totalHbar = Math.round(Number(BigInt(supplyData.total_supply) / BigInt(TINYBAR_DIVISOR)));
+        const releasedHbar = Math.round(Number(BigInt(supplyData.released_supply) / BigInt(TINYBAR_DIVISOR)));
+        
+        // Calculate max staking APR: Max Reward Rate per Hbar per day * 365
+        const dailyRewardTinybars = Number(stakeData.max_staking_reward_rate_per_hbar);
+        const dailyRewardHbar = dailyRewardTinybars / TINYBAR_DIVISOR;
+        const stakingApr = (dailyRewardHbar * 365 * 100).toFixed(2);
+
+        // Real totals from the network
+        const stakeTotal = Math.round(Number(BigInt(stakeData.stake_total) / BigInt(TINYBAR_DIVISOR)));
+        const maxStakeRewarded = Math.round(Number(BigInt(stakeData.max_stake_rewarded) / BigInt(TINYBAR_DIVISOR)));
+        const dailyRewardPool = Math.round(Number(BigInt(stakeData.staking_reward_rate) / BigInt(TINYBAR_DIVISOR)));
+
         return {
             totalSupply: totalHbar,
             releasedSupply: releasedHbar,
+            stakingApr: `${stakingApr}%`,
+            stakeTotal,
+            maxStakeRewarded,
+            dailyRewardPool
         };
     } catch (error) {
         console.error("[MarketData] Hedera Mirror Node error:", error.message);
@@ -557,16 +575,19 @@ export async function enrichQuestionWithMarketData(question) {
             if (isHbar) {
                 // DexScreener does NOT index Hedera — use SaucerSwap data from DefiLlama
                 fetchPromises.push(
-                    fetchSaucerSwapData().then(data => {
-                        if (data) {
-                            sources.push("SaucerSwap (DefiLlama)");
-                            contextBlock += `\n\n📈 SaucerSwap — Hedera's Primary DEX:\n`;
-                            contextBlock += `  Total Value Locked (TVL): $${data.tvl?.toLocaleString()}\n`;
-                            if (data.topTokensByLiquidity?.length > 0) {
-                                contextBlock += `  Top Tokens by Liquidity:\n`;
-                                for (const t of data.topTokensByLiquidity) {
-                                    contextBlock += `    ${t.token}: $${t.usdValue?.toLocaleString()}\n`;
-                                }
+                    fetchSaucerSwapNativePools().then(pools => {
+                        if (pools && pools.length > 0) {
+                            sources.push("SaucerSwap Native API");
+                            contextBlock += `\n\n💧 SaucerSwap V2 Liquidity Pools (Top 5 by TVL):\n`;
+                            
+                            // Calculate total DEX TVL from the top 5
+                            const totalTvl = pools.reduce((acc, p) => acc + (p.tvl || 0), 0);
+                            contextBlock += `  Top 5 Pools Combined TVL: $${totalTvl.toLocaleString()}\n`;
+                            contextBlock += `  --- EXACT YIELD (APR) DATA ---\n`;
+                            
+                            for (const p of pools) {
+                                const aprStr = typeof p.apr === 'number' ? `${p.apr.toFixed(2)}%` : p.apr;
+                                contextBlock += `    Pool: ${p.name} | Fee: ${p.feeTier}% | APR: ${aprStr} | TVL: $${p.tvl?.toLocaleString()} | Vol 24h: $${p.volume24h?.toLocaleString()}\n`;
                             }
                         }
                     })
@@ -659,13 +680,18 @@ export async function enrichQuestionWithMarketData(question) {
     }
 
     // ─── HEDERA ecosystem → Mirror Node ─────────────────────────────────────
-    if (intents.includes("HEDERA_ECOSYSTEM")) {
+    if (intents.includes("HEDERA_ECOSYSTEM") || intents.includes("DEFI")) {
         fetchPromises.push(
             fetchHederaNetworkStats().then(data => {
                 if (data) {
                     sources.push("Hedera Mirror Node (mainnet)");
-                    contextBlock += `\n\n🌐 Hedera Network Supply (Mainnet):\n`;
-                    contextBlock += `  Total Supply: ${data.totalSupply?.toLocaleString()} HBAR | Circulating (Released): ${data.releasedSupply?.toLocaleString()} HBAR\n`;
+                    contextBlock += `\n\n🌐 Hedera Network Supply & Staking (Mainnet):\n`;
+                    contextBlock += `  Total Supply: ${data.totalSupply?.toLocaleString()} HBAR | Circulating: ${data.releasedSupply?.toLocaleString()} HBAR\n`;
+                    contextBlock += `  --- EXACT YIELD (APR) DATA ---\n`;
+                    contextBlock += `  Native HBAR Staking APR: ${data.stakingApr}\n`;
+                    contextBlock += `  Total HBAR Staked: ${data.stakeTotal?.toLocaleString()} HBAR\n`;
+                    contextBlock += `  Max Stake Earning Rewards: ${data.maxStakeRewarded?.toLocaleString()} HBAR\n`;
+                    contextBlock += `  Daily Reward Pool: ${data.dailyRewardPool?.toLocaleString()} HBAR/day emitted as staking rewards\n`;
                 }
             })
         );

@@ -15,9 +15,18 @@ import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import CopyHash from '@/components/proofflow/CopyHash';
 import { formatTimeAgoI18n } from '@/lib/utils';
 
-export default function HistoryPage() {
-    const { account } = useWallet();
+export default function HistoryPage({ params }: { params: { network: string } }) {
+    const { account, network, setNetwork } = useWallet();
     const { t } = useLanguage();
+
+    const urlNetwork = params.network === 'mainnet' ? 'mainnet' : 'testnet';
+
+    useEffect(() => {
+        if (network !== urlNetwork && setNetwork) {
+            setNetwork(urlNetwork);
+        }
+    }, [urlNetwork, network, setNetwork]);
+
     const [proofs, setProofs] = useState<StoredProof[]>([]);
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState<'All' | 'Verified' | 'Pending'>('All');
@@ -32,7 +41,7 @@ export default function HistoryPage() {
 
     const fetchProofs = async () => {
         try {
-            const res = await getRecentProofs(account || undefined);
+            const res = await getRecentProofs(account || undefined, urlNetwork);
             setProofs(res);
         } catch (e) {
             console.error(e);
@@ -40,6 +49,7 @@ export default function HistoryPage() {
             setLoading(false);
         }
     };
+
 
     useEffect(() => {
         setLoading(true);

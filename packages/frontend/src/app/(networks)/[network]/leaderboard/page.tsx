@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Terminal, Search, ShieldCheck, Shield, Bot } from 'lucide-react';
+import { Terminal, Search, ShieldCheck, Shield, Bot, Sparkles } from 'lucide-react';
 import { Card, Skeleton, Input, Button } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import Link from 'next/link';
@@ -16,11 +16,28 @@ interface LeaderboardEntry {
     account: string;
     balance: number;
     username?: string;
+    isGenesis?: boolean;
 }
 
-export default function LeaderboardPage() {
-    const { account } = useWallet();
+const GenesisBadge = () => (
+    <div className="flex items-center gap-2 border border-cyan-500/30 bg-transparent px-2.5 py-1 rounded-md transition-all hover:border-cyan-400/50 hover:bg-cyan-500/5 cursor-default w-fit mx-auto" title="Genesis Verified">
+        <Sparkles className="w-3 h-3 text-cyan-400" />
+        <span className="text-[10px] font-medium text-white tracking-widest uppercase">Genesis</span>
+    </div>
+);
+
+export default function LeaderboardPage({ params }: { params: { network: string } }) {
+    const { account, network, setNetwork } = useWallet();
     const { t } = useLanguage();
+
+    const urlNetwork = params.network === 'mainnet' ? 'mainnet' : 'testnet';
+
+    useEffect(() => {
+        if (network !== urlNetwork && setNetwork) {
+            setNetwork(urlNetwork);
+        }
+    }, [urlNetwork, network, setNetwork]);
+
     const [data, setData] = useState<LeaderboardEntry[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -32,7 +49,9 @@ export default function LeaderboardPage() {
 
     const fetchLeaderboard = async () => {
         try {
-            const res = await fetch(`${API_URL}/leaderboard`);
+            const res = await fetch(`${API_URL}/leaderboard`, {
+                headers: { 'x-network': urlNetwork }
+            });
             if (!res.ok) throw new Error('Failed to fetch leaderboard');
             const result = await res.json();
             setData(result);
@@ -63,7 +82,6 @@ export default function LeaderboardPage() {
 
         const fetchHederaId = async () => {
             try {
-                const network = process.env.NEXT_PUBLIC_HEDERA_NETWORK || "testnet";
                 const res = await fetch(`https://${network}.mirrornode.hedera.com/api/v1/accounts/${account}`);
                 if (res.ok) {
                     const data = await res.json();
@@ -154,6 +172,7 @@ export default function LeaderboardPage() {
                                     <tr className="bg-surface-elevated/50 border-b border-border/50">
                                         <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-20">POS</th>
                                         <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6">{t('lb_col_identity')}</th>
+                                        <th className="text-center text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-28">Tier</th>
                                         <th className="text-right text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-32">{t('lb_col_tokens')}</th>
                                         <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 hidden md:table-cell">{t('lb_col_dominance')}</th>
                                     </tr>
@@ -164,6 +183,7 @@ export default function LeaderboardPage() {
                                             <tr key={i} className="border-b border-border/30">
                                                 <td className="py-4 px-6"><Skeleton className="h-4 w-6 bg-surface-elevated" /></td>
                                                 <td className="py-4 px-6"><Skeleton className="h-4 w-32 bg-surface-elevated" /></td>
+                                                <td className="py-4 px-6"><Skeleton className="h-4 w-16 bg-surface-elevated mx-auto" /></td>
                                                 <td className="py-4 px-6"><Skeleton className="h-4 w-12 bg-surface-elevated float-right" /></td>
                                                 <td className="py-4 px-6 hidden md:table-cell"><Skeleton className="h-2 w-full bg-surface-elevated" /></td>
                                             </tr>
@@ -199,11 +219,13 @@ export default function LeaderboardPage() {
                                                                     )}
                                                                 </div>
                                                             ) : (
-                                                                isMe ? (
-                                                                    <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent" />
-                                                                ) : (
-                                                                    <span className="text-text-muted font-mono">{entry.account.slice(0, 6)}...{entry.account.slice(-4)}</span>
-                                                                )
+                                                                <div className="flex items-center gap-2">
+                                                                    {isMe ? (
+                                                                        <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent" />
+                                                                    ) : (
+                                                                        <span className="text-text-muted font-mono">{entry.account.slice(0, 6)}...{entry.account.slice(-4)}</span>
+                                                                    )}
+                                                                </div>
                                                             )}
                                                             {isMe && (
                                                                 <span className="px-1.5 py-0.5 mt-1 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest block w-fit">
@@ -212,7 +234,12 @@ export default function LeaderboardPage() {
                                                             )}
                                                         </div>
                                                     </td>
-                                                    <td className={`py-4 px-6 text-right font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
+                                                    <td className="py-4 px-6 align-middle">
+                                                        <div className="flex justify-center w-full">
+                                                            {entry.isGenesis && <GenesisBadge />}
+                                                        </div>
+                                                    </td>
+                                                    <td className={`py-4 px-6 text-right font-bold align-middle ${isMe ? 'text-indigo-300' : 'text-white'}`}>
                                                         {entry.balance.toLocaleString()}
                                                     </td>
                                                     <td className="py-4 px-6 hidden md:table-cell">
@@ -293,23 +320,28 @@ export default function LeaderboardPage() {
                                         <div className="flex flex-col gap-1 mb-4">
                                             {entry.username ? (
                                                 <div className="flex items-center justify-between">
-                                                    <span className="font-bold text-white text-base">{entry.username}</span>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-bold text-white text-base">{entry.username}</span>
+                                                    </div>
                                                     {isMe && <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 text-text-muted scale-90 origin-right" />}
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between">
-                                                    {isMe ? (
-                                                        <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 text-white font-mono text-sm" />
-                                                    ) : (
-                                                        <span className="text-white font-mono text-sm">{entry.account.length > 15 ? `${entry.account.slice(0, 8)}...${entry.account.slice(-6)}` : `${entry.account.slice(0, 5)}***${entry.account.slice(-2)}`}</span>
-                                                    )}
+                                                    <div className="flex items-center gap-2">
+                                                        {isMe ? (
+                                                            <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 text-white font-mono text-sm" />
+                                                        ) : (
+                                                            <span className="text-white font-mono text-sm">{entry.account.length > 15 ? `${entry.account.slice(0, 8)}...${entry.account.slice(-6)}` : `${entry.account.slice(0, 5)}***${entry.account.slice(-2)}`}</span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
 
                                         <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/20">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-3">
                                                 <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">{t('lb_col_tokens')}</span>
+                                                {entry.isGenesis && <GenesisBadge />}
                                             </div>
                                             <div className={`text-lg font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
                                                 {entry.balance.toLocaleString()}

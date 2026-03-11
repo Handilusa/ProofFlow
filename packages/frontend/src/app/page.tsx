@@ -36,7 +36,11 @@ const stats = [
   { label: 'Network', value: 'Testnet' },
 ];
 
+import { useWallet } from '@/lib/wallet-context';
+
 export default function LandingPage() {
+  const { network } = useWallet();
+
   return (
     <div className="min-h-screen bg-background text-text-primary">
 
@@ -93,7 +97,7 @@ export default function LandingPage() {
               <Github className="w-5 h-5" />
             </a>
             <Link
-              href="/dashboard"
+              href={`/${network}/dashboard`}
               className="px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow-sm whitespace-nowrap"
             >
               Launch App
@@ -188,7 +192,7 @@ export default function LandingPage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="/dashboard"
+              href={`/${network}/dashboard`}
               className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow"
             >
               Launch App
@@ -407,7 +411,7 @@ export default function LandingPage() {
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-green-500 animate-pulse shrink-0" />
                   <span className="text-[10px] sm:text-xs text-text-muted">Anchored on Hedera Testnet</span>
                 </div>
-                <Link href="/dashboard" className="text-[10px] sm:text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors w-full sm:w-auto justify-end">
+                <Link href={`/${network}/dashboard`} className="text-[10px] sm:text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1 transition-colors w-full sm:w-auto justify-end">
                   View Proof <ArrowRight className="w-3 h-3" />
                 </Link>
               </motion.div>
@@ -646,7 +650,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                href="/dashboard"
+                href={`/${network}/dashboard`}
                 className="group flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all w-full sm:w-auto"
               >
                 Launch App

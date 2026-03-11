@@ -4,6 +4,7 @@ import { createContext, useContext, ReactNode, useState, useCallback, useEffect 
 import { useAccount, useDisconnect } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { connectToHedera } from './hedera-walletconnect';
+import { UserTier, getConfig } from './api';
 import { toast } from 'react-hot-toast';
 
 interface WalletContextType {
@@ -11,6 +12,14 @@ interface WalletContextType {
     account: string | null;
     isConnected: boolean;
     isConnecting: boolean;
+
+    // Network State
+    network: 'mainnet' | 'testnet';
+    setNetwork: (network: 'mainnet' | 'testnet') => void;
+
+    // User Tier
+    userTier: UserTier | null;
+    refreshTier: () => Promise<void>;
 
     // Unified Connect button action
     connect: () => void;
@@ -30,6 +39,10 @@ const WalletContext = createContext<WalletContextType>({
     account: null,
     isConnected: false,
     isConnecting: false,
+    network: 'testnet',
+    setNetwork: () => { },
+    userTier: null,
+    refreshTier: async () => { },
     connect: () => { },
     disconnect: () => { },
     error: null,
@@ -49,13 +62,50 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const [hederaAccount, setHederaAccount] = useState<string | null>(null);
     const [isHederaConnecting, setIsHederaConnecting] = useState(false);
 
+    // Tier State
+    const [userTier, setUserTier] = useState<UserTier | null>(null);
+
     // Modal State
     const [isSelectorOpen, setIsSelectorOpen] = useState(false);
+
+    // Network State
+    const [network, setNetworkState] = useState<'mainnet' | 'testnet'>('testnet');
+
+    useEffect(() => {
+        const savedNetwork = localStorage.getItem('proofflow-network') as 'mainnet' | 'testnet';
+        if (savedNetwork && (savedNetwork === 'mainnet' || savedNetwork === 'testnet')) {
+            setNetworkState(savedNetwork);
+        }
+    }, []);
+
+    const setNetwork = useCallback((newNetwork: 'mainnet' | 'testnet') => {
+        setNetworkState(newNetwork);
+        localStorage.setItem('proofflow-network', newNetwork);
+    }, []);
 
     // Derived Unified State
     const account = hederaAccount || evmAddress || null;
     const isConnected = isEvmConnected || !!hederaAccount;
     const isConnecting = isEvmConnecting || isHederaConnecting;
+
+    const refreshTier = useCallback(async () => {
+        if (!account) {
+            setUserTier(null);
+            return;
+        }
+        try {
+            const config = await getConfig(network, account);
+            if (config.userTier) {
+                setUserTier(config.userTier);
+            }
+        } catch (err) {
+            console.error('Failed to fetch user tier:', err);
+        }
+    }, [account, network]);
+
+    useEffect(() => {
+        refreshTier();
+    }, [refreshTier]);
 
     // Unified connect action opens our custom selector
     const handleConnect = useCallback(() => {
@@ -76,7 +126,6 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         try {
             const session = await connectToHedera();
             if (session?.namespaces?.hedera?.accounts?.[0]) {
-                // Extract account ID like 0.0.12345 from hedera:testnet:0.0.12345
                 const fullAccountStr = session.namespaces.hedera.accounts[0];
                 const parts = fullAccountStr.split(':');
                 const accountId = parts[parts.length - 1];
@@ -98,19 +147,19 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         }
         if (hederaAccount) {
             setHederaAccount(null);
-            // Additionally, you could call signClient.disconnect() here 
-            // from the hedera-walletconnect integration if maintaining the session object.
         }
+        setUserTier(null);
     }, [isEvmConnected, disconnectEvm, hederaAccount]);
-
-    // Restore Hedera session if it exists on load (stub - WalletConnect usually persists automatically)
-    // useEffect(() => { ... check signClient sessions ... }, [])
 
     return (
         <WalletContext.Provider value={{
             account,
             isConnected,
             isConnecting,
+            network,
+            setNetwork,
+            userTier,
+            refreshTier,
             connect: handleConnect,
             disconnect: handleDisconnect,
             error: null,

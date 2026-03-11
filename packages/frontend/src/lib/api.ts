@@ -29,6 +29,14 @@ export interface StoredProof extends ReasoningResult {
 
 import { API_URL } from './utils';
 
+export interface UserTier {
+    id: 'free' | 'bronze' | 'silver' | 'gold';
+    name: string;
+    count: number;
+    discount: number;
+    nextTier: number | null;
+}
+
 export interface ProofFlowConfig {
     operatorEvmAddress: string;
     operatorAccountId: string;
@@ -37,18 +45,33 @@ export interface ProofFlowConfig {
     paymentRequired: boolean;
     contractAddress: string | null;
     contractReady: boolean;
+    userTier?: UserTier;
 }
 
-export async function getConfig(): Promise<ProofFlowConfig> {
-    const response = await fetch(`${API_URL}/config`, {
+export async function getConfig(networkStr: string = 'testnet', address?: string): Promise<ProofFlowConfig> {
+    const url = address
+        ? `${API_URL}/config?address=${address}`
+        : `${API_URL}/config`;
+
+    const response = await fetch(url, {
         cache: "no-store",
         headers: {
-            "Cache-Control": "no-cache"
+            "Cache-Control": "no-cache",
+            "x-network": networkStr
         }
     });
+
     if (!response.ok) {
         // Fallback: payment not required
-        return { operatorEvmAddress: '', operatorAccountId: '0.0.7986674', serviceFeeHbar: '0.02', network: 'testnet', paymentRequired: false, contractAddress: null, contractReady: false };
+        return {
+            operatorEvmAddress: '',
+            operatorAccountId: '0.0.7986674',
+            serviceFeeHbar: '0.16',
+            network: 'testnet',
+            paymentRequired: false,
+            contractAddress: null,
+            contractReady: false
+        };
     }
     return response.json();
 }
@@ -65,13 +88,14 @@ export class ApiError extends Error {
     }
 }
 
-export async function submitQuestion(question: string, address?: string, paymentTxHash?: string): Promise<ReasoningResult> {
+export async function submitQuestion(question: string, address?: string, paymentTxHash?: string, parentProofIds?: string[], networkStr: string = 'testnet'): Promise<ReasoningResult> {
     const response = await fetch(`${API_URL}/reason`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "x-network": networkStr
         },
-        body: JSON.stringify({ question, requesterAddress: address, paymentTxHash }),
+        body: JSON.stringify({ question, requesterAddress: address, paymentTxHash, parentProofIds }),
     });
 
     if (!response.ok) {
@@ -88,11 +112,12 @@ export async function submitQuestion(question: string, address?: string, payment
     return response.json();
 }
 
-export async function verifyCaptcha(token: string, solution: string): Promise<boolean> {
+export async function verifyCaptcha(token: string, solution: string, networkStr: string = 'testnet'): Promise<boolean> {
     const response = await fetch(`${API_URL}/captcha/verify`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
+            "x-network": networkStr
         },
         body: JSON.stringify({ token, solution }),
     });
@@ -117,16 +142,20 @@ export interface ContractTxData {
     functionName: string;
 }
 
-export async function getProofTxData(proofId: string): Promise<ContractTxData> {
-    const response = await fetch(`${API_URL}/proof/${proofId}/tx-data`);
+export async function getProofTxData(proofId: string, networkStr: string = 'testnet'): Promise<ContractTxData> {
+    const response = await fetch(`${API_URL}/proof/${proofId}/tx-data`, {
+        headers: { "x-network": networkStr }
+    });
     if (!response.ok) {
         throw new Error("Failed to fetch EVM transaction data");
     }
     return response.json();
 }
 
-export async function getProof(proofId: string): Promise<StoredProof> {
-    const response = await fetch(`${API_URL}/proof/${proofId}`);
+export async function getProof(proofId: string, networkStr: string = 'testnet'): Promise<StoredProof> {
+    const response = await fetch(`${API_URL}/proof/${proofId}`, {
+        headers: { "x-network": networkStr }
+    });
 
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
@@ -135,9 +164,11 @@ export async function getProof(proofId: string): Promise<StoredProof> {
     return response.json();
 }
 
-export async function getRecentProofs(address?: string): Promise<StoredProof[]> {
+export async function getRecentProofs(address?: string, networkStr: string = 'testnet'): Promise<StoredProof[]> {
     const url = address ? `${API_URL}/proofs?address=${address}` : `${API_URL}/proofs`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+        headers: { "x-network": networkStr }
+    });
 
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
@@ -153,8 +184,10 @@ export interface NetworkStats {
     lastActivity: string | null;
 }
 
-export async function getNetworkStats(): Promise<NetworkStats> {
-    const response = await fetch(`${API_URL}/stats`);
+export async function getNetworkStats(networkStr: string = 'testnet'): Promise<NetworkStats> {
+    const response = await fetch(`${API_URL}/stats`, {
+        headers: { "x-network": networkStr }
+    });
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
     }

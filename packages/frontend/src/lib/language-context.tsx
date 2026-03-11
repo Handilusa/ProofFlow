@@ -11,6 +11,7 @@ const translations = {
         nav_verify: 'Verify Proof',
         nav_history: 'Audit History',
         nav_leaderboard: 'Leaderboard',
+        nav_passport: 'NFT Passport',
         nav_settings: 'Settings',
         nav_github: 'View on GitHub',
 
@@ -115,6 +116,20 @@ const translations = {
         footer_github: 'GitHub Protocol',
         footer_built_for: 'Built for Hello Future Apex 2026',
 
+        // Passport
+        passport_title: 'NFT Passport & Milestones',
+        passport_subtitle: 'Unlock exclusive fee discounts and mint Soulbound NFTs by auditing the network.',
+        passport_times_used: 'Audits Completed:',
+        passport_mint_video: 'Mint Evidence NFT',
+        passport_view_video: 'View Hologram',
+        passport_unlock_at: 'Unlocks at',
+        passport_discount: 'Off',
+        passport_max_level: 'MAX LEVEL',
+        passport_subtitle_extra: 'Every interaction and audit with the ProofFlow Agent brings you closer to a new level. Unlock exclusive medals and fee benefits based on your network activity.',
+        passport_total_audits: 'Total Audits:',
+        passport_genesis_title: 'Special Collection: Genesis Edition',
+        passport_genesis_description: 'A limited series reserved for pioneers of the ProofFlow ecosystem. Only the first 500 users will be able to claim this historical piece.',
+
         // Settings
         settings_title: 'Settings',
         settings_subtitle: 'Configure your ProofFlow experience.',
@@ -136,6 +151,11 @@ const translations = {
         settings_network: 'Network',
         settings_network_desc: 'Currently connected to Hedera Testnet.',
         settings_version: 'Version',
+        settings_current_tier: 'Current Tier',
+        tier_free: 'Free Explorer',
+        tier_bronze: 'Bronze Horizon',
+        tier_silver: 'Silver Synthesis',
+        tier_gold: 'Gold Genesis',
     },
     es: {
         // Sidebar
@@ -143,6 +163,7 @@ const translations = {
         nav_verify: 'Verificar Auditoría',
         nav_history: 'Historial',
         nav_leaderboard: 'Clasificación',
+        nav_passport: 'Pasaporte NFT',
         nav_settings: 'Ajustes',
         nav_github: 'Ver en GitHub',
 
@@ -247,6 +268,20 @@ const translations = {
         footer_github: 'Protocolo GitHub',
         footer_built_for: 'Creado para Hello Future Apex 2026',
 
+        // Passport
+        passport_title: 'Pasaporte NFT y Logros',
+        passport_subtitle: 'Desbloquea descuentos exclusivos y mintea NFTs Soulbound auditando la red.',
+        passport_times_used: 'Auditorías Completadas:',
+        passport_mint_video: 'Mintear NFT (Prueba)',
+        passport_view_video: 'Ver Holograma',
+        passport_unlock_at: 'Se desbloquea a las',
+        passport_discount: 'Dto.',
+        passport_max_level: 'NIVEL MÁX.',
+        passport_subtitle_extra: 'Cada interacción y auditoría con el Agente de ProofFlow te acerca a un nuevo nivel. Desbloquea medallas exclusivas y beneficios en las tarifas según tu actividad en la red.',
+        passport_total_audits: 'Total de Auditorías:',
+        passport_genesis_title: 'Colección Especial: Genesis Edition',
+        passport_genesis_description: 'Una serie limitada reservada para los pioneros del ecosistema ProofFlow. Solo los primeros 500 usuarios podrán reclamar esta pieza histórica.',
+
         // Settings
         settings_title: 'Ajustes',
         settings_subtitle: 'Configura tu cuenta y preferencias.',
@@ -268,6 +303,11 @@ const translations = {
         settings_network: 'Red',
         settings_network_desc: 'Conectado a Hedera Testnet.',
         settings_version: 'Versión',
+        settings_current_tier: 'Nivel Actual',
+        tier_free: 'Explorador Gratuito',
+        tier_bronze: 'Bronze Horizon',
+        tier_silver: 'Silver Synthesis',
+        tier_gold: 'Gold Genesis',
     }
 };
 
