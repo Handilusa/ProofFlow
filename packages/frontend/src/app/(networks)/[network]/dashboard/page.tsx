@@ -204,8 +204,8 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
     let pollInterval: NodeJS.Timeout;
     let pollTimeout: NodeJS.Timeout;
 
-    // Keep polling until status is VERIFIED (full pipeline: HCS + HTS + EVM)
-    if (result && result.status !== "VERIFIED") {
+    // Keep polling until status is VERIFIED or FAILED (terminal states)
+    if (result && result.status !== "VERIFIED" && result.status !== "FAILED") {
       const pollProof = async () => {
         try {
           const latestData = await fetch(`${API_URL}/proof/${result.proofId}`, {
@@ -215,8 +215,8 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
             const updatedProof = await latestData.json();
             setResult(updatedProof);
 
-            // Stop polling only when fully verified (HCS + HTS + EVM all done)
-            if (updatedProof.status === "VERIFIED") {
+            // Stop polling when fully verified OR if pipeline failed
+            if (updatedProof.status === "VERIFIED" || updatedProof.status === "FAILED") {
               clearInterval(pollInterval);
               clearTimeout(pollTimeout);
               setIsPolling(false);
@@ -619,8 +619,30 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                       </div>
                     </div>
 
+                    {/* FAILED state: show error instead of infinite spinner */}
+                    {isFinal && result.status === "FAILED" && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="mt-6 border border-red-500/30 rounded-xl p-5 bg-red-500/5 backdrop-blur"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="text-red-400 text-xl">⚠️</div>
+                          <div>
+                            <p className="text-sm font-semibold text-red-300 font-mono">
+                              {language === 'es' ? 'Error en el anclaje on-chain' : 'On-chain anchoring failed'}
+                            </p>
+                            <p className="text-[11px] text-text-muted mt-0.5">
+                              {language === 'es' ? 'El razonamiento fue generado correctamente pero la publicación en HCS/EVM falló. Tu respuesta sigue siendo válida.' : 'Reasoning was generated successfully but HCS/EVM publishing failed. Your answer is still valid.'}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
                     {/* Loading state: show until Audit Passport is ready to render */}
-                    {isFinal && !((result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId) && (
+                    {isFinal && result.status !== "FAILED" && !((result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId) && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
