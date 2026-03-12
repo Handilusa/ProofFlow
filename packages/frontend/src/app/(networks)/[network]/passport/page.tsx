@@ -101,15 +101,45 @@ export default function PassportPage() {
         };
         fetchSupply();
         // Fallback refresh every 30s
-        const interval = setInterval(fetchSupply, 30000);
-        
-        if (account) {
+        const checkOwnership = async () => {
+            if (!account) {
+                setHasMinted(false);
+                return;
+            }
+            try {
+                // Determine Mirror Node URL based on network context
+                const mirrorUrl = network === 'mainnet' 
+                    ? 'https://mainnet.mirrornode.hedera.com' 
+                    : 'https://testnet.mirrornode.hedera.com';
+                
+                const res = await fetch(`${mirrorUrl}/api/v1/accounts/${account}/tokens?token.id=0.0.8170105`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const hasToken = data.tokens?.some((t: any) => t.token_id === '0.0.8170105' && t.balance > 0);
+                    
+                    if (hasToken) {
+                        setHasMinted(true);
+                        localStorage.setItem(`genesis_minted_${account}`, 'true'); // cache for fast subsequent loads
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn("[Genesis] Mirror Node ownership check failed, falling back to cache", err);
+            }
+
+            // Fallback to cache if network fails, or set to false if not found
             const userClaimed = localStorage.getItem(`genesis_minted_${account}`);
-            if (userClaimed === 'true') setHasMinted(true);
-            else setHasMinted(false);
-        } else {
-            setHasMinted(false);
-        }
+            setHasMinted(userClaimed === 'true');
+        };
+
+        fetchSupply();
+        checkOwnership();
+
+        // Fallback refresh every 30s
+        const interval = setInterval(() => {
+            fetchSupply();
+            checkOwnership();
+        }, 30000);
 
         return () => clearInterval(interval);
     }, [account, network]);
