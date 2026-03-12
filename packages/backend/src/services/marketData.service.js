@@ -239,7 +239,7 @@ async function fetchDexScreenerData(tokenSymbol) {
         if (!data.pairs || data.pairs.length === 0) return null;
 
         return data.pairs
-            .filter(p => p.volume && p.volume.h24 > 0)
+            .filter(p => p.chainId === 'hedera' && p.volume && p.volume.h24 > 0)
             .sort((a, b) => (b.volume?.h24 || 0) - (a.volume?.h24 || 0))
             .slice(0, 3)
             .map(pair => ({
