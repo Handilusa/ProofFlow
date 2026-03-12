@@ -259,36 +259,42 @@ async function fetchDexScreenerData(tokenSymbol) {
 }
 
 /**
- * Fetches exact Liquidity Pools from SaucerSwap's Native V2 API.
- * This provides precise APRs (Yields) required for DeFi calculations.
+ * Fetches SaucerSwap Liquidity Pools using DexScreener as a decentralized oracle.
+ * This bypasses SaucerSwap's V2 API which recently enforced API Key blocks on datacenter IPs (Render).
+ * It mathematically calculates the genuine Base APR: (24hVolume * 0.25% LP Fee * 365) / TVL
  */
 async function fetchSaucerSwapNativePools() {
     try {
-        const url = `https://api.saucerswap.finance/pools`;
-        // SaucerSwap API sometimes takes a moment
+        const url = `https://api.dexscreener.com/latest/dex/search?q=saucerswap`;
         const response = await fetchWithTimeout(url, {}, 8000);
         if (!response.ok) return null;
 
         const data = await response.json();
+        if (!data.pairs) return null;
         
-        // Filter out zero-liquidity pools and sort by TVL descending
-        const validPools = data
-            .filter(p => p.tvl && p.tvl > 1000)
-            .sort((a, b) => b.tvl - a.tvl)
-            .slice(0, 5); // Take Top 5 biggest pools
+        // Filter Hedera pools, enforce minimum TVL, sort by liquidity
+        const validPools = data.pairs
+            .filter(p => p.chainId === 'hedera' && p.liquidity && p.liquidity.usd > 1000)
+            .sort((a, b) => b.liquidity.usd - a.liquidity.usd)
+            .slice(0, 5); // Top 5 pools
 
-        return validPools.map(pool => ({
-            name: `${pool.tokenA?.symbol || 'Unknown'} / ${pool.tokenB?.symbol || 'Unknown'}`,
-            tvl: pool.tvl,
-            volume24h: pool.volume24h,
-            tokenAReserve: pool.tokenAReserve,
-            tokenBReserve: pool.tokenBReserve,
-            feeTier: pool.feeTier,
-            // Calculate total APR if available (trading fees + farm emissions)
-            apr: pool.farmApr || pool.apr || 'Variable'
-        }));
+        return validPools.map(pool => {
+            const tvl = pool.liquidity.usd;
+            const vol = pool.volume?.h24 || 0;
+            // Genuine Protocol Math: 0.3% total fee, 0.25% goes to LP.
+            // APR = (Yearly Fees) / TVL * 100
+            const calculatedApr = tvl > 0 ? ((vol * 0.0025 * 365) / tvl * 100).toFixed(2) : 0;
+
+            return {
+                name: `${pool.baseToken.symbol} / ${pool.quoteToken.symbol}`,
+                tvl: tvl,
+                volume24h: vol,
+                feeTier: "0.3%",
+                apr: `${calculatedApr}% (Base Trading APR)`
+            };
+        });
     } catch (error) {
-        console.error("[MarketData] SaucerSwap Native API error:", error.message);
+        console.error("[MarketData] SaucerSwap DexScreener Fallback error:", error.message);
         return null;
     }
 }
