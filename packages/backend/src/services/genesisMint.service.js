@@ -31,6 +31,23 @@ export async function mintAndTransferGenesis(userAddress, network = 'testnet') {
         }
     }
 
+    // Strict Server-Side Check: Verify if user already owns the Genesis NFT
+    try {
+        const mirrorNodeUrl = getMirrorNodeUrl(network);
+        const balanceRes = await fetch(`${mirrorNodeUrl}/accounts/${hederaAccountId}/tokens?token.id=${GENESIS_TOKEN_ID}`);
+        if (balanceRes.ok) {
+            const balanceData = await balanceRes.json();
+            const tokenRecord = balanceData.tokens?.find(t => t.token_id === GENESIS_TOKEN_ID);
+            if (tokenRecord && tokenRecord.balance > 0) {
+                console.warn(`[Genesis] Wallet ${hederaAccountId} already owns a Genesis NFT. Mint rejected.`);
+                throw new Error("ALREADY_MINTED");
+            }
+        }
+    } catch (e) {
+        if (e.message === "ALREADY_MINTED") throw new Error("Ya posees un Genesis NFT en esta wallet. Límite de 1 por usuario.");
+        console.warn("[Genesis] Could not verify existing balance, proceeding with caution:", e.message);
+    }
+
     try {
         console.log(`[Genesis] Minting Edition for ${hederaAccountId}...`);
         
