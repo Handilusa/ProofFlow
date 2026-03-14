@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Activity, Search, Filter, Hash, ExternalLink, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Activity, Search, Filter, Hash, ExternalLink, ArrowRight, ShieldCheck, ChevronLeft, ChevronRight, Fingerprint } from 'lucide-react';
 import { Card, Button, Badge, Skeleton } from '@/components/ui';
 import { getRecentProofs, StoredProof } from '@/lib/api';
 import { motion } from 'framer-motion';
@@ -71,31 +71,47 @@ export default function HistoryPage({ params }: { params: { network: string } })
     const totalPages = Math.ceil(filteredProofs.length / ITEMS_PER_PAGE);
     const paginatedProofs = filteredProofs.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+    const clipStyle = { clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' };
+    const clipStyleSm = { clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' };
+
     return (
-        <div className="space-y-6 pb-10">
+        <div className="space-y-6 pb-8">
 
             {/* Header */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                        <Activity className="w-8 h-8 text-accent-primary" /> {account ? t('history_title_personal') : t('history_title_global')}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pb-6 border-b border-cyan-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                    <div
+                        className="w-10 h-10 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                        style={clipStyleSm}
+                    >
+                        <Fingerprint className="w-5 h-5" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-white tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                        {account ? t('history_title_personal') : t('history_title_global')}
                     </h1>
-                    <p className="text-text-muted mt-2">
-                        {account
-                            ? `${t('history_subtitle_personal')} (${account.substring(0, 8)}...).`
-                            : t('history_subtitle_global')}
-                    </p>
                 </div>
-            </div>
+                <p className="text-xs font-mono text-white/40 tracking-wide">
+                    {account
+                        ? `${t('history_subtitle_personal')} (${account.substring(0, 8)}...)`
+                        : t('history_subtitle_global')}
+                </p>
+            </motion.div>
 
             {/* Controls */}
             <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
-                <div className="flex items-center gap-1 bg-surface p-1 rounded-xl border border-border/50 w-fit">
+                <div
+                    className="flex items-center gap-0.5 bg-surface/40 backdrop-blur-sm p-1 border border-cyan-500/20"
+                    style={clipStyleSm}
+                >
                     {([['All', t('history_filter_all')], ['Verified', t('history_filter_verified')], ['Pending', t('history_filter_pending')]] as [string, string][]).map(([val, label]) => (
                         <button
                             key={val}
                             onClick={() => setFilter(val as any)}
-                            className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${filter === val ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'}`}
+                            className={`px-4 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all ${filter === val
+                                ? 'bg-cyan-500/15 text-cyan-400 font-bold shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                : 'text-white/40 hover:text-cyan-400/70'
+                            }`}
+                            style={clipStyleSm}
                         >
                             {label}
                         </button>
@@ -103,48 +119,53 @@ export default function HistoryPage({ params }: { params: { network: string } })
                 </div>
 
                 <div className="relative w-full sm:w-64 group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-accent-primary/60 group-focus-within:text-accent-primary transition-colors z-10 pointer-events-none" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cyan-400/40 group-focus-within:text-cyan-400 transition-colors z-10 pointer-events-none" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t('history_search')}
-                        className="w-full bg-surface/40 backdrop-blur-md border border-border/50 rounded-xl pl-9 pr-4 py-2 text-xs sm:text-sm font-mono text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-primary/50 transition-all shadow-inner"
+                        className="w-full bg-surface/30 backdrop-blur-sm border border-cyan-500/20 pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-400/50 focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all"
+                        style={clipStyleSm}
                     />
                 </div>
             </div>
 
             {/* Table Area — Desktop only */}
             <div className="hidden lg:block">
-                <Card className="border-border/50 overflow-hidden w-full max-w-full">
-                    <div className="overflow-x-auto w-full">
-                        <table className="w-full text-left border-collapse min-w-[800px]">
+                <div
+                    className="relative bg-surface/20 backdrop-blur-sm border border-cyan-500/20 overflow-hidden shadow-[0_0_40px_rgba(34,211,238,0.05)]"
+                    style={clipStyle}
+                >
+
+                    <div className="overflow-x-auto w-full relative z-10">
+                        <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
-                                <tr className="bg-surface-elevated/50 border-b border-border/50">
-                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_question')}</th>
-                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_proof')}</th>
-                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_steps')}</th>
-                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_status')}</th>
-                                    <th className="text-left text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_time')}</th>
-                                    <th className="text-right text-[10px] font-mono uppercase tracking-widest text-text-muted py-3 px-6">{t('history_col_actions')}</th>
+                                <tr className="border-b border-cyan-500/15 bg-cyan-500/[0.03]">
+                                    <th className="text-left text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6">{t('history_col_question')}</th>
+                                    <th className="text-center text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 pl-4 pr-8">{t('history_col_proof')}</th>
+                                    <th className="text-center text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6">{t('history_col_status')}</th>
+                                    <th className="text-left text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6">{t('history_col_time')}</th>
+                                    <th className="text-right text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6">{t('history_col_actions')}</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-border/30">
+                            <tbody>
                                 {loading ? (
                                     Array.from({ length: 5 }).map((_, i) => (
-                                        <tr key={i}>
-                                            <td className="p-4 pl-6"><Skeleton className="h-5 w-48" /></td>
-                                            <td className="p-4"><Skeleton className="h-5 w-24" /></td>
-                                            <td className="p-4"><Skeleton className="h-5 w-8" /></td>
-                                            <td className="p-4"><Skeleton className="h-5 w-20" /></td>
-                                            <td className="p-4"><Skeleton className="h-5 w-16" /></td>
-                                            <td className="p-4 pr-6 text-right"><Skeleton className="h-8 w-16 ml-auto" /></td>
+                                        <tr key={i} className="border-b border-cyan-500/10">
+                                            <td className="p-4 pl-6"><div className="h-4 w-48 bg-white/5 animate-pulse" style={clipStyleSm} /></td>
+                                            <td className="p-4"><div className="h-4 w-24 bg-white/5 animate-pulse mx-auto" style={clipStyleSm} /></td>
+                                            <td className="p-4"><div className="h-4 w-20 bg-white/5 animate-pulse mx-auto" style={clipStyleSm} /></td>
+                                            <td className="p-4"><div className="h-4 w-16 bg-white/5 animate-pulse" style={clipStyleSm} /></td>
+                                            <td className="p-4 pr-6 text-right"><div className="h-7 w-16 bg-white/5 animate-pulse ml-auto" style={clipStyleSm} /></td>
                                         </tr>
                                     ))
                                 ) : paginatedProofs.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} className="p-10 text-center text-text-muted">
-                                            {t('history_empty')}
+                                        <td colSpan={5} className="p-16 text-center">
+                                            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/30">
+                                                &#x25C8; 0x_NULL_INDEX &#x25C8;
+                                            </span>
                                         </td>
                                     </tr>
                                 ) : (
@@ -154,44 +175,57 @@ export default function HistoryPage({ params }: { params: { network: string } })
                                         return (
                                             <motion.tr
                                                 key={proof.proofId}
-                                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                                                className="hover:bg-surface-elevated/30 transition-colors group"
+                                                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                                                className="border-b border-cyan-500/10 hover:bg-cyan-500/[0.03] transition-colors group"
                                             >
                                                 <td className="p-4 pl-6">
-                                                    <p className="text-sm font-medium text-white max-w-[280px] truncate" title={proof.question}>
+                                                    <p className="text-xs font-mono text-white/70 max-w-[280px] truncate group-hover:text-white transition-colors" title={proof.question}>
                                                         {proof.question}
                                                     </p>
                                                 </td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center gap-1.5 text-xs font-mono text-text-muted bg-background w-fit px-2 py-1 rounded border border-border/50">
+                                                <td className="pl-4 pr-8 py-4 text-center">
+                                                    <div
+                                                        className="inline-flex items-center gap-1.5 text-[10px] font-mono text-cyan-400/60 bg-cyan-500/5 border border-cyan-500/15 px-2.5 py-1 mx-auto"
+                                                        style={clipStyleSm}
+                                                    >
                                                         <Hash className="w-3 h-3" />
-                                                        <CopyHash hash={proof.proofId} chars={8} className="bg-transparent border-none p-0 h-auto hover:bg-transparent text-text-muted hover:text-white" />
+                                                        <CopyHash hash={proof.proofId} chars={8} className="bg-transparent border-none p-0 h-auto hover:bg-transparent text-cyan-400/60 hover:text-cyan-400" />
                                                     </div>
                                                 </td>
-                                                <td className="p-4">
-                                                    <span className="text-sm font-semibold text-white/90">{proof.totalSteps}</span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className={`flex items-center gap-1.5 text-xs font-medium w-fit px-2.5 py-1 rounded-full border ${isVerified ? 'bg-success/10 text-success border-success/20' : 'bg-amber-400/10 text-amber-400 border-amber-400/20'}`}>
-                                                        {isVerified ? <ShieldCheck className="w-3.5 h-3.5" /> : <Activity className="w-3.5 h-3.5" />}
+                                                <td className="p-4 text-center align-middle">
+                                                    <div
+                                                        className={`inline-flex items-center justify-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider px-2.5 py-1 border mx-auto ${
+                                                            isVerified
+                                                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25 shadow-[0_0_10px_rgba(16,185,129,0.1)]'
+                                                                : 'bg-amber-500/10 text-amber-400 border-amber-500/25'
+                                                        }`}
+                                                        style={clipStyleSm}
+                                                    >
+                                                        {isVerified ? <ShieldCheck className="w-3 h-3" /> : <Activity className="w-3 h-3" />}
                                                         {isVerified ? t('history_verified') : t('history_pending')}
                                                     </div>
                                                 </td>
-                                                <td className="p-4 text-sm text-text-muted">
+                                                <td className="p-4 text-[11px] font-mono text-white/30">
                                                     {formatTimeAgoI18n(proof.createdAt, t)}
                                                 </td>
                                                 <td className="p-4 pr-6 text-right space-x-2">
                                                     {proof.explorerUrl && (
                                                         <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer">
-                                                            <Button variant="outline" size="sm" className="h-8 text-[11px] px-3 font-mono border-border/50 text-emerald-400 hover:bg-emerald-400/10 hover:border-emerald-400/30">
-                                                                {t('history_reward_tx')} <ExternalLink className="w-3 h-3 ml-1" />
-                                                            </Button>
+                                                            <button
+                                                                className="inline-flex items-center gap-1 h-7 text-[10px] px-3 font-mono uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 hover:border-emerald-400/40 transition-all"
+                                                                style={clipStyleSm}
+                                                            >
+                                                                TX <ExternalLink className="w-3 h-3" />
+                                                            </button>
                                                         </a>
                                                     )}
                                                     <Link href={`/verify?id=${proof.proofId}`}>
-                                                        <Button size="sm" className="h-8 text-[11px] px-3 bg-accent-primary/20 text-accent-primary hover:bg-accent-primary hover:text-black hover:border-accent-primary">
-                                                            {t('nav_verify')} <ArrowRight className="w-3 h-3 ml-1" />
-                                                        </Button>
+                                                        <button
+                                                            className="inline-flex items-center gap-1 h-7 text-[10px] px-3 font-mono uppercase tracking-wider bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 hover:bg-cyan-400 hover:text-black hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all"
+                                                            style={clipStyleSm}
+                                                        >
+                                                            {t('nav_verify')} <ArrowRight className="w-3 h-3" />
+                                                        </button>
                                                     </Link>
                                                 </td>
                                             </motion.tr>
@@ -201,25 +235,32 @@ export default function HistoryPage({ params }: { params: { network: string } })
                             </tbody>
                         </table>
                     </div>
-                </Card>
+                </div>
             </div>
+            
+            <div className="h-2"></div>
 
             {/* Card Layout — Mobile only */}
-            <div className="lg:hidden space-y-4">
+            <div className="lg:hidden space-y-3">
                 {loading ? (
                     Array.from({ length: 3 }).map((_, i) => (
-                        <Card key={i} className="p-5 border-border/50 space-y-4">
-                            <Skeleton className="h-6 w-3/4" />
+                        <div key={i} className="bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-4 space-y-3" style={clipStyleSm}>
+                            <div className="h-5 w-3/4 bg-white/5 animate-pulse" style={clipStyleSm} />
                             <div className="flex justify-between">
-                                <Skeleton className="h-5 w-24 rounded-full" />
-                                <Skeleton className="h-5 w-16" />
+                                <div className="h-4 w-24 bg-white/5 animate-pulse" style={clipStyleSm} />
+                                <div className="h-4 w-16 bg-white/5 animate-pulse" style={clipStyleSm} />
                             </div>
-                            <Skeleton className="h-10 w-full rounded-xl" />
-                        </Card>
+                            <div className="h-8 w-full bg-white/5 animate-pulse" style={clipStyleSm} />
+                        </div>
                     ))
                 ) : paginatedProofs.length === 0 ? (
-                    <div className="p-10 text-center text-text-muted bg-surface/30 rounded-2xl border border-dashed border-border/50">
-                        {t('history_empty')}
+                    <div
+                        className="p-10 text-center bg-surface/20 border border-dashed border-cyan-500/20"
+                        style={clipStyle}
+                    >
+                        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/30">
+                            &#x25C8; 0x_NULL_INDEX &#x25C8;
+                        </span>
                     </div>
                 ) : (
                     paginatedProofs.map((proof, i) => {
@@ -227,53 +268,69 @@ export default function HistoryPage({ params }: { params: { network: string } })
                         return (
                             <motion.div
                                 key={proof.proofId}
-                                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
+                                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                             >
-                                <Card className="p-4 border-border/40 hover:border-accent-primary/30 transition-all bg-surface/40 backdrop-blur-sm relative overflow-hidden group">
-                                    <div className="flex justify-between items-start gap-3 mb-3">
-                                        <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${isVerified ? 'bg-success/10 text-success border-success/30' : 'bg-amber-400/10 text-amber-400 border-amber-400/30'}`}>
-                                            {isVerified ? <ShieldCheck className="w-3 h-3" /> : <Activity className="w-3 h-3" />}
-                                            {isVerified ? t('history_verified') : t('history_pending')}
-                                        </div>
-                                        <span className="text-[10px] font-mono text-text-muted bg-background/50 px-2 py-0.5 rounded border border-border/30">
-                                            {formatTimeAgoI18n(proof.createdAt, t)}
-                                        </span>
-                                    </div>
-
-                                    <h3 className="text-sm font-semibold text-white mb-4 line-clamp-2 leading-relaxed h-[2.8rem]">
-                                        {proof.question}
-                                    </h3>
-
-                                    <div className="flex items-center justify-between gap-2 pt-4 border-t border-border/20">
-                                        <div className="flex items-center gap-1 min-w-0 mr-1">
-                                            <div className="flex items-center gap-0.5 text-[9px] font-mono text-text-muted shrink-0">
-                                                <Hash className="w-2.5 h-2.5 text-accent-primary/60" />
-                                                <CopyHash hash={proof.proofId} chars={3} className="bg-transparent border-none p-0 h-auto text-text-muted" />
+                                <div
+                                    className="relative bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-4 overflow-hidden group hover:border-cyan-400/30 transition-colors"
+                                    style={clipStyleSm}
+                                >
+                                    <div className="relative z-10">
+                                        <div className="flex justify-between items-start gap-3 mb-3">
+                                            <div
+                                                className={`flex items-center gap-1.5 text-[9px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 border ${
+                                                    isVerified
+                                                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25'
+                                                        : 'bg-amber-500/10 text-amber-400 border-amber-500/25'
+                                                }`}
+                                                style={clipStyleSm}
+                                            >
+                                                {isVerified ? <ShieldCheck className="w-2.5 h-2.5" /> : <Activity className="w-2.5 h-2.5" />}
+                                                {isVerified ? t('history_verified') : t('history_pending')}
                                             </div>
-                                            <span className="text-[9px] text-border shrink-0 opacity-50 px-0.5">|</span>
-                                            <div className="flex items-center gap-0.5 text-[9px] font-medium text-text-muted shrink-0">
-                                                <span className="text-[7.5px] font-bold uppercase tracking-widest opacity-40">#HCS</span>
-                                                <span className="text-white/80">{proof.totalSteps}</span>
-                                            </div>
+                                            <span className="text-[9px] font-mono text-white/25">
+                                                {formatTimeAgoI18n(proof.createdAt, t)}
+                                            </span>
                                         </div>
 
-                                        <div className="flex items-center gap-1.5 shrink-0 ml-auto pt-0.5">
-                                            {proof.explorerUrl && (
-                                                <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
-                                                    <Button variant="outline" size="icon" className="w-7 h-7 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 transition-colors">
-                                                        <ExternalLink className="w-3.5 h-3.5" />
-                                                    </Button>
-                                                </a>
-                                            )}
-                                            <Link href={`/verify?id=${proof.proofId}`} className="shrink-0">
-                                                <Button size="sm" className="h-7 text-[10px] px-3 bg-accent-primary text-black font-bold hover:bg-white transition-all whitespace-nowrap shadow-glow-sm">
-                                                    {t('nav_verify')}
-                                                    <ArrowRight className="w-2.5 h-2.5 ml-1" />
-                                                </Button>
-                                            </Link>
+                                        <h3 className="text-xs font-mono text-white/60 mb-4 line-clamp-2 leading-relaxed group-hover:text-white/80 transition-colors">
+                                            {proof.question}
+                                        </h3>
+
+                                        <div className="flex items-center justify-between gap-2 pt-3 border-t border-cyan-500/10">
+                                            <div className="flex items-center gap-1 min-w-0">
+                                                <div
+                                                    className="flex items-center gap-1 text-[9px] font-mono text-cyan-400/50 bg-cyan-500/5 border border-cyan-500/10 px-1.5 py-0.5"
+                                                    style={clipStyleSm}
+                                                >
+                                                    <Hash className="w-2.5 h-2.5" />
+                                                    <CopyHash hash={proof.proofId} chars={4} className="bg-transparent border-none p-0 h-auto text-cyan-400/50" />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                {proof.explorerUrl && (
+                                                    <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                                                        <button
+                                                            className="w-7 h-7 flex items-center justify-center bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                                                            style={clipStyleSm}
+                                                        >
+                                                            <ExternalLink className="w-3 h-3" />
+                                                        </button>
+                                                    </a>
+                                                )}
+                                                <Link href={`/verify?id=${proof.proofId}`} className="shrink-0">
+                                                    <button
+                                                        className="h-7 text-[9px] px-3 font-mono uppercase tracking-wider bg-cyan-500/15 text-cyan-400 border border-cyan-500/25 hover:bg-cyan-400 hover:text-black transition-all flex items-center gap-1"
+                                                        style={clipStyleSm}
+                                                    >
+                                                        {t('nav_verify')}
+                                                        <ArrowRight className="w-2.5 h-2.5" />
+                                                    </button>
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
-                                </Card>
+                                </div>
                             </motion.div>
                         )
                     })
@@ -282,35 +339,58 @@ export default function HistoryPage({ params }: { params: { network: string } })
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-border/50 pt-4 mt-4 text-sm">
-                    <span className="text-text-muted px-4">
-                        {t('history_page')} {currentPage} {t('history_of')} {totalPages}
+                <div
+                    className="flex flex-col sm:flex-row items-center justify-between bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-4 mt-4"
+                    style={clipStyle}
+                >
+                    <span className="text-[10px] font-mono text-white/30 uppercase tracking-wider mb-3 sm:mb-0">
+                        {t('history_page')} <span className="text-cyan-400 font-bold">{currentPage}</span> {t('history_of')} <span className="text-cyan-400 font-bold">{totalPages}</span>
                     </span>
-                    <div className="flex gap-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
+                    <div className="flex gap-1.5 isolate w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0 justify-center sm:justify-end">
+                        <button
                             disabled={currentPage === 1}
-                            onClick={() => {
-                                setCurrentPage(p => Math.max(1, p - 1));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            className="bg-surface border-border/50 hover:bg-surface-elevated text-text-muted hover:text-white transition-colors"
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 hover:border-cyan-400/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                            style={clipStyleSm}
                         >
-                            <ChevronLeft className="w-4 h-4 mr-1" /> {t('history_prev')}
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
+                            <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        
+                        {Array.from({ length: totalPages }).map((_, idx) => {
+                            const pageNum = idx + 1;
+                            if (
+                                pageNum === 1 ||
+                                pageNum === totalPages ||
+                                (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                            ) {
+                                return (
+                                    <button
+                                        key={pageNum}
+                                        onClick={() => setCurrentPage(pageNum)}
+                                        className={`w-8 h-8 text-[10px] font-mono font-bold transition-all border ${
+                                            currentPage === pageNum 
+                                            ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-[0_0_12px_rgba(34,211,238,0.15)]' 
+                                            : 'bg-surface/30 text-white/30 border-cyan-500/10 hover:text-cyan-400 hover:border-cyan-400/30'
+                                        }`}
+                                        style={clipStyleSm}
+                                    >
+                                        {pageNum}
+                                    </button>
+                                );
+                            } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                                return <span key={pageNum} className="px-1 text-white/15 font-mono text-xs self-center">··</span>;
+                            }
+                            return null;
+                        })}
+
+                        <button
                             disabled={currentPage === totalPages}
-                            onClick={() => {
-                                setCurrentPage(p => Math.min(totalPages, p + 1));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            className="bg-surface border-border/50 hover:bg-surface-elevated text-text-muted hover:text-white transition-colors"
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 hover:border-cyan-400/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                            style={clipStyleSm}
                         >
-                            {t('history_next')} <ChevronRight className="w-4 h-4 ml-1" />
-                        </Button>
+                            <ChevronRight className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             )}

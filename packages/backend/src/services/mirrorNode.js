@@ -142,7 +142,7 @@ export async function fetchLeaderboard(userService, networkStr = "testnet") {
     // Sort heavily by balance descending
     balances.sort((a, b) => b.balance - a.balance);
 
-    return balances.slice(0, 10);
+    return balances;
 }
 
 export async function fetchStats(networkStr = "testnet") {

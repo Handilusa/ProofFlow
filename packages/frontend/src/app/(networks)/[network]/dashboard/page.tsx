@@ -43,6 +43,46 @@ const ALL_VECTORS = [
   "Critically analyze the narrative that corporate governance on Hedera stifles decentralized retail growth. Provide data-driven counter-arguments."
 ];
 
+// Custom Minimalist Futuristic Agent Icon
+const AgentIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+  >
+    {/* Outer hexagonal/sharp frame */}
+    <path
+      d="M12 2L20.5 6.5V17.5L12 22L3.5 17.5V6.5L12 2Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="opacity-40"
+    />
+    {/* Inner AI Core */}
+    <path
+      d="M12 6L16.5 9V15L12 18L7.5 15V9L12 6Z"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="opacity-80"
+    />
+    {/* Center Node / Eye */}
+    <circle cx="12" cy="12" r="2" fill="currentColor" />
+    {/* Data beams extending out */}
+    <path
+      d="M12 2V6M12 18V22M3.5 6.5L7.5 9M16.5 15L20.5 17.5M3.5 17.5L7.5 15M16.5 9L20.5 6.5"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="opacity-50"
+    />
+  </svg>
+);
+
 const ALL_VECTORS_ES = [
   "Con la volatilidad actual de BTC, ¿cómo se correlaciona HBAR a corto plazo? ¿Estamos cerca de un desacoplamiento?",
   "Analiza la FDV de Hedera frente a su adopción real por empresas. ¿El mercado la está valorando bien?",
@@ -213,10 +253,25 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
           });
           if (latestData.ok) {
             const updatedProof = await latestData.json();
-            setResult(updatedProof);
+
+            // ── Smart merge: prevent flickering during HCS publishing ──
+            // During the gap between initial response and HCS confirmation,
+            // Mirror Node may return empty/fewer steps. We keep the richer
+            // data we already have and only update metadata & status.
+            setResult(prev => {
+              if (!prev) return updatedProof;
+              const prevSteps = prev.steps || [];
+              const newSteps = updatedProof.steps || [];
+              return {
+                ...prev,
+                ...updatedProof,
+                // Preserve existing steps if poll returned fewer (Mirror Node lag)
+                steps: newSteps.length >= prevSteps.length ? newSteps : prevSteps,
+              };
+            });
 
             // Stop polling when fully verified OR if pipeline failed
-            if (updatedProof.status === "VERIFIED" || updatedProof.status === "FAILED") {
+            if (updatedProof.status === "VERIFIED" || (updatedProof.status as string) === "FAILED") {
               clearInterval(pollInterval);
               clearTimeout(pollTimeout);
               setIsPolling(false);
@@ -554,8 +609,9 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
               )}
             </div>
 
-            <AnimatePresence>
-              {result.steps.map((step, idx) => {
+            {/* REMOVED AnimatePresence here to stop it from forcing unmounts when the array reference changes during polling */}
+            <div className="flex flex-col">
+              {(result.steps || []).map((step, idx) => {
                 const isFinal = step.label === "FINAL";
 
                 // If status is CONFIRMED, the seqNum is available if backend passed it,
@@ -564,10 +620,10 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
 
                 return (
                   <motion.div
-                    key={idx}
+                    key={step.hash || `step-${idx}`}
                     initial={{ opacity: 0, x: -10, y: 10 }}
                     animate={{ opacity: 1, x: 0, y: 0 }}
-                    transition={{ delay: idx * 0.4 }}
+                    transition={{ delay: 0.2 }}
                     className="relative mb-6 last:mb-0"
                   >
                     <div className={`p-4 border-l-2 ${isFinal ? 'border-amber-400 bg-amber-400/5' : 'border-emerald-500 bg-emerald-500/5'}`}>
@@ -618,14 +674,21 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                         <span className="truncate max-w-[150px] sm:max-w-[300px]" title={step.hash}>{step.hash}</span>
                       </div>
                     </div>
+                  </motion.div>
+                );
+              })}
+            </div>
 
-                    {/* FAILED state: show error instead of infinite spinner */}
-                    {isFinal && result.status === "FAILED" && (
+            {/* --- EVM ANCHORING AND PASSPORT (RENDERED OUTSIDE THE STEPS LOOP) --- */}
+            {(result.steps || []).length > 0 && (result.steps || [])[(result.steps || []).length - 1].label === "FINAL" && (
+              <div className="mt-6 border-t border-white/5 pt-6">
+                {/* FAILED state: show error instead of infinite spinner */}
+                {(result.status as string) === "FAILED" && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="mt-6 border border-red-500/30 rounded-xl p-5 bg-red-500/5 backdrop-blur"
+                        className="border border-red-500/30 rounded-xl p-5 bg-red-500/5 backdrop-blur"
                       >
                         <div className="flex items-center gap-3">
                           <div className="text-red-400 text-xl">⚠️</div>
@@ -641,13 +704,13 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                       </motion.div>
                     )}
 
-                    {/* Loading state: show until Audit Passport is ready to render */}
-                    {isFinal && result.status !== "FAILED" && !((result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId) && (
+                    {/* Loading state 1: HCS Publishing & PFR Minting */}
+                    {(result.status as string) !== "FAILED" && !((result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId) && (
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="mt-6 border border-border/40 rounded-xl p-5 bg-surface/30 backdrop-blur"
+                        className="border border-border/40 rounded-xl p-5 bg-surface/30 backdrop-blur"
                       >
                         <div className="flex items-center gap-3">
                           <div className="relative">
@@ -658,7 +721,7 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                               {language === 'es' ? 'Asegurando en cadena...' : 'Securing on-chain...'}
                             </p>
                             <p className="text-[11px] text-text-muted mt-0.5">
-                              {language === 'es' ? 'Publicando en HCS → Acuñando $PFR → Anclando en EVM' : 'Publishing to HCS → Minting $PFR → Anchoring to EVM'}
+                              {language === 'es' ? 'Publicando en HCS → Acuñando $PFR' : 'Publishing to HCS → Minting $PFR'}
                             </p>
                           </div>
                         </div>
@@ -670,8 +733,8 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                       </motion.div>
                     )}
 
-                    {/* Show the Passport exactly after Final step IF confirmed */}
-                    {isFinal && (result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId && (
+                    {/* Show the Passport exactly after HTS token is minted */}
+                    {(result.status === "CONFIRMED" || result.status === "VERIFIED") && (result as StoredProof).tokenTxId && (
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -683,27 +746,50 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                           proofId={result.proofId}
                         />
 
-                        {/* 5th Pillar: Autonomous Agent EVM Settlement */}
-                        <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                          <div>
-                            <h4 className="text-white text-sm font-semibold flex items-center gap-2">
-                              <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
-                            </h4>
-                            <p className="text-xs text-text-muted mt-1 max-w-sm">
-                              {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
-                            </p>
-                          </div>
+                        {/* Loading state 2: EVM Anchoring (shows until evmSettled is true) */}
+                        <AnimatePresence>
+                          {!(result as any).evmSettled && (
+                            <motion.div
+                              key="evm-loading"
+                              initial={{ opacity: 0, y: 10, height: 'auto' }}
+                              animate={{ opacity: 1, y: 0, height: 'auto' }}
+                              exit={{ opacity: 0, scale: 0.95, height: 0, margin: 0, padding: 0, overflow: 'hidden' }}
+                              transition={{ duration: 0.4 }}
+                              className="border border-border/40 rounded-xl p-4 bg-surface/30 backdrop-blur flex items-center gap-3"
+                            >
+                              <div className="relative shrink-0">
+                                  <div className="w-6 h-6 rounded-full border-2 border-amber-500/30 border-t-amber-400 animate-spin" />
+                              </div>
+                              <div>
+                                  <p className="text-xs font-semibold text-white font-mono flex items-center gap-2">
+                                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                                      {language === 'es' ? 'Anclaje EVM Autónomo en progreso...' : 'Autonomous EVM Anchor in progress...'}
+                                  </p>
+                                  <p className="text-[10px] text-text-muted mt-0.5">
+                                      {language === 'es' ? 'El Agente Autónomo está anclando este resultado en el Smart Contract de Hedera EVM.' : 'The Autonomous Agent is anchoring this result on the Hedera EVM Smart Contract.'}
+                                  </p>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
-                          {result.status === 'VERIFIED' || (result as any).evmSettled ? (
+                        {/* 5th Pillar: Autonomous Agent EVM Settlement (shows after evmSettled is true) */}
+                        {(result as any).evmSettled && (
+                          <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                              <h4 className="text-white text-sm font-semibold flex items-center gap-2">
+                                <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
+                              </h4>
+                              <p className="text-xs text-text-muted mt-1 max-w-sm">
+                                {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
+                              </p>
+                            </div>
+
                             <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
                               <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
                             </Badge>
-                          ) : (
-                            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 whitespace-nowrap animate-pulse">
-                              <Loader2 className="w-3 h-3 mr-1 animate-spin" /> {language === 'es' ? 'Agente procesando...' : 'Agent processing...'}
-                            </Badge>
-                          )}
-                        </div>
+                          </div>
+                        )}
 
                         {(result as any).evmTxHash && (
                           <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
@@ -712,10 +798,8 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                         )}
                       </motion.div>
                     )}
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
+              </div>
+            )}
           </div>
         ) : null}
       </div>
@@ -752,9 +836,12 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
         )}
 
         <div className="flex justify-between items-center gap-4 mb-4 lg:mb-8 px-2 w-full min-h-[40px] z-30 min-w-0">
-          <div className="flex items-center gap-2 px-2.5 py-1 rounded-full border border-success/30 bg-success/5 shrink-0 whitespace-nowrap">
-            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-success uppercase tracking-wider">
+          <div
+            className="flex items-center gap-2 px-2.5 py-1 border border-emerald-500/30 bg-emerald-500/10 shrink-0 whitespace-nowrap shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+            style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+          >
+            <div className="w-1.5 h-1.5 bg-emerald-400 animate-pulse" />
+            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-emerald-400 uppercase tracking-widest">
               {network === 'mainnet' ? 'Hedera MAINNET Live' : 'Hedera TESTNET Live'}
             </span>
           </div>
@@ -770,9 +857,12 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
           className="block"
         >
           {/* Note: In mobile view, this behaves as a plain div (no border/padding). On desktop (lg:), it has Card styles. */}
-          <div className={`flex flex-col relative overflow-hidden shrink-0 ${isLoading || result ? 'min-h-[60vh] lg:min-h-0' : ''} lg:p-6 lg:border lg:border-border/50 lg:bg-surface/50 lg:backdrop-blur-sm lg:rounded-xl`}>
+          <div
+            className={`flex flex-col relative overflow-hidden shrink-0 ${isLoading || result ? 'min-h-[60vh] lg:min-h-0' : ''} lg:p-6 lg:border lg:border-cyan-500/20 lg:bg-surface/20 lg:backdrop-blur-sm`}
+            style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
+          >
             {/* Background glow only on desktop */}
-            <div className="hidden lg:block absolute top-0 right-0 w-64 h-64 bg-accent-primary/10 rounded-full blur-[80px] pointer-events-none" />
+            <div className="hidden lg:block absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-[80px] pointer-events-none" />
 
             {/* Header Content Wrapper: Adding px-4 on mobile to compensate for removed card padding */}
             <div className={`mb-4 px-4 lg:px-0 relative z-10 ${isLoading || result ? 'hidden lg:block' : 'block'}`}>
@@ -788,10 +878,10 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                   </span>
                 </motion.div>
               )}
-              <h1 className="text-3xl font-display font-bold text-white mb-2 flex items-center gap-3">
-                {t('dash_title')} <ShieldCheck className="w-6 h-6 text-accent-primary" />
+              <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-3 tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                {t('dash_title')} <AgentIcon className="w-7 h-7 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
               </h1>
-              <p className="text-text-muted text-sm pr-0 sm:pr-12">
+              <p className="text-cyan-400/60 font-mono text-xs pr-0 sm:pr-12">
                 {t('dash_subtitle')}
               </p>
             </div>
@@ -806,27 +896,30 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                 <div className="mb-4 flex items-center justify-between px-1">
                   <div className="flex items-center gap-2">
                     <div className={cn(
-                      "flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider",
+                      "flex items-center gap-1.5 px-2 py-0.5 border text-[10px] font-mono font-bold uppercase tracking-wider",
                       userTier?.id === 'gold' ? "bg-yellow-500/10 border-yellow-500/30 text-yellow-500" :
                         userTier?.id === 'silver' ? "bg-slate-400/10 border-slate-400/30 text-slate-300" :
                           userTier?.id === 'bronze' ? "bg-amber-600/10 border-amber-600/30 text-amber-600" :
                             "bg-white/5 border-white/10 text-white/40"
-                    )}>
+                    )} style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
                       <Trophy className="w-3 h-3" />
                       {userTier?.name || 'Member'}
                     </div>
                     {userTier && userTier.id !== 'free' && (
-                      <span className="text-[10px] text-success font-bold">-{Math.round(userTier.discount * 100)}% DISCOUNT APPLIED</span>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold tracking-wider">-{Math.round(userTier.discount * 100)}% DISCOUNT APPLIED</span>
                     )}
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-text-muted/60 block uppercase font-mono tracking-tighter">Current Network Fee</span>
+                    <span className="text-[9px] text-cyan-400/40 block uppercase font-mono tracking-widest">Current Network Fee</span>
                     <span className="text-xs font-mono font-bold text-white">{pfConfig.serviceFeeHbar} HBAR</span>
                   </div>
                 </div>
               )}
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="relative group overflow-hidden rounded-xl border border-border/50">
+                <div
+                  className="relative group overflow-hidden border border-cyan-500/20 bg-surface/30"
+                  style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
+                >
                   <textarea
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
@@ -838,24 +931,22 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                       }
                     }}
                     placeholder={t('dash_placeholder')}
-                    className="w-full bg-background/30 p-5 min-h-[140px] text-white placeholder-text-muted/20 focus:outline-none focus:ring-1 focus:ring-accent-primary/30 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
+                    className="w-full bg-transparent p-5 min-h-[140px] font-mono text-sm text-white placeholder-cyan-400/30 focus:outline-none focus:bg-cyan-500/5 transition-all resize-none shadow-inner disabled:cursor-not-allowed"
                     disabled={isLoading || !account}
                   />
 
                   {/* Disconnected Overlay - Refined Aesthetics */}
                   {!account && (
-                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/40 backdrop-blur-md transition-all duration-500 group-hover:bg-black/20">
-                      {/* Sub-glow effect */}
-                      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent-primary/20 to-transparent" />
-
+                    <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#060a12]/80 backdrop-blur-sm transition-all duration-500 group-hover:bg-[#060a12]/60">
                       <motion.div
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        className="p-3 bg-accent-primary/5 rounded-full border border-accent-primary/20 mb-3 shadow-[0_0_20px_rgba(45,212,191,0.1)]"
+                        className="p-3 bg-red-500/10 border border-red-500/30 mb-3"
+                        style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                       >
-                        <Lock className="w-5 h-5 text-accent-primary" />
+                        <Lock className="w-5 h-5 text-red-400" />
                       </motion.div>
-                      <p className="text-xs font-display font-medium text-white/90 px-8 text-center max-w-[280px] leading-relaxed tracking-wide">
+                      <p className="text-xs font-mono font-bold text-white/90 px-8 text-center max-w-[280px] leading-relaxed tracking-wider uppercase">
                         {t('dash_connect_first')}
                       </p>
                     </div>
@@ -865,21 +956,22 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                 <Button
                   type={!account ? "button" : "submit"}
                   onClick={!account ? connect : undefined}
-                  className={`w-full h-12 text-sm font-semibold rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all group ${!account
-                    ? 'bg-white/10 hover:bg-white/20 text-white border border-white/10'
-                    : 'bg-accent-primary hover:bg-accent-secondary text-black shadow-accent-primary/20'
+                  className={`w-full h-12 text-sm font-mono font-bold uppercase tracking-widest transition-all group ${!account
+                    ? 'bg-transparent hover:bg-white/5 text-white/50 border border-white/20'
+                    : 'bg-cyan-500/20 hover:bg-cyan-400 text-cyan-400 hover:text-black border border-cyan-500/50 shadow-[0_0_20px_rgba(34,211,238,0.2)] hover:shadow-[0_0_30px_rgba(34,211,238,0.4)]'
                     }`}
+                  style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)', borderRadius: 0 }}
                   disabled={isLoading || (!!account && !question.trim())}
                 >
                   {isLoading ? (
                     <span className="flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" /> {t('dash_loading')}
+                      <Loader2 className="w-4 h-4 animate-spin text-cyan-400" /> {t('dash_loading')}
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       {!account ? (
                         <>
-                          <Activity className="w-4 h-4 text-accent-primary" /> {t('wallet_connect')}
+                          <Lock className="w-4 h-4" /> {t('wallet_connect')}
                         </>
                       ) : (
                         <>
@@ -894,14 +986,15 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
 
             {/* VECTORS MUST BE OUTSIDE hidden lg:block TO SHOW ON MOBILE, BUT INSIDE CARD */}
             <div className={`mt-4 px-4 lg:px-0 relative z-10 w-full lg:mt-6 ${isLoading || result ? 'hidden lg:block' : 'block'}`}>
-              <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">{t('dash_vectors')}</p>
+              <p className="text-[10px] font-mono font-bold text-cyan-400/40 uppercase tracking-widest mb-3">{t('dash_vectors')}</p>
               <div className="flex flex-wrap gap-2">
                 {randomVectors.map((q, i) => (
                   <button
                     key={i}
                     onClick={() => setQuestion(q)}
                     disabled={isLoading || !account}
-                    className="px-3 py-1.5 rounded-lg border border-border/50 bg-background/50 text-[11px] text-text-muted hover:text-white hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-3 py-1.5 border border-cyan-500/20 bg-surface/20 text-[10px] font-mono text-cyan-400/60 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-cyan-500/10 transition-colors text-left disabled:opacity-30 disabled:cursor-not-allowed"
+                    style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                   >
                     {q}
                   </button>
@@ -918,39 +1011,43 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
           transition={{ duration: 0.5, delay: 0.25 }}
           className="mt-4 lg:mt-6 px-2 space-y-3 max-w-full overflow-hidden shrink-0"
         >
-          <h3 className="text-xs font-display font-semibold text-text-muted uppercase tracking-widest flex items-center gap-2">
+          <h3 className="text-[10px] font-mono font-bold text-cyan-400/50 uppercase tracking-[0.2em] flex items-center gap-2">
             <Activity className="w-3.5 h-3.5 shrink-0" /> {t('dash_feed_global')}
           </h3>
           <div className="space-y-2">
             {globalFeed.length > 0 ? (
               globalFeed.map((audit) => (
-                <Card
+                <div
                   key={audit.proofId}
-                  className="p-3 border-border/30 bg-surface/30 hover:bg-surface/50 hover:border-border transition-all cursor-pointer group"
+                  className="p-3 border border-cyan-500/15 bg-surface/20 hover:bg-surface/40 hover:border-cyan-400/30 transition-all cursor-pointer group"
+                  style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                   onClick={() => setResult(audit)}
                 >
                   <div className="flex flex-col gap-2">
                     <div className="flex justify-between items-center gap-2">
-                      <span className="text-[10px] font-mono text-accent-primary truncate">ID: {audit.proofId.substring(0, 8)}...</span>
-                      <VerificationBadge status={audit.status || "CONFIRMED"} />
+                      <span className="text-[9px] font-mono text-cyan-400/60 truncate">ID: {audit.proofId.substring(0, 8)}...</span>
+                      <VerificationBadge status={audit.status || "CONFIRMED"} size="sm" />
                     </div>
-                    <p className="text-xs text-white/90 truncate">"{audit.question}"</p>
-                    <div className="flex items-center justify-between pt-1.5 border-t border-border/50">
-                      <span className="text-[9px] text-text-muted flex items-center gap-1.5 min-w-0">
-                        <Hash className="w-2.5 h-2.5 text-accent-primary/60 shrink-0" />
+                    <p className="text-[11px] font-mono text-white/70 group-hover:text-white truncate">"{audit.question}"</p>
+                    <div className="flex items-center justify-between pt-1.5 border-t border-cyan-500/10">
+                      <span className="text-[9px] text-white/30 font-mono flex items-center gap-1.5 min-w-0">
+                        <Hash className="w-2.5 h-2.5 text-cyan-400/40 shrink-0" />
                         <span className="text-[7.5px] font-bold uppercase tracking-widest opacity-40 mr-1 shrink-0">HCS</span>
-                        <span className="truncate text-white/80">{audit.totalSteps}</span>
+                        <span className="truncate">{audit.totalSteps}</span>
                       </span>
-                      <span className="text-[9px] text-text-muted">
+                      <span className="text-[9px] text-white/30 font-mono">
                         {formatTimeAgoI18n(audit.createdAt, t)}
                       </span>
                     </div>
                   </div>
-                </Card>
+                </div>
               ))
             ) : (
-              <div className="p-4 text-center border border-dashed border-white/5 rounded-xl opacity-30 text-[9px] font-mono tracking-widest uppercase">
-                {language === 'es' ? 'Sin actividad reciente' : 'No recent activity'}
+              <div
+                className="p-4 text-center border border-dashed border-cyan-500/20 bg-surface/20 text-[9px] font-mono tracking-[0.3em] uppercase text-cyan-400/30"
+                style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+              >
+                &#x25C8; 0x_NULL_INDEX &#x25C8;
               </div>
             )}
           </div>

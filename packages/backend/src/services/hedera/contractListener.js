@@ -173,16 +173,9 @@ async function handleAuditRequest(requestId, requesterAddress, prompt, { geminiS
         reasoningResult.requesterAddress = requesterAddress;
         reasoningResult.contractRequestId = requestId;
 
-        // Store in proofsStore
-        const { proofsStore, saveProofsToDisk } = await import("../hcsAudit.service.js");
-        proofsStore.set(reasoningResult.proofId, {
-            ...reasoningResult,
-            status: "PUBLISHING",
-            hcsTopicId: "unknown",
-            requesterAddress: requesterAddress,
-            contractRequestId: requestId,
-        });
-        saveProofsToDisk();
+        // The backend no longer caches proofs to local disk.
+        // It pushes everything directly to Hedera Consensus Service.
+        console.log(`[Agent Listener] Pushing proof ${reasoningResult.proofId} to HCS...`);
 
         // 3. Publish to HCS
         console.log(`[Agent] Publishing reasoning chain to HCS...`);
@@ -213,15 +206,15 @@ async function handleAuditRequest(requestId, requesterAddress, prompt, { geminiS
         console.log(`[Agent] 💰 Bounty claimed for Request #${requestId}`);
 
         // Update proof store with EVM info
-        const storedProof = proofsStore.get(reasoningResult.proofId);
-        if (storedProof) {
-            storedProof.evmTxHash = receipt.hash;
-            storedProof.evmSettled = true;
-            storedProof.status = "VERIFIED";
-            proofsStore.set(reasoningResult.proofId, storedProof);
-            saveProofsToDisk();
+        try {
+            if (receipt.hash) {
+                // Note: 'network' is not defined in this scope. Assuming it's a placeholder or intended to be removed.
+                // For now, replacing with a generic message.
+                console.log(`[EVM] Updated EVM with final audit proof (TX: ${receipt.hash})`);
+            }
+        } catch (e) {
+            console.error("[EVM] Failed to update contract with result:", e.message);
         }
-
         console.log(`[Agent] 🎉 Request #${requestId} FULLY PROCESSED (HCS + HTS + EVM)`);
 
     } catch (err) {

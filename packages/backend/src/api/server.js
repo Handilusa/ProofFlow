@@ -13,7 +13,7 @@ import { HCSAuditService } from "../services/hcsAudit.service.js";
 import { AuditPassService } from "../services/auditPass.service.js";
 import { enrichQuestionWithMarketData } from "../services/marketData.service.js";
 import { UserService } from "../services/userService.js";
-import { mintAndTransferGenesis } from "../services/genesisMint.service.js";
+import { mintAndTransferGenesis, checkGenesisOwnership } from "../services/genesisMint.service.js";
 import { isContractReady, getContractAddress, recordAuditInEVM } from "../services/hedera/proofflow.js";
 import { startContractListener } from "../services/hedera/contractListener.js";
 import { getNetwork, getMirrorNodeUrl } from "../services/hedera/networkManager.js";
@@ -316,21 +316,16 @@ app.post("/api/v1/reason",
 
             // 4. Asynchronously handle Hedera operations
             setImmediate(async () => {
+                let proofUpdates = {}; // Start empty, rely on HCS 'CONFIRMED' initially
                 try {
-                    const { proofsStore, saveProofsToDisk } = await import("../services/hcsAudit.service.js");
+                    console.log(`[API] Async handling started for proof ${reasoningResult.proofId}`);
 
-                    proofsStore.set(reasoningResult.proofId, {
-                        ...reasoningResult,
-                        status: "PUBLISHING",
-                        hcsTopicId: "unknown",
-                        requesterAddress: requesterAddress,
-                        network: network
-                    });
+                    // 4a. HCS Publishing
+                    await hcsAuditService.publishReasoningChain(reasoningResult.proofId, reasoningResult.steps, network, question);
+                    // Save immediately so frontend knows HCS is done
+                    await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
 
-                    saveProofsToDisk();
-
-                    await hcsAuditService.publishReasoningChain(reasoningResult.proofId, reasoningResult.steps, network);
-
+                    // 4b. HTS Minting
                     if (requesterAddress) {
                         try {
                             let resolveAddress = requesterAddress;
@@ -347,51 +342,44 @@ app.post("/api/v1/reason",
                                     console.log(`[API] Could not resolve EVM address ${resolveAddress} to Hedera ID:`, e.message);
                                 }
                             }
-                            await auditPassService.mintAuditPass(reasoningResult.proofId, resolveAddress, null, network);
+                            const { tokenTxId, explorerUrl } = await auditPassService.mintAuditPass(reasoningResult.proofId, resolveAddress, null, network);
+                            proofUpdates.tokenTxId = tokenTxId;
+                            proofUpdates.explorerUrl = explorerUrl;
+                            
+                            // Save immediately so frontend can show the Passport
+                            await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
                         } catch (e) {
                             console.error("[Async] Failed to mint audit pass", e);
+                            proofUpdates.status = "FAILED";
+                            await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
                         }
                     }
 
+                    // 4c. EVM Anchoring
                     try {
-                        const stored = proofsStore.get(reasoningResult.proofId);
-                        const finalRootHash = stored ? stored.rootHash : ethers.id("fallback-hash");
-
+                        const finalRootHash = ethers.id("fallback-hash"); // Evm helper needs a hash
                         const evmTxHash = await recordAuditInEVM(reasoningResult.question, finalRootHash, requesterAddress, network);
-
-                        if (stored) {
-                            if (evmTxHash) {
-                                stored.evmTxHash = evmTxHash;
-                                stored.evmSettled = true;
-                            }
-                            stored.status = "VERIFIED";
-                            proofsStore.set(reasoningResult.proofId, stored);
-                            saveProofsToDisk();
-                            console.log(`[EVM - ${network.toUpperCase()}] Proof ${reasoningResult.proofId} reached VERIFIED state. ${evmTxHash ? `(tx: ${evmTxHash})` : '(EVM registration skipped)'}`);
+                        if (evmTxHash) {
+                            proofUpdates.evmTxHash = evmTxHash;
+                            proofUpdates.evmSettled = true;
                         }
+                        console.log(`[EVM - ${network.toUpperCase()}] Proof ${reasoningResult.proofId} pushed. ${evmTxHash ? `(tx: ${evmTxHash})` : '(EVM registration skipped)'}`);
                     } catch (e) {
                         console.error("[EVM] Async recording error:", e.message);
-                        const stored = proofsStore.get(reasoningResult.proofId);
-                        if (stored) {
-                            stored.status = "VERIFIED";
-                            proofsStore.set(reasoningResult.proofId, stored);
-                            saveProofsToDisk();
-                        }
+                        proofUpdates.status = "FAILED";
                     }
+
+                    // Set final verified state now that EVM is done
+                    if (proofUpdates.status !== "FAILED") {
+                        proofUpdates.status = "VERIFIED";
+                    }
+
+                    // Save the final hashes back to the local datastore
+                    await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
+
                 } catch (err) {
                     console.error("[Async] Fatal Hedera operation failed:", err.message);
-                    try {
-                        const { proofsStore, saveProofsToDisk } = await import("../services/hcsAudit.service.js");
-                        const stored = proofsStore.get(reasoningResult.proofId);
-                        if (stored) {
-                            stored.status = "FAILED";
-                            stored.error = err.message;
-                            proofsStore.set(reasoningResult.proofId, stored);
-                            saveProofsToDisk();
-                        }
-                    } catch (e) {
-                        console.error("[Async] Could not update failure status:", e);
-                    }
+                    await hcsAuditService.updateLocalProof(reasoningResult.proofId, { status: "FAILED" }, network);
                 }
             });
 
@@ -615,8 +603,24 @@ app.get("/api/v1/proofs", async (req, res, next) => {
     try {
         const address = req.query.address;
         const network = extractNetwork(req);
-        const proofs = await hcsAuditService.getRecentProofs(address, network);
-        return res.status(200).json(proofs);
+        
+        // Fetch only from Hedera Mirror Node (Local JSON removed)
+        const recentProofs = await hcsAuditService.getRecentProofs(address, network);
+        
+        // Map the raw HCS events into the structure expected by the Dashboard UI
+        const mappedProofs = recentProofs
+            .filter(p => p.question) // Hide old proofs published without question data
+            .map(p => ({
+            proofId: p.proofId,
+            status: p.status,
+            createdAt: p.timestamp,
+            question: p.question,
+            network: p.network,
+            hcsTopicId: p.hcsTopicId,
+            rootHash: p.rootHash
+        }));
+
+        return res.status(200).json(mappedProofs);
     } catch (error) {
         next(error);
     }
@@ -625,8 +629,22 @@ app.get("/api/v1/proofs", async (req, res, next) => {
 app.get("/api/v1/leaderboard", async (req, res, next) => {
     try {
         const network = extractNetwork(req);
-        const leaderboard = await fetchLeaderboard(userService, network);
-        return res.status(200).json(leaderboard);
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+
+        const allEntries = await fetchLeaderboard(userService, network);
+        const total = allEntries.length;
+        const totalPages = Math.ceil(total / limit) || 1;
+        const start = (page - 1) * limit;
+        const paginatedData = allEntries.slice(start, start + limit);
+
+        return res.status(200).json({
+            data: paginatedData,
+            page,
+            limit,
+            total,
+            totalPages
+        });
     } catch (error) {
         next(error);
     }
@@ -684,6 +702,29 @@ app.post("/api/v1/mint-genesis",
             console.error("[API] Mint Genesis Failed:", error.message);
             return res.status(500).json({
                 success: false,
+                error: error.message
+            });
+        }
+    }
+);
+
+// Genesis NFT Ownership Check (SDK-based, on-chain, NOT Mirror Node)
+app.get("/api/v1/genesis/ownership/:address",
+    [param("address").isString().notEmpty()],
+    handleValidationErrors,
+    async (req, res) => {
+        try {
+            const { address } = req.params;
+            const network = extractNetwork(req);
+            
+            const result = await checkGenesisOwnership(address, network);
+            
+            return res.status(200).json(result);
+        } catch (error) {
+            console.error("[API] Genesis ownership check failed:", error.message);
+            return res.status(500).json({
+                owned: false,
+                balance: 0,
                 error: error.message
             });
         }

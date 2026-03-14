@@ -65,11 +65,21 @@ export async function getOrCreateToken(networkStr = "testnet") {
     return newTokenId;
 }
 
-export async function mintReputation(accountId, amount, accountKey = null, networkStr = "testnet") {
+export async function mintReputation(accountId, amount, accountKey = null, networkStr = "testnet", isSystemAction = false) {
     try {
         const network = getNetwork(networkStr);
         const client = getClient(network);
         const tokenId = await getOrCreateToken(network);
+
+        // Security Guardrail:
+        // 1. If it's not a system action (AI audit)
+        // 2. AND the recipient is not the authorized master wallet (0.0.8026799)
+        // Then we block the transaction to prevent unauthorized token inflation.
+        const MASTER_ADMIN = "0.0.8026799";
+        if (!isSystemAction && accountId.toString() !== MASTER_ADMIN) {
+            console.error(`[SECURITY] 🛡️ Unauthorized manual mint attempt to ${accountId} for ${amount} PFR. BLOCKED.`);
+            throw new Error("UNAUTHORIZED_MINT: Manual minting is only allowed for the authorized admin wallet.");
+        }
 
         // 1. Mint tokens to the Treasury
         console.log(`[${network.toUpperCase()}] Minting ${amount} tokens to Treasury...`);

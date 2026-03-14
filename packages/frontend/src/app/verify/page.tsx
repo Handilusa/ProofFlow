@@ -7,6 +7,7 @@ import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, Che
 import { Card, Button, Input, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
+import VerifyOnChainButton from '@/components/proofflow/VerifyOnChainButton';
 import { getProof, StoredProof, getRecentProofs } from '@/lib/api';
 import { useLanguage } from '@/lib/language-context';
 import { useWallet } from '@/lib/wallet-context';
@@ -63,11 +64,26 @@ function VerifyContent() {
                 transition={{ duration: 0.5 }}
                 className="text-center max-w-2xl mx-auto mt-8 mb-12"
             >
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
-                    <ShieldCheck className="w-8 h-8" />
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-sm bg-cyan-500/10 text-cyan-400 mb-6 border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.15)] relative"
+                     style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                >
+                    {/* Custom Proof/Node Icon */}
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M12 9v-2" />
+                        <path d="M12 15v2" />
+                        <path d="M9 12H7" />
+                        <path d="M15 12h2" />
+                    </svg>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4">{t('verify_title')}</h1>
-                <p className="text-text-muted text-base">{t('verify_subtitle')}</p>
+                <h1 className="text-3xl sm:text-4xl font-display font-bold text-white mb-4 tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    {t('verify_title')}
+                </h1>
+                <p className="text-cyan-400/60 font-mono text-sm max-w-lg mx-auto leading-relaxed">
+                    {t('verify_subtitle')}
+                </p>
             </motion.div>
 
             {/* Input Section */}
@@ -75,25 +91,34 @@ function VerifyContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
+                className="relative max-w-3xl mx-auto group"
             >
-                <Card className="p-2 pl-4 border-border/60 bg-surface/80 backdrop-blur-xl shadow-xl flex items-center gap-4 max-w-3xl mx-auto focus-within:border-accent-primary/50 transition-colors">
-                    <Search className="w-5 h-5 text-text-muted shrink-0" />
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan-500/30 to-blue-500/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                     style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }} />
+                
+                <div className="p-1.5 pl-4 border border-cyan-500/30 bg-[#0a0f18] shadow-[0_0_20px_rgba(34,211,238,0.05)] flex items-center gap-4 relative z-10 transition-colors hover:border-cyan-400/50"
+                     style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                >
+                    <Search className="w-5 h-5 text-cyan-500/60 shrink-0" />
                     <input
                         type="text"
                         placeholder={t('verify_placeholder')}
-                        className="flex-1 bg-transparent border-none text-white focus:outline-none focus:ring-0 placeholder-text-muted text-sm font-mono w-full"
+                        className="flex-1 bg-transparent border-none text-white focus:outline-none focus:ring-0 placeholder-cyan-500/30 text-sm font-mono w-full"
                         value={proofId}
                         onChange={(e) => setProofId(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleVerify()}
                     />
-                    <Button
+                    <button
                         onClick={() => handleVerify()}
                         disabled={isVerifying || !proofId.trim()}
-                        className="shrink-0 h-10 px-6 font-semibold bg-emerald-500 hover:bg-emerald-600 text-white shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+                        className="shrink-0 h-10 px-6 font-mono font-bold text-xs tracking-widest uppercase bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                     >
-                        {isVerifying ? t('verify_loading') : t('verify_button')}
-                    </Button>
-                </Card>
+                        {isVerifying ? (
+                            <span className="flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> {t('verify_loading')}</span>
+                        ) : t('verify_button')}
+                    </button>
+                </div>
             </motion.div>
 
             {/* Suggestions */}
@@ -102,9 +127,9 @@ function VerifyContent() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="flex flex-wrap items-center justify-center gap-3 text-xs mt-4"
+                    className="flex flex-wrap items-center justify-center gap-3 mt-6"
                 >
-                    <span className="text-text-muted">{t('verify_try')}</span>
+                    <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold">{t('verify_try')}</span>
                     {recentIds.map((id, i) => (
                         <button
                             key={i}
@@ -112,9 +137,10 @@ function VerifyContent() {
                                 setProofId(id);
                                 handleVerify(id);
                             }}
-                            className="px-3 py-1.5 rounded-full border border-border bg-surface-elevated/50 text-text-muted font-mono hover:text-white hover:border-accent-primary transition-colors truncate max-w-[150px]"
+                            className="px-2 py-1 border border-cyan-500/20 bg-cyan-500/5 text-cyan-400/80 font-mono text-[9px] uppercase tracking-wider hover:text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all shadow-[0_0_10px_rgba(34,211,238,0.05)] w-auto max-w-[100px] truncate"
+                            style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
                         >
-                            {id.substring(0, 8)}...
+                            {id.substring(0, 8)}
                         </button>
                     ))}
                 </motion.div>
@@ -122,16 +148,26 @@ function VerifyContent() {
 
             {/* Error State */}
             {error && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center p-6 bg-red-500/10 border border-red-500/20 rounded-2xl max-w-2xl mx-auto">
-                    <p className="text-red-400 font-medium">{error}</p>
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} 
+                            className="text-center p-4 bg-red-500/10 border border-red-500/30 max-w-2xl mx-auto shadow-[0_0_20px_rgba(239,68,68,0.15)]"
+                            style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+                    <p className="text-red-400 font-mono text-xs uppercase tracking-widest font-bold font-display flex items-center justify-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-red-500 animate-pulse" /> {error}
+                    </p>
                 </motion.div>
             )}
 
             {/* Loading State */}
             {isVerifying && (
                 <div className="space-y-6 max-w-3xl mx-auto mt-12">
-                    <Skeleton className="h-32 w-full rounded-2xl" />
-                    <Skeleton className="h-48 w-full rounded-2xl" />
+                    <div className="h-32 w-full bg-[#0a0f18] border border-cyan-500/20 relative overflow-hidden"
+                         style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent animate-[shimmer_1.5s_infinite]" />
+                    </div>
+                    <div className="h-48 w-full bg-[#0a0f18] border border-cyan-500/20 relative overflow-hidden"
+                         style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/10 to-transparent animate-[shimmer_1.5s_infinite_0.5s]" />
+                    </div>
                 </div>
             )}
 
@@ -144,13 +180,20 @@ function VerifyContent() {
                     {/* Main Timeline Column */}
                     <div className="lg:col-span-2 space-y-6">
 
-                        <Badge className="bg-success/10 text-success border border-success/20 px-3 py-1.5 font-bold tracking-wide flex items-center gap-2 w-fit">
-                            <CheckCircle2 className="w-4 h-4" /> ON-CHAIN VERIFIED
-                        </Badge>
+                        <div className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-3 py-1.5 font-mono font-bold text-[10px] tracking-widest flex items-center gap-2 w-fit"
+                             style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                            <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" /> ON-CHAIN ANCHORED
+                        </div>
 
                         <h2 className="text-2xl font-display font-bold text-white leading-snug">
                             Question: "{proof.question}"
                         </h2>
+
+                        <VerifyOnChainButton 
+                            steps={proof.steps} 
+                            providedRootHash={proof.rootHash || ""} 
+                            topicId={proof.hcsTopicId} 
+                        />
 
                         <div className="relative pl-6 pt-6 pb-6">
                             <div className="absolute left-[3px] top-8 bottom-4 w-[2px] bg-emerald-500/30" />
@@ -246,82 +289,118 @@ function VerifyContent() {
 
                     {/* Right Summary Column */}
                     <div className="space-y-6">
-                        <Card className="p-6 border-border/50 bg-surface/50 backdrop-blur">
-                            <h3 className="font-display font-bold text-lg text-white mb-6 border-b border-border/50 pb-4">{t('verify_summary')}</h3>
+                        <div className="relative group">
+                            <div className="absolute -inset-0.5 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                                 style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }} />
+                            
+                            <div className="relative p-6 bg-[#0a0f18] border border-cyan-500/30 transition-colors hover:border-cyan-400/50"
+                                 style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+                                {/* Background Grid */}
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-20" />
 
-                            <div className="space-y-5">
-                                <div>
-                                    <span className="text-xs text-text-muted block mb-1">Proof ID</span>
-                                    <span className="text-sm font-mono text-white/90 break-all">{proof.proofId}</span>
-                                </div>
+                                <div className="relative z-10">
+                                    <h3 className="font-display font-bold text-lg text-white mb-6 border-b border-cyan-500/20 pb-4 tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                        {t('verify_summary')}
+                                    </h3>
 
-                                <div>
-                                    <span className="text-xs text-text-muted block mb-1">{t('verify_created')}</span>
-                                    <span className="text-sm text-white/90 flex items-center gap-2">
-                                        <Clock className="w-4 h-4 text-text-muted" />
-                                        {new Date(proof.createdAt).toLocaleString()}
-                                    </span>
-                                </div>
+                                    <div className="space-y-6">
+                                        <div>
+                                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold block mb-1">Proof ID</span>
+                                            <span className="text-sm font-mono text-white/90 break-all">{proof.proofId}</span>
+                                        </div>
 
-                                <div>
-                                    <span className="text-xs text-text-muted block mb-1">{t('verify_topic')}</span>
-                                    <a
-                                        href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
-                                        className="h-9 px-4 inline-flex items-center justify-center rounded-lg border border-border/50 bg-[#0F1116] text-sm font-medium hover:bg-white/5 hover:border-border transition-all"
-                                    >
-                                        {proof.hcsTopicId} <ExternalLink className="w-3 h-3" />
-                                    </a>
-                                </div>
+                                        <div>
+                                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_created')}</span>
+                                            <span className="text-sm text-white/90 flex items-center gap-2 font-mono">
+                                                <Clock className="w-4 h-4 text-cyan-400/50" />
+                                                {new Date(proof.createdAt).toLocaleString()}
+                                            </span>
+                                        </div>
 
-                                <div>
-                                    <span className="text-xs text-text-muted block mb-1">{t('verify_steps')}</span>
-                                    <span className="text-sm font-bold text-white">{proof.totalSteps}</span>
-                                </div>
+                                        <div>
+                                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold block mb-2">{t('verify_topic')}</span>
+                                            <a
+                                                href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
+                                                className="h-9 px-4 inline-flex items-center justify-center border border-cyan-500/30 bg-cyan-500/5 text-sm font-mono text-cyan-400 hover:bg-cyan-500/20 hover:border-cyan-400/50 transition-all shadow-[0_0_15px_rgba(34,211,238,0.1)]"
+                                                style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+                                            >
+                                                {proof.hcsTopicId} <ExternalLink className="w-3.5 h-3.5 ml-2" />
+                                            </a>
+                                        </div>
 
-                                <div className="pt-4 border-t border-border/50">
-                                    <span className="text-xs text-text-muted block mb-2">{t('verify_root')}</span>
-                                    <div className="bg-background border border-border rounded-lg p-3 text-[10px] sm:text-xs font-mono text-white/70 break-all">
-                                        {proof.rootHash || "Computing..."}
+                                        <div>
+                                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_steps')}</span>
+                                            <span className="text-sm font-bold text-white font-mono">{proof.totalSteps}</span>
+                                        </div>
+
+                                        <div className="pt-5 border-t border-cyan-500/20">
+                                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold block mb-2">{t('verify_root')}</span>
+                                            <div className="bg-[#060a12] border border-cyan-500/30 p-3 text-[10px] sm:text-xs font-mono text-cyan-400 break-all shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"
+                                                 style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                                {proof.rootHash || "Computing..."}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </Card>
+                        </div>
 
                         {/* Audit Certificate / NFT */}
-                        <Card className="p-6 border-accent-primary/30 bg-gradient-to-br from-surface to-accent-primary/5">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="p-2 bg-accent-primary/20 text-accent-primary rounded-lg">
-                                    <Network className="w-5 h-5" />
+                        <div className="relative group mt-8">
+                            <div className="absolute -inset-0.5 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                                 style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }} />
+                            
+                            <div className="relative p-6 bg-[#0a0f18] border border-cyan-500/30 transition-colors hover:border-cyan-400/50"
+                                 style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+                                {/* Background Grid */}
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-20" />
+
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-3 mb-4 border-b border-cyan-500/20 pb-4">
+                                        <div className="p-2 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-mono text-[10px] tracking-widest flex items-center justify-center shrink-0"
+                                             style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                                            <Network className="w-4 h-4" />
+                                        </div>
+                                        <h3 className="font-display font-bold text-white tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                            {t('verify_certificate')}
+                                        </h3>
+                                    </div>
+
+                                    <p className="text-xs text-white/50 leading-relaxed font-mono mb-6">
+                                        {t('verify_cert_desc')}
+                                    </p>
+
+                                    {proof.tokenTxId ? (
+                                        <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="block w-full">
+                                            <button className="w-full h-11 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 font-mono font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                                                style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                                            >
+                                                {t('verify_view_pass')} <ExternalLink className="w-4 h-4 ml-2" />
+                                            </button>
+                                        </a>
+                                    ) : (
+                                        <button disabled className="w-full h-11 text-white/30 border border-white/10 font-mono text-xs uppercase tracking-widest cursor-not-allowed"
+                                                style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+                                            {t('verify_no_pass')}
+                                        </button>
+                                    )}
                                 </div>
-                                <h3 className="font-display font-bold text-white">{t('verify_certificate')}</h3>
                             </div>
-
-                            <p className="text-xs text-text-muted leading-relaxed mb-6">{t('verify_cert_desc')}</p>
-
-                            {proof.tokenTxId ? (
-                                <a href={proof.explorerUrl} target="_blank" rel="noopener noreferrer" className="block w-full">
-                                    <Button className="w-full bg-accent-primary hover:bg-accent-secondary text-background font-bold h-11 shadow-[0_0_15px_rgba(45,212,191,0.2)]">
-                                        {t('verify_view_pass')} <ExternalLink className="w-4 h-4 ml-2" />
-                                    </Button>
-                                </a>
-                            ) : (
-                                <Button disabled variant="outline" className="w-full text-xs h-11 border-border/50 text-text-muted">
-                                    {t('verify_no_pass')}
-                                </Button>
-                            )}
-                        </Card>
+                        </div>
 
                         {/* Share link snippet */}
-                        <div className="text-center">
-                            <span className="text-[10px] text-text-muted uppercase tracking-wider font-semibold">{t('verify_share')}</span>
-                            <div className="mt-2 bg-surface-elevated border border-border rounded-lg p-2.5 text-xs font-mono text-white/50 break-all flex items-center justify-between">
-                                <span>proofflow.app/verify?id={proof.proofId.substring(0, 8)}...</span>
+                        <div className="pt-8 text-center">
+                            <span className="text-[10px] text-cyan-400/60 uppercase tracking-widest font-mono font-bold">{t('verify_share')}</span>
+                            <div className="mt-3 bg-[#0a0f18] border border-cyan-500/30 p-2.5 text-xs font-mono text-cyan-400/80 break-all flex items-center justify-between transition-colors hover:border-cyan-400/50"
+                                 style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                <span className="pl-2">proofflow.app/verify?id={proof.proofId.substring(0, 8)}...</span>
                                 <button
                                     onClick={() => navigator.clipboard.writeText(window.location.href)}
-                                    className="p-1.5 hover:bg-white/10 rounded transition-colors text-white"
+                                    className="p-1.5 hover:bg-cyan-500/20 text-cyan-400 transition-colors border border-transparent hover:border-cyan-500/30"
+                                    style={{ clipPath: 'polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px)' }}
                                     title="Copy Link"
                                 >
-                                    <FileText className="w-3.5 h-3.5" />
+                                    <FileText className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
@@ -335,7 +414,19 @@ function VerifyContent() {
 export default function VerifyPage() {
     return (
         <div className="max-w-5xl mx-auto space-y-8 pb-12">
-            <Suspense fallback={<div className="text-center py-20 text-text-muted flex flex-col items-center justify-center"><ShieldCheck className="w-12 h-12 mb-4 opacity-50" /></div>}>
+            <Suspense fallback={
+                <div className="text-center py-20 text-cyan-500/30 flex flex-col items-center justify-center">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="mb-4 animate-pulse">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
+                        <path d="M21 3v5h-5" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M12 9v-2" />
+                        <path d="M12 15v2" />
+                        <path d="M9 12H7" />
+                        <path d="M15 12h2" />
+                    </svg>
+                </div>
+            }>
                 <VerifyContent />
             </Suspense>
         </div>

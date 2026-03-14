@@ -1,10 +1,68 @@
-import { Client, PrivateKey, TokenMintTransaction, TransferTransaction } from '@hashgraph/sdk';
-import { getMirrorNodeUrl } from './hedera/networkManager.js';
+import { Client, PrivateKey, TokenMintTransaction, TransferTransaction, AccountBalanceQuery, AccountId, TokenId } from '@hashgraph/sdk';
+import { getClient } from './hedera/networkManager.js';
 
 const GENESIS_TOKEN_ID = "0.0.8170105";
 
 // In-memory lock to prevent race-condition exploits from concurrent API calls
 const activeMints = new Set();
+
+/**
+ * Resolves any address format (EVM 0x... or native 0.0.x) to an AccountId object.
+ * Uses AccountId.fromEvmAddress() for EVM aliases — this is a local conversion,
+ * the actual validity is checked when we execute the AccountBalanceQuery.
+ */
+function resolveAccountId(address) {
+    if (address.startsWith("0x")) {
+        // fromEvmAddress(shard, realm, evmAddress) — deterministic local conversion
+        return AccountId.fromEvmAddress(0, 0, address);
+    }
+    return AccountId.fromString(address);
+}
+
+/**
+ * Checks if a wallet owns the Genesis NFT using the Hedera SDK (consensus node query).
+ * This is 100% on-chain and does NOT use the Mirror Node.
+ * 
+ * @param {string} address - EVM (0x...) or native (0.0.x) address
+ * @param {string} network - 'mainnet' or 'testnet'
+ * @returns {Promise<{owned: boolean, balance: number, accountId: string}>}
+ */
+export async function checkGenesisOwnership(address, network = 'testnet') {
+    const client = getClient(network);
+    const accountId = resolveAccountId(address);
+
+    try {
+        const balance = await new AccountBalanceQuery()
+            .setAccountId(accountId)
+            .execute(client);
+
+        const tokenId = TokenId.fromString(GENESIS_TOKEN_ID);
+        // balance.tokens is a TokenBalanceMap; get() returns Long or undefined
+        const tokenBalance = balance.tokens?._map?.get(tokenId.toString());
+        const numericBalance = tokenBalance ? Number(tokenBalance) : 0;
+
+        console.log(`[Genesis] SDK AccountBalanceQuery for ${accountId.toString()}: Genesis balance = ${numericBalance}`);
+
+        return {
+            owned: numericBalance > 0,
+            balance: numericBalance,
+            accountId: accountId.toString()
+        };
+    } catch (err) {
+        const statusStr = err.status?.toString() || err.message || '';
+        
+        // INVALID_ACCOUNT_ID = account doesn't exist on Hedera (new/hollow EVM wallet)
+        // This means they definitely don't own any NFTs
+        if (statusStr.includes('INVALID_ACCOUNT_ID') || statusStr.includes('ACCOUNT_ID_DOES_NOT_EXIST')) {
+            console.log(`[Genesis] Account ${address} does not exist on Hedera yet — ownership = false`);
+            return { owned: false, balance: 0, accountId: accountId.toString() };
+        }
+
+        // Any other error is unexpected — log and re-throw
+        console.error(`[Genesis] SDK AccountBalanceQuery failed for ${address}:`, err.message);
+        throw err;
+    }
+}
 
 export async function mintAndTransferGenesis(userAddress, network = 'testnet') {
     if (activeMints.has(userAddress)) {
@@ -13,54 +71,27 @@ export async function mintAndTransferGenesis(userAddress, network = 'testnet') {
     activeMints.add(userAddress);
 
     try {
-        const operatorId = process.env.HEDERA_ACCOUNT_ID_TESTNET;
-        const operatorKey = PrivateKey.fromStringECDSA(process.env.HEDERA_PRIVATE_KEY_TESTNET);
-        const client = Client.forTestnet().setOperator(operatorId, operatorKey);
+        const client = getClient(network);
+        const operatorId = network === 'mainnet'
+            ? process.env.HEDERA_ACCOUNT_ID_MAINNET
+            : process.env.HEDERA_ACCOUNT_ID_TESTNET;
 
-        let hederaAccountId = userAddress;
+        // ── Step 1: Resolve address ──
+        const accountId = resolveAccountId(userAddress);
+        const hederaAccountId = accountId.toString();
+        console.log(`[Genesis] Resolved ${userAddress} → ${hederaAccountId}`);
 
-        // Resolve EVM mapping if 0x address is passed
-        if (userAddress.startsWith("0x")) {
-            try {
-                const mirrorNodeUrl = getMirrorNodeUrl(network);
-                const mnRes = await fetch(`${mirrorNodeUrl}/accounts/${userAddress}`);
-                if (mnRes.ok) {
-                    const mnData = await mnRes.json();
-                    if (mnData.account) {
-                        hederaAccountId = mnData.account;
-                    } else {
-                        throw new Error("EVM address not found on Hedera Mirror Node. Please fund the account or use a native Hedera wallet.");
-                    }
-                } else {
-                     throw new Error("Could not map EVM address. Ensure your account is active on Hedera.");
-                }
-            } catch (e) {
-                console.error("[Mint Service] Failed to map address:", e.message);
-                throw new Error("Account resolution failed. Ensure your EVM address is active on Hedera.");
-            }
+        // ── Step 2: On-chain ownership check via SDK (NOT Mirror Node) ──
+        const ownership = await checkGenesisOwnership(userAddress, network);
+        if (ownership.owned) {
+            console.warn(`[Genesis] Wallet ${hederaAccountId} already owns ${ownership.balance} Genesis NFT(s). Mint rejected.`);
+            throw new Error("Ya posees un Genesis NFT en esta wallet. Límite de 1 por usuario.");
         }
 
-        // Strict Server-Side Check: Verify if user already owns the Genesis NFT
-        try {
-            const mirrorNodeUrl = getMirrorNodeUrl(network);
-            const balanceRes = await fetch(`${mirrorNodeUrl}/accounts/${hederaAccountId}/tokens?token.id=${GENESIS_TOKEN_ID}`);
-            if (balanceRes.ok) {
-                const balanceData = await balanceRes.json();
-                const tokenRecord = balanceData.tokens?.find(t => t.token_id === GENESIS_TOKEN_ID);
-                if (tokenRecord && tokenRecord.balance > 0) {
-                    console.warn(`[Genesis] Wallet ${hederaAccountId} already owns a Genesis NFT. Mint rejected.`);
-                    throw new Error("ALREADY_MINTED");
-                }
-            }
-        } catch (e) {
-            if (e.message === "ALREADY_MINTED") throw new Error("Ya posees un Genesis NFT en esta wallet. Límite de 1 por usuario.");
-            console.warn("[Genesis] Could not verify existing balance, proceeding with caution:", e.message);
-        }
-
+        // ── Step 3: Mint 1 Edition ──
         try {
             console.log(`[Genesis] Minting Edition for ${hederaAccountId}...`);
             
-            // 1. Mint 1 Edition
             const metadataURI = "ipfs://bafkreiahvascdldplfsgzqptqphjtsga7djrc7czdy7atu6jx5vpv22nru";
             const mintTx = await new TokenMintTransaction()
                 .setTokenId(GENESIS_TOKEN_ID)
@@ -71,7 +102,7 @@ export async function mintAndTransferGenesis(userAddress, network = 'testnet') {
             const serialNumber = mintReceipt.serials[0].low;
             console.log(`[Genesis] Successfully minted Edition #${serialNumber}`);
 
-            // 2. Transfer from Treasury to User
+            // ── Step 4: Transfer from Treasury to User ──
             try {
                 const transferTx = await new TransferTransaction()
                     .addNftTransfer(GENESIS_TOKEN_ID, serialNumber, operatorId, hederaAccountId)
@@ -97,7 +128,6 @@ export async function mintAndTransferGenesis(userAddress, network = 'testnet') {
         }
 
     } finally {
-        // Always release the lock so the user isn't permanently blocked if an error occurs
         activeMints.delete(userAddress);
     }
 }

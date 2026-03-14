@@ -89,7 +89,8 @@ export default function LiveNetworkCounter() {
                         damping: 30,
                         opacity: { duration: 0.2 }
                     }}
-                    className="flex items-center justify-center gap-1.5 sm:gap-2 bg-surface-elevated/80 px-2.5 sm:px-3 py-1.5 rounded-lg border border-border shadow-lg cursor-default hover:border-accent-primary/50 transition-colors min-w-0 max-w-full"
+                    className="flex items-center justify-center gap-1.5 sm:gap-2 bg-surface/30 px-2.5 sm:px-3 py-1.5 border border-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.05)] cursor-default hover:border-cyan-400/50 hover:bg-cyan-500/10 transition-colors min-w-0 max-w-full"
+                    style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
                 >
                     {items[currentIndex].icon}
                     <span className="text-text-muted text-[9px] sm:text-[10px] font-mono font-medium truncate shrink">{items[currentIndex].label}</span>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Terminal, Search, ShieldCheck, Shield, Bot, Sparkles } from 'lucide-react';
+import { Terminal, Search, ShieldCheck, Shield, Bot, Sparkles, ChevronLeft, ChevronRight, Trophy } from 'lucide-react';
 import { Card, Skeleton, Input, Button } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import Link from 'next/link';
@@ -19,10 +19,17 @@ interface LeaderboardEntry {
     isGenesis?: boolean;
 }
 
+const clipStyle = { clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' };
+const clipStyleSm = { clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' };
+
 const GenesisBadge = () => (
-    <div className="flex items-center gap-2 border border-cyan-500/30 bg-transparent px-2.5 py-1 rounded-md transition-all hover:border-cyan-400/50 hover:bg-cyan-500/5 cursor-default w-fit mx-auto" title="Genesis Verified">
+    <div
+        className="flex items-center gap-1.5 border border-cyan-500/30 bg-cyan-500/5 px-2 py-0.5 transition-all hover:border-cyan-400/50 hover:bg-cyan-500/10 cursor-default w-fit mx-auto"
+        style={clipStyleSm}
+        title="Genesis Verified"
+    >
         <Sparkles className="w-3 h-3 text-cyan-400" />
-        <span className="text-[10px] font-medium text-white tracking-widest uppercase">Genesis</span>
+        <span className="text-[9px] font-mono font-bold text-cyan-400 tracking-widest uppercase">Genesis</span>
     </div>
 );
 
@@ -44,17 +51,23 @@ export default function LeaderboardPage({ params }: { params: { network: string 
     const [showPersonalOnly, setShowPersonalOnly] = useState(false);
     const [lastUpdated, setLastUpdated] = useState(Date.now());
     const [now, setNow] = useState(Date.now());
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalEntries, setTotalEntries] = useState(0);
+    const ITEMS_PER_PAGE = 20;
 
     const [hederaAccountId, setHederaAccountId] = useState<string | null>(null);
 
-    const fetchLeaderboard = async () => {
+    const fetchLeaderboard = async (p: number = page) => {
         try {
-            const res = await fetch(`${API_URL}/leaderboard`, {
+            const res = await fetch(`${API_URL}/leaderboard?page=${p}&limit=${ITEMS_PER_PAGE}`, {
                 headers: { 'x-network': urlNetwork }
             });
             if (!res.ok) throw new Error('Failed to fetch leaderboard');
             const result = await res.json();
-            setData(result);
+            setData(result.data || result);
+            setTotalPages(result.totalPages || 1);
+            setTotalEntries(result.total || 0);
             setLastUpdated(Date.now());
             setNow(Date.now());
         } catch (e) {
@@ -65,14 +78,20 @@ export default function LeaderboardPage({ params }: { params: { network: string 
     };
 
     useEffect(() => {
-        fetchLeaderboard();
-        const fetchInterval = setInterval(fetchLeaderboard, 30000);
+        fetchLeaderboard(page);
+        const fetchInterval = setInterval(() => fetchLeaderboard(page), 30000);
         const displayInterval = setInterval(() => setNow(Date.now()), 1000);
         return () => {
             clearInterval(fetchInterval);
             clearInterval(displayInterval);
         };
-    }, []);
+    }, [page]);
+
+    const goToPage = (p: number) => {
+        if (p < 1 || p > totalPages) return;
+        setLoading(true);
+        setPage(p);
+    };
 
     useEffect(() => {
         if (!account) {
@@ -115,97 +134,124 @@ export default function LeaderboardPage({ params }: { params: { network: string 
             <div className="space-y-6">
 
                 {/* Header */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pb-4 border-b border-border/50">
-                    <div className="flex items-center gap-3 mb-2">
-                        <h1 className="text-3xl font-display font-bold text-white">{t('lb_title')}</h1>
-                        <Badge variant="success" className="h-6">LIVE</Badge>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="pb-6 border-b border-cyan-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div
+                            className="w-10 h-10 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                            style={clipStyleSm}
+                        >
+                            <Trophy className="w-5 h-5" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-white tracking-wide" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                            {t('lb_title')}
+                        </h1>
+                        <div
+                            className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/25 text-emerald-400"
+                            style={clipStyleSm}
+                        >
+                            <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-widest">LIVE</span>
+                        </div>
                     </div>
-                    <p className="text-text-muted font-sans text-sm">{t('lb_subtitle')}</p>
+                    <p className="text-xs font-mono text-white/40 tracking-wide">{t('lb_subtitle')}</p>
                 </motion.div>
 
                 {/* Controls */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
-                        <div className="flex items-center gap-1 bg-surface p-1 rounded-xl border border-border/50 w-fit shrink-0">
+                        <div
+                            className="flex items-center gap-0.5 bg-surface/40 backdrop-blur-sm p-1 border border-cyan-500/20"
+                            style={clipStyleSm}
+                        >
                             <button
                                 onClick={() => setShowPersonalOnly(false)}
-                                className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${!showPersonalOnly ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'}`}
+                                className={`px-4 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all ${!showPersonalOnly
+                                    ? 'bg-cyan-500/15 text-cyan-400 font-bold shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                    : 'text-white/40 hover:text-cyan-400/70'
+                                }`}
+                                style={clipStyleSm}
                             >
                                 {t('lb_global')}
                             </button>
                             <button
                                 onClick={() => setShowPersonalOnly(true)}
                                 disabled={!account}
-                                className={`px-4 py-1.5 rounded-lg text-xs font-mono transition-all ${showPersonalOnly ? 'bg-accent-primary/10 text-accent-primary shadow-glow-sm font-bold' : 'text-text-muted hover:text-white'} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                className={`px-4 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all ${showPersonalOnly
+                                    ? 'bg-cyan-500/15 text-cyan-400 font-bold shadow-[0_0_10px_rgba(34,211,238,0.1)]'
+                                    : 'text-white/40 hover:text-cyan-400/70'
+                                } disabled:opacity-30 disabled:cursor-not-allowed`}
+                                style={clipStyleSm}
                                 title={!account ? "Connect wallet to view personal history" : ""}
                             >
                                 {t('lb_my')}
                             </button>
                         </div>
 
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-text-muted shrink-0 ml-auto sm:ml-0 hidden sm:flex">
-                            <Terminal className="w-3 h-3" />
+                        <div className="flex items-center gap-2 text-[9px] font-mono text-white/25 shrink-0 ml-auto sm:ml-0 hidden sm:flex">
+                            <Terminal className="w-3 h-3 text-cyan-400/40" />
                             <span>{t('lb_sync_ahead')} {secondsAgo}s</span>
                         </div>
                     </div>
 
                     <div className="relative w-full sm:w-64 group shrink-0">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-accent-primary/60 group-focus-within:text-accent-primary transition-colors z-10 pointer-events-none" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-cyan-400/40 group-focus-within:text-cyan-400 transition-colors z-10 pointer-events-none" />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder={t('lb_search')}
-                            className="w-full bg-surface/40 backdrop-blur-md border border-border/50 rounded-xl pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-text-muted/40 focus:outline-none focus:border-accent-primary/50 transition-all shadow-inner"
+                            className="w-full bg-surface/30 backdrop-blur-sm border border-cyan-500/20 pl-9 pr-4 py-2 text-xs font-mono text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-400/50 focus:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all"
+                            style={clipStyleSm}
                         />
                     </div>
-
-                    {/* Make Sync appear correctly on mobile down here if needed, or leave it hidden as I did with `hidden sm:flex` */}
                 </div>
 
                 {/* Table Area — Desktop only */}
                 <div className="hidden lg:block">
-                    <Card className="p-0 border-border/50 overflow-hidden w-full max-w-full">
+                    <div
+                        className="relative bg-surface/20 backdrop-blur-sm border border-cyan-500/20 overflow-hidden shadow-[0_0_40px_rgba(34,211,238,0.05)]"
+                        style={clipStyle}
+                    >
                         <div className="overflow-x-auto w-full">
                             <table className="w-full text-sm font-mono min-w-max md:min-w-full">
                                 <thead>
-                                    <tr className="bg-surface-elevated/50 border-b border-border/50">
-                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-20">POS</th>
-                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6">{t('lb_col_identity')}</th>
-                                        <th className="text-center text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-28">Tier</th>
-                                        <th className="text-right text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 w-32">{t('lb_col_tokens')}</th>
-                                        <th className="text-left text-[10px] uppercase tracking-widest text-text-muted py-3 px-6 hidden md:table-cell">{t('lb_col_dominance')}</th>
+                                    <tr className="border-b border-cyan-500/15 bg-cyan-500/[0.03]">
+                                        <th className="text-left text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6 w-20">POS</th>
+                                        <th className="text-left text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6">{t('lb_col_identity')}</th>
+                                        <th className="text-center text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6 w-28">Tier</th>
+                                        <th className="text-right text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6 w-32">{t('lb_col_tokens')}</th>
+                                        <th className="text-left text-[9px] font-mono uppercase tracking-[0.2em] text-cyan-400/50 py-3.5 px-6 hidden md:table-cell">{t('lb_col_dominance')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {loading
                                         ? Array.from({ length: 5 }).map((_, i) => (
-                                            <tr key={i} className="border-b border-border/30">
-                                                <td className="py-4 px-6"><Skeleton className="h-4 w-6 bg-surface-elevated" /></td>
-                                                <td className="py-4 px-6"><Skeleton className="h-4 w-32 bg-surface-elevated" /></td>
-                                                <td className="py-4 px-6"><Skeleton className="h-4 w-16 bg-surface-elevated mx-auto" /></td>
-                                                <td className="py-4 px-6"><Skeleton className="h-4 w-12 bg-surface-elevated float-right" /></td>
-                                                <td className="py-4 px-6 hidden md:table-cell"><Skeleton className="h-2 w-full bg-surface-elevated" /></td>
+                                            <tr key={i} className="border-b border-cyan-500/10">
+                                                <td className="py-4 px-6"><div className="h-4 w-6 bg-white/5 animate-pulse" style={clipStyleSm} /></td>
+                                                <td className="py-4 px-6"><div className="h-4 w-32 bg-white/5 animate-pulse" style={clipStyleSm} /></td>
+                                                <td className="py-4 px-6"><div className="h-4 w-16 bg-white/5 animate-pulse mx-auto" style={clipStyleSm} /></td>
+                                                <td className="py-4 px-6"><div className="h-4 w-12 bg-white/5 animate-pulse float-right" style={clipStyleSm} /></td>
+                                                <td className="py-4 px-6 hidden md:table-cell"><div className="h-2 w-full bg-white/5 animate-pulse" style={clipStyleSm} /></td>
                                             </tr>
                                         ))
                                         : filtered.map((entry, i) => {
-                                            const rank = data.indexOf(entry) + 1;
+                                            const rank = (page - 1) * ITEMS_PER_PAGE + data.indexOf(entry) + 1;
                                             const progress = (entry.balance / totalNetworkTokens) * 100;
                                             const isMe = targetAccountId && entry.account.toLowerCase() === targetAccountId;
 
                                             return (
                                                 <motion.tr
                                                     key={entry.account}
-                                                    initial={{ opacity: 0 }}
-                                                    animate={{ opacity: 1 }}
-                                                    transition={{ delay: i * 0.05 }}
+                                                    initial={{ opacity: 0, y: 8 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: i * 0.04 }}
                                                     className={`border-b group transition-colors ${isMe
-                                                        ? 'bg-indigo-500/10 border-indigo-500/30 hover:bg-indigo-500/20'
-                                                        : 'border-border/30 hover:bg-surface-elevated/30'
-                                                        }`}
+                                                        ? 'bg-cyan-500/[0.06] border-cyan-500/20 hover:bg-cyan-500/[0.1]'
+                                                        : 'border-cyan-500/10 hover:bg-cyan-500/[0.03]'
+                                                    }`}
                                                 >
                                                     <td className="py-4 px-6">
-                                                        <span className={`text-xs ${rank <= 3 ? 'text-success font-bold' : isMe ? 'text-indigo-400 font-bold' : 'text-text-muted'}`}>
+                                                        <span className={`text-[11px] font-mono font-bold ${rank <= 3 ? 'text-cyan-400' : isMe ? 'text-cyan-400/80' : 'text-white/30'}`}>
                                                             {rank.toString().padStart(2, '0')}
                                                         </span>
                                                     </td>
@@ -213,22 +259,25 @@ export default function LeaderboardPage({ params }: { params: { network: string 
                                                         <div>
                                                             {entry.username ? (
                                                                 <div className="flex items-center gap-2">
-                                                                    <span className="font-bold text-white">{entry.username}</span>
+                                                                    <span className={`font-bold text-xs ${isMe ? 'text-cyan-400' : 'text-white/80'}`}>{entry.username}</span>
                                                                     {isMe && (
-                                                                        <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 group-hover:bg-transparent text-text-muted scale-90 origin-left" />
+                                                                        <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 group-hover:bg-transparent text-white/30 scale-90 origin-left" />
                                                                     )}
                                                                 </div>
                                                             ) : (
                                                                 <div className="flex items-center gap-2">
                                                                     {isMe ? (
-                                                                        <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent" />
+                                                                        <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 group-hover:bg-transparent text-cyan-400/70" />
                                                                     ) : (
-                                                                        <span className="text-text-muted font-mono">{entry.account.slice(0, 6)}...{entry.account.slice(-4)}</span>
+                                                                        <span className="text-white/40 font-mono text-xs">{entry.account.slice(0, 6)}...{entry.account.slice(-4)}</span>
                                                                     )}
                                                                 </div>
                                                             )}
                                                             {isMe && (
-                                                                <span className="px-1.5 py-0.5 mt-1 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest block w-fit">
+                                                                <span
+                                                                    className="px-1.5 py-0.5 mt-1 text-[8px] font-mono font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 tracking-widest block w-fit"
+                                                                    style={clipStyleSm}
+                                                                >
                                                                     YOU
                                                                 </span>
                                                             )}
@@ -239,20 +288,20 @@ export default function LeaderboardPage({ params }: { params: { network: string 
                                                             {entry.isGenesis && <GenesisBadge />}
                                                         </div>
                                                     </td>
-                                                    <td className={`py-4 px-6 text-right font-bold align-middle ${isMe ? 'text-indigo-300' : 'text-white'}`}>
+                                                    <td className={`py-4 px-6 text-right font-bold align-middle text-xs ${isMe ? 'text-cyan-400' : 'text-white/70'}`}>
                                                         {entry.balance.toLocaleString()}
                                                     </td>
                                                     <td className="py-4 px-6 hidden md:table-cell">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-full bg-background border border-border/50 rounded-full h-1.5 overflow-hidden">
+                                                            <div className="w-full bg-white/5 border border-cyan-500/10 h-1.5 overflow-hidden" style={clipStyleSm}>
                                                                 <motion.div
-                                                                    className={`${isMe ? 'bg-indigo-500' : 'bg-success'} h-full`}
+                                                                    className={`${isMe ? 'bg-cyan-400' : 'bg-cyan-400/50'} h-full`}
                                                                     initial={{ width: 0 }}
                                                                     animate={{ width: `${progress}%` }}
                                                                     transition={{ duration: 1, delay: 0.2 + (i * 0.05) }}
                                                                 />
                                                             </div>
-                                                            <span className="text-[10px] text-text-muted w-8">{progress.toFixed(0)}%</span>
+                                                            <span className="text-[10px] font-mono text-white/25 w-8">{progress.toFixed(0)}%</span>
                                                         </div>
                                                     </td>
                                                 </motion.tr>
@@ -262,58 +311,122 @@ export default function LeaderboardPage({ params }: { params: { network: string 
                             </table>
                         </div>
                         {!loading && filtered.length === 0 && (
-                            <div className="text-center py-16 text-text-muted text-xs font-mono uppercase tracking-widest border-t border-border/50 bg-background/50">
-                                <span className="cursor-blink" /> 0x_NULL_INDEX
+                            <div className="text-center py-16 border-t border-cyan-500/10">
+                                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/30">
+                                    &#x25C8; 0x_NULL_INDEX &#x25C8;
+                                </span>
                             </div>
                         )}
-                    </Card>
+                    </div>
+
+                    {/* Pagination Bar — Desktop */}
+                    {!loading && totalPages > 0 && (
+                        <div
+                            className="flex items-center justify-between mt-4 bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-3"
+                            style={clipStyleSm}
+                        >
+                            <span className="text-[10px] font-mono text-white/30 uppercase tracking-wider">
+                                {totalEntries} wallets · Page <span className="text-cyan-400">{page}</span>/<span className="text-cyan-400">{totalPages}</span>
+                            </span>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => goToPage(page - 1)}
+                                    disabled={page <= 1}
+                                    className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 hover:border-cyan-400/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    style={clipStyleSm}
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                    <button
+                                        key={p}
+                                        onClick={() => goToPage(p)}
+                                        className={`w-8 h-8 text-[10px] font-mono font-bold transition-all border ${
+                                            p === page
+                                                ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-[0_0_12px_rgba(34,211,238,0.15)]'
+                                                : 'bg-surface/30 text-white/30 border-cyan-500/10 hover:text-cyan-400 hover:border-cyan-400/30'
+                                        }`}
+                                        style={clipStyleSm}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => goToPage(page + 1)}
+                                    disabled={page >= totalPages}
+                                    className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 hover:border-cyan-400/40 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    style={clipStyleSm}
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Card Layout — Mobile only */}
-                <div className="lg:hidden space-y-4">
+                <div className="lg:hidden space-y-3">
                     {loading ? (
                         Array.from({ length: 5 }).map((_, i) => (
-                            <Card key={i} className="p-5 border-border/50 space-y-4">
+                            <div key={i} className="bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-4 space-y-3" style={clipStyleSm}>
                                 <div className="flex justify-between items-center">
-                                    <Skeleton className="h-5 w-8 rounded-md" />
-                                    <Skeleton className="h-4 w-24 rounded-full" />
+                                    <div className="h-5 w-8 bg-white/5 animate-pulse" style={clipStyleSm} />
+                                    <div className="h-4 w-24 bg-white/5 animate-pulse" style={clipStyleSm} />
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <Skeleton className="h-8 w-32" />
-                                    <Skeleton className="h-6 w-16" />
+                                    <div className="h-6 w-32 bg-white/5 animate-pulse" style={clipStyleSm} />
+                                    <div className="h-6 w-16 bg-white/5 animate-pulse" style={clipStyleSm} />
                                 </div>
-                                <Skeleton className="h-2 w-full rounded-full" />
-                            </Card>
+                                <div className="h-2 w-full bg-white/5 animate-pulse" style={clipStyleSm} />
+                            </div>
                         ))
                     ) : filtered.length === 0 ? (
-                        <div className="p-10 text-center text-text-muted bg-surface/30 rounded-2xl border border-dashed border-border/50 font-mono text-xs uppercase tracking-widest">
-                            <span className="cursor-blink" /> 0x_NULL_INDEX
+                        <div
+                            className="p-10 text-center bg-surface/20 border border-dashed border-cyan-500/20"
+                            style={clipStyle}
+                        >
+                            <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-cyan-400/30">
+                                &#x25C8; 0x_NULL_INDEX &#x25C8;
+                            </span>
                         </div>
                     ) : (
                         filtered.map((entry, i) => {
-                            const rank = data.indexOf(entry) + 1;
+                            const rank = (page - 1) * ITEMS_PER_PAGE + data.indexOf(entry) + 1;
                             const progress = (entry.balance / totalNetworkTokens) * 100;
                             const isMe = targetAccountId && entry.account.toLowerCase() === targetAccountId;
 
                             return (
                                 <motion.div
                                     key={entry.account}
-                                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }}
+                                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                                 >
-                                    <Card className={`p-4 border transition-all relative overflow-hidden group ${isMe ? 'bg-indigo-500/10 border-indigo-500/30' : 'bg-surface/40 hover:bg-surface-elevated/30 border-border/40 hover:border-accent-primary/30 backdrop-blur-sm'}`}>
+                                    <div
+                                        className={`relative bg-surface/20 backdrop-blur-sm border p-4 overflow-hidden group transition-colors ${
+                                            isMe
+                                                ? 'border-cyan-500/30 hover:border-cyan-400/50'
+                                                : 'border-cyan-500/15 hover:border-cyan-400/30'
+                                        }`}
+                                        style={clipStyleSm}
+                                    >
                                         <div className="flex justify-between items-start gap-3 mb-3">
                                             <div className="flex items-center gap-2">
-                                                <span className={`text-xs ${rank <= 3 ? 'text-success font-bold' : isMe ? 'text-indigo-400 font-bold' : 'text-text-muted'}`}>
+                                                <span className={`text-[11px] font-mono font-bold ${rank <= 3 ? 'text-cyan-400' : isMe ? 'text-cyan-400/80' : 'text-white/30'}`}>
                                                     #{rank.toString().padStart(2, '0')}
                                                 </span>
                                                 {isMe && (
-                                                    <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-indigo-500 text-white tracking-widest">
+                                                    <span
+                                                        className="px-1.5 py-0.5 text-[8px] font-mono font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 tracking-widest"
+                                                        style={clipStyleSm}
+                                                    >
                                                         YOU
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="text-[10px] font-mono text-text-muted bg-background/50 px-2 py-0.5 rounded border border-border/30">
-                                                {progress.toFixed(1)}% DOMINANCE
+                                            <span
+                                                className="text-[9px] font-mono text-white/25 bg-white/5 border border-cyan-500/10 px-2 py-0.5"
+                                                style={clipStyleSm}
+                                            >
+                                                {progress.toFixed(1)}%
                                             </span>
                                         </div>
 
@@ -321,47 +434,91 @@ export default function LeaderboardPage({ params }: { params: { network: string 
                                             {entry.username ? (
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="font-bold text-white text-base">{entry.username}</span>
+                                                        <span className={`font-bold text-sm ${isMe ? 'text-cyan-400' : 'text-white/70'}`}>{entry.username}</span>
                                                     </div>
-                                                    {isMe && <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 text-text-muted scale-90 origin-right" />}
+                                                    {isMe && <CopyHash hash={entry.account} chars={8} className="bg-transparent border-transparent px-0 text-white/30 scale-90 origin-right" />}
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-2">
                                                         {isMe ? (
-                                                            <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 text-white font-mono text-sm" />
+                                                            <CopyHash hash={entry.account} chars={12} className="bg-transparent border-transparent px-0 text-cyan-400/70 font-mono text-sm" />
                                                         ) : (
-                                                            <span className="text-white font-mono text-sm">{entry.account.length > 15 ? `${entry.account.slice(0, 8)}...${entry.account.slice(-6)}` : `${entry.account.slice(0, 5)}***${entry.account.slice(-2)}`}</span>
+                                                            <span className="text-white/40 font-mono text-sm">{entry.account.length > 15 ? `${entry.account.slice(0, 8)}...${entry.account.slice(-6)}` : `${entry.account.slice(0, 5)}***${entry.account.slice(-2)}`}</span>
                                                         )}
                                                     </div>
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/20">
+                                        <div className="flex items-center justify-between gap-4 pt-3 border-t border-cyan-500/10">
                                             <div className="flex items-center gap-3">
-                                                <span className="text-[10px] uppercase font-bold text-text-muted tracking-widest">{t('lb_col_tokens')}</span>
+                                                <span className="text-[9px] uppercase font-mono font-bold text-white/25 tracking-widest">{t('lb_col_tokens')}</span>
                                                 {entry.isGenesis && <GenesisBadge />}
                                             </div>
-                                            <div className={`text-lg font-bold ${isMe ? 'text-indigo-300' : 'text-white'}`}>
+                                            <div className={`text-base font-bold font-mono ${isMe ? 'text-cyan-400' : 'text-white/70'}`}>
                                                 {entry.balance.toLocaleString()}
                                             </div>
                                         </div>
 
-                                        <div className="mt-4 flex items-center gap-3">
-                                            <div className="w-full bg-background border border-border/50 rounded-full h-1.5 overflow-hidden">
+                                        <div className="mt-3 flex items-center gap-3">
+                                            <div className="w-full bg-white/5 border border-cyan-500/10 h-1.5 overflow-hidden" style={clipStyleSm}>
                                                 <motion.div
-                                                    className={`${isMe ? 'bg-indigo-500' : 'bg-success'} h-full`}
+                                                    className={`${isMe ? 'bg-cyan-400' : 'bg-cyan-400/50'} h-full`}
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${progress}%` }}
                                                     transition={{ duration: 1, delay: 0.2 + (i * 0.05) }}
                                                 />
                                             </div>
                                         </div>
-                                    </Card>
+                                    </div>
                                 </motion.div>
                             );
                         })
+                    )}
+
+                    {/* Pagination Bar — Mobile */}
+                    {!loading && totalPages > 0 && (
+                        <div
+                            className="flex items-center justify-between mt-4 bg-surface/20 backdrop-blur-sm border border-cyan-500/15 p-3"
+                            style={clipStyleSm}
+                        >
+                            <span className="text-[10px] font-mono text-white/30 uppercase tracking-wider">
+                                P<span className="text-cyan-400">{page}</span>/<span className="text-cyan-400">{totalPages}</span>
+                            </span>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => goToPage(page - 1)}
+                                    disabled={page <= 1}
+                                    className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    style={clipStyleSm}
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                    <button
+                                        key={p}
+                                        onClick={() => goToPage(p)}
+                                        className={`w-8 h-8 text-[10px] font-mono font-bold transition-all border ${
+                                            p === page
+                                                ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40'
+                                                : 'bg-surface/30 text-white/30 border-cyan-500/10 hover:text-cyan-400'
+                                        }`}
+                                        style={clipStyleSm}
+                                    >
+                                        {p}
+                                    </button>
+                                ))}
+                                <button
+                                    onClick={() => goToPage(page + 1)}
+                                    disabled={page >= totalPages}
+                                    className="p-1.5 bg-surface/30 border border-cyan-500/15 text-white/30 hover:text-cyan-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                    style={clipStyleSm}
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>

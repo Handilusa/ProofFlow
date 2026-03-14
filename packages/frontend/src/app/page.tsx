@@ -1,7 +1,7 @@
 'use client';
-
+import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Network, Fingerprint, Gavel, Coins, Hexagon, Blocks, Scale, Github, Globe, Zap, Lock, Activity, ShieldAlert, HeartPulse, Truck } from 'lucide-react';
+import { ArrowRight, Network, Fingerprint, Gavel, Coins, Hexagon, Blocks, Scale, Github, Globe, Zap, Lock, Activity, ShieldAlert, HeartPulse, Truck, Award, Trophy, Crown, Sparkles, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AgentMarketplace } from '@/components/openclaw/AgentMarketplace';
@@ -73,6 +73,7 @@ export default function LandingPage() {
             {[
               { label: 'Lifecycle', href: '#lifecycle' },
               { label: 'Economy', href: '#economy' },
+              { label: 'Reputation', href: '#reputation' },
               { label: 'Terminal', href: '#terminal' },
               { label: 'Capabilities', href: '#capabilities' },
               { label: 'Framework', href: '#advantages' },
@@ -329,6 +330,151 @@ export default function LandingPage() {
       <div id="economy">
         <AgentMarketplace />
       </div>
+
+      {/* ============ ON-CHAIN REPUTATION ECOSYSTEM ============ */}
+      <section id="reputation" className="relative py-32 px-6 overflow-hidden bg-[#02040a]">
+        {/* Minimalist Grid Background */}
+        <div className="absolute inset-0 bg-grid opacity-[0.03] pointer-events-none" />
+        
+        {/* Deep, Subtle Glows */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-cyan-500/5 rounded-full blur-[150px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent-primary/5 rounded-full blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/3" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-24"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-none border border-cyan-500/20 bg-cyan-500/5 mb-8">
+              <Activity className="w-3.5 h-3.5 text-cyan-400" />
+              <span className="text-[10px] font-mono text-cyan-300 tracking-[0.2em] uppercase">Progression Mechanics</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-light text-white mb-6 tracking-tight">
+              On-Chain <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Reputation</span>
+            </h2>
+            <p className="text-text-muted/80 max-w-2xl mx-auto font-mono text-xs sm:text-sm leading-relaxed uppercase tracking-wide">
+              Earning immutable reputation badges unlocks premium economic tiers. Early adoption compounds into long-term systemic value.
+            </p>
+          </motion.div>
+
+          {/* Cards Grid with Progression Arrows */}
+          <div className="relative flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12">
+            
+            {/* Minimalist Connection Line Behind Cards (Desktop) */}
+            <div className="hidden lg:block absolute top-[45%] left-0 right-0 h-[1px] bg-gradient-to-r from-cyan-500/0 via-cyan-500/20 to-cyan-500/0 -translate-y-1/2" />
+
+            {[
+              {
+                tier: 'Bronze',
+                title: 'Agent',
+                req: '50 Audits',
+                desc: 'The genesis of verifiable execution.',
+                colors: { ring: 'border-amber-700/40', glow: 'text-amber-500', bg: 'bg-[#050914]/80' },
+                Icon: Award,
+                delay: 0
+              },
+              {
+                tier: 'Silver',
+                title: 'Operator',
+                req: '250 Audits',
+                desc: 'Priority mempool & enhanced swarm access.',
+                colors: { ring: 'border-slate-400/40', glow: 'text-slate-300', bg: 'bg-[#070c1a]/80' },
+                Icon: Trophy,
+                delay: 0.2
+              },
+              {
+                tier: 'Gold',
+                title: 'Architect',
+                req: '750 Audits',
+                desc: 'Zero-fee routing & DAO governance weight.',
+                colors: { ring: 'border-yellow-400/50', glow: 'text-yellow-400', bg: 'bg-[#091022]/80', premium: true },
+                Icon: Crown,
+                delay: 0.4
+              }
+            ].map((tier, i, arr) => (
+              <React.Fragment key={tier.tier}>
+                <motion.div
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: tier.delay, ease: "easeOut" }}
+                  className={`relative z-10 w-full lg:w-[320px] p-8 shrink-0 rounded-none border-x border-t border-b-2 border-white/10 ${tier.colors.bg} backdrop-blur-xl group hover:border-cyan-500/30 transition-colors duration-500`}
+                  style={{ borderBottomColor: tier.colors.premium ? '#facc15' : 'rgba(255,255,255,0.1)' }}
+                >
+                  
+                  {/* Top-Right Corner Accent (Futuristic) */}
+                  <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/20 opacity-0 group-hover:opacity-100 group-hover:border-cyan-400 transition-all duration-500" />
+                  <div className="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white/20 opacity-0 group-hover:opacity-100 group-hover:border-cyan-400 transition-all duration-500" />
+
+                  {/* Icon & Requirement */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="relative">
+                       {/* Hexagon wrapping the icon instead of a rounded square */}
+                       <div className="absolute inset-0 bg-cyan-500/5 rotate-45 group-hover:rotate-90 transition-transform duration-700" />
+                       <div className={`p-4 border ${tier.colors.ring} backdrop-blur-sm relative z-10 bg-black/40`}>
+                         <tier.Icon className={`w-6 h-6 sm:w-8 sm:h-8 ${tier.colors.glow}`} strokeWidth={1} />
+                       </div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-[10px] font-mono tracking-widest uppercase mb-1 ${tier.colors.glow}`}>{tier.req}</div>
+                      <div className="text-xs text-text-muted/50 font-mono tracking-widest uppercase">Target</div>
+                    </div>
+                  </div>
+
+                  {/* Text Content */}
+                  <div className="mb-6 relative z-10">
+                    <span className="block text-[10px] font-mono tracking-[0.3em] text-cyan-500/80 mb-2 uppercase">
+                      Tier {i + 1} // {tier.tier}
+                    </span>
+                    <h3 className="text-2xl font-display font-light text-white tracking-wide mb-3">
+                      {tier.title}
+                    </h3>
+                    <p className="text-xs text-text-muted/70 leading-relaxed font-mono">
+                      {tier.desc}
+                    </p>
+                  </div>
+
+                  {/* Cyberpunk Progress Bar */}
+                  <div className="h-[2px] w-full bg-white/5 relative overflow-hidden">
+                    <motion.div 
+                      initial={{ left: '-100%' }}
+                      whileInView={{ left: '100%' }}
+                      viewport={{ once: false }}
+                      transition={{ duration: 2, repeat: Infinity, delay: tier.delay }}
+                      className="absolute top-0 bottom-0 w-1/3 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Progression Arrow (Between Cards) */}
+                {i < arr.length - 1 && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: tier.delay + 0.1 }}
+                    className="hidden lg:flex items-center justify-center relative z-0"
+                  >
+                    <div className="flex -space-x-3 text-cyan-500/30">
+                      <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}>
+                        <ChevronRight className="w-8 h-8" strokeWidth={1} />
+                      </motion.div>
+                      <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}>
+                        <ChevronRight className="w-8 h-8" strokeWidth={1} />
+                      </motion.div>
+                      <motion.div animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}>
+                         <ChevronRight className="w-8 h-8 text-cyan-400" strokeWidth={1} />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ============ TERMINAL SIMULATOR (Moved Down) ============ */}
       <section id="terminal" className="relative py-24 px-6 bg-surface/10 border-t border-border/30">

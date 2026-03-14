@@ -272,7 +272,7 @@ const translations = {
         passport_title: 'Pasaporte NFT y Logros',
         passport_subtitle: 'Desbloquea descuentos exclusivos y mintea NFTs Soulbound auditando la red.',
         passport_times_used: 'Auditorías Completadas:',
-        passport_mint_video: 'Mintear NFT (Prueba)',
+        passport_mint_video: 'Mintear NFT',
         passport_view_video: 'Ver Holograma',
         passport_unlock_at: 'Se desbloquea a las',
         passport_discount: 'Dto.',

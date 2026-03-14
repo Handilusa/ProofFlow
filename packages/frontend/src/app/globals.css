@@ -107,6 +107,88 @@
   }
 }
 
+/* ── NFT Card Particle Effects ─── */
+@keyframes particle-float {
+  0% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-120px) translateX(20px) scale(0.3);
+    opacity: 0;
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.5);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(-80px) translateX(-15px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.15;
+  }
+  95% {
+    opacity: 0.15;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(6, 182, 212, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+  }
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.particle-1 { animation: particle-float 4s ease-in-out infinite; }
+.particle-2 { animation: particle-drift 5s ease-in-out infinite 0.8s; }
+.particle-3 { animation: particle-float 6s ease-in-out infinite 1.5s; }
+.particle-4 { animation: particle-drift 4.5s ease-in-out infinite 2.2s; }
+.particle-5 { animation: particle-float 5.5s ease-in-out infinite 3s; }
+.particle-6 { animation: particle-drift 7s ease-in-out infinite 0.5s; }
+
+.nft-scanline {
+  animation: scanline 8s linear infinite;
+}
+
+.nft-card-glow {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+
 /* Base input highlights */
 input:focus-within,
 textarea:focus-within {

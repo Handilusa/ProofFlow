@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Activity, Lock, Play, X, ExternalLink, Award, Clock, Sparkles, Zap, History, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Activity, Lock, Play, X, ExternalLink, Award, Clock, Sparkles, Zap, History, CheckCircle2, ChevronRight, QrCode } from 'lucide-react';
 import { Card, Button } from '@/components/ui';
 import { useWallet } from '@/lib/wallet-context';
 import { useLanguage } from '@/lib/language-context';
@@ -21,11 +21,11 @@ const ACHIEVEMENTS = [
         name: 'Bronze Horizon',
         threshold: 50,
         discount: 10,
-        gradient: 'from-amber-700 via-amber-500 to-yellow-600',
-        glow: 'shadow-[0_0_40px_-10px_rgba(217,119,6,0.5)]',
-        ring: 'ring-amber-500/40',
-        text: 'text-amber-500',
-        bg: 'bg-amber-500',
+        gradient: 'from-orange-500 via-amber-400 to-orange-600',
+        glow: 'shadow-[0_0_50px_rgba(245,158,11,0.4)]',
+        ring: 'ring-orange-500/50',
+        text: 'text-orange-400 drop-shadow-[0_0_8px_rgba(2fb,146,60,0.8)]',
+        bg: 'bg-orange-500/10',
         videoCid: 'bafybeihshxad4mhygrbajmhrmfh27xdfv3iqy5pxcxtfbvnexn7afdmr2i',
         thumbnailCid: 'bafybeibhmukkg24hglbwty7kncctoyt7gpmfy5muofa6eeg55wjucgimaq',
         metadataCid: 'bafkreidd27ujrg3cdyzfdarmhgtx6m22svbsgqmkzbcs45vzar6d4dej6q',
@@ -36,11 +36,11 @@ const ACHIEVEMENTS = [
         name: 'Silver Synthesis',
         threshold: 250,
         discount: 20,
-        gradient: 'from-slate-500 via-slate-300 to-slate-400',
-        glow: 'shadow-[0_0_40px_-10px_rgba(148,163,184,0.5)]',
-        ring: 'ring-slate-400/40',
-        text: 'text-slate-300',
-        bg: 'bg-slate-400',
+        gradient: 'from-slate-300 via-gray-100 to-slate-400',
+        glow: 'shadow-[0_0_50px_rgba(203,213,225,0.4)]',
+        ring: 'ring-slate-300/50',
+        text: 'text-slate-200 drop-shadow-[0_0_8px_rgba(203,213,225,0.8)]',
+        bg: 'bg-slate-400/10',
         videoCid: 'bafybeibjbynyeobmv2mzebvge33iy6itamja5uh5piiyio6vhlde2h5exa',
         thumbnailCid: 'bafybeigy5bdxpx3hx2xpy6imxd5rllhbbxl2kqtwwjclv5y2jvjb3ixvbm',
         metadataCid: 'bafkreidd27ujrg3cdyzfdarmhgtx6m22svbsgqmkzbcs45vzar6d4dej6q',
@@ -51,11 +51,11 @@ const ACHIEVEMENTS = [
         name: 'Gold Genesis',
         threshold: 750,
         discount: 100,
-        gradient: 'from-yellow-600 via-yellow-400 to-amber-300',
-        glow: 'shadow-[0_0_40px_-10px_rgba(234,179,8,0.5)]',
-        ring: 'ring-yellow-500/40',
-        text: 'text-yellow-400',
-        bg: 'bg-yellow-500',
+        gradient: 'from-yellow-300 via-amber-200 to-yellow-500',
+        glow: 'shadow-[0_0_50px_rgba(253,224,71,0.4)]',
+        ring: 'ring-yellow-400/50',
+        text: 'text-yellow-300 drop-shadow-[0_0_8px_rgba(253,224,71,0.8)]',
+        bg: 'bg-yellow-400/10',
         videoCid: 'bafybeiasrdbnawa3msbvx5qscgwg4c4bxddiutyf2b72fpgrs6jlkbnszu',
         thumbnailCid: 'bafybeiao5phk6p4w4isxqpaqlctwczioy7tuuw77ko2s5wmwgbrf4ffamq',
         metadataCid: 'bafkreigqsh5cm4aalsnmftbxy5lvbez3dahgwzwwtbvhmeeq2esgk4capy',
@@ -107,39 +107,32 @@ export default function PassportPage() {
                 return;
             }
             try {
-                // Determine Mirror Node URL based on network context
-                const mirrorUrl = network === 'mainnet' 
-                    ? 'https://mainnet.mirrornode.hedera.com' 
-                    : 'https://testnet.mirrornode.hedera.com';
+                // Use our backend API which queries Hedera consensus nodes via SDK (NOT Mirror Node)
+                const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/genesis/ownership/${account}`, {
+                    headers: { 'x-network': network || 'testnet' }
+                });
                 
-                const res = await fetch(`${mirrorUrl}/api/v1/accounts/${account}/tokens?token.id=0.0.8170105`);
                 if (res.ok) {
                     const data = await res.json();
-                    const hasToken = data.tokens?.some((t: any) => t.token_id === '0.0.8170105' && t.balance > 0);
-                    
-                    if (hasToken) {
-                        setHasMinted(true);
-                        localStorage.setItem(`genesis_minted_${account}`, 'true'); // cache for fast subsequent loads
-                        return;
-                    }
+                    console.log(`[Genesis] On-chain ownership check:`, data);
+                    setHasMinted(!!data.owned);
+                } else {
+                    console.error(`[Genesis] Ownership API error (${res.status})`);
+                    setHasMinted(false);
                 }
             } catch (err) {
-                console.warn("[Genesis] Mirror Node ownership check failed, falling back to cache", err);
+                console.error("[Genesis] Ownership check failed", err);
+                setHasMinted(false);
             }
-
-            // Fallback to cache if network fails, or set to false if not found
-            const userClaimed = localStorage.getItem(`genesis_minted_${account}`);
-            setHasMinted(userClaimed === 'true');
         };
 
         fetchSupply();
         checkOwnership();
 
-        // Fallback refresh every 30s
         const interval = setInterval(() => {
             fetchSupply();
             checkOwnership();
-        }, 30000);
+        }, 15000); // Check more frequently (15s) for better UX after minting
 
         return () => clearInterval(interval);
     }, [account, network]);
@@ -176,13 +169,8 @@ export default function PassportPage() {
             setMintStatus('success');
             setIsMinting(false);
             setHasMinted(true);
-            if (account) localStorage.setItem(`genesis_minted_${account}`, 'true');
             
-            setGenesisMintedCount(prev => {
-                const newCount = prev + 1;
-                localStorage.setItem('genesis_global_minted', newCount.toString());
-                return newCount;
-            });
+            setGenesisMintedCount(prev => prev + 1);
             
         } catch (error) {
             console.error('[Genesis] Failed to communicate with mint API:', error);
@@ -312,27 +300,54 @@ export default function PassportPage() {
         <div className="w-full max-w-7xl mx-auto space-y-8 pb-24 px-4 lg:px-0">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-surface-elevated border border-border">
-                            <Award className="w-6 h-6 text-accent-primary" />
+                <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-[#0a0f18] border border-white/10 rounded-sm flex items-center justify-center relative overflow-hidden">
+                            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                {/* Outer hexagon frame */}
+                                <path d="M12 2L20.5 7V17L12 22L3.5 17V7L12 2Z" stroke="rgba(6,182,212,0.8)" strokeWidth="1.2" fill="rgba(6,182,212,0.05)" />
+                                {/* Inner diamond */}
+                                <path d="M12 6L16.5 9.5V14.5L12 18L7.5 14.5V9.5L12 6Z" stroke="rgba(6,182,212,0.5)" strokeWidth="0.8" fill="none" />
+                                {/* Center star burst */}
+                                <circle cx="12" cy="12" r="2" fill="rgba(6,182,212,0.6)" />
+                                <line x1="12" y1="8" x2="12" y2="10" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                <line x1="12" y1="14" x2="12" y2="16" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                <line x1="8.5" y1="10" x2="10.2" y2="11" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                <line x1="13.8" y1="13" x2="15.5" y2="14" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                <line x1="15.5" y1="10" x2="13.8" y2="11" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                <line x1="10.2" y1="13" x2="8.5" y2="14" stroke="rgba(6,182,212,0.4)" strokeWidth="0.6" />
+                                {/* Corner circuit nodes */}
+                                <circle cx="12" cy="2.5" r="0.8" fill="rgba(6,182,212,0.5)" />
+                                <circle cx="20" cy="7.2" r="0.6" fill="rgba(6,182,212,0.3)" />
+                                <circle cx="20" cy="16.8" r="0.6" fill="rgba(6,182,212,0.3)" />
+                            </svg>
+                            <div className="absolute inset-0 nft-card-glow rounded-sm pointer-events-none" />
                         </div>
-                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-text-primary">
-                            {t('passport_title')}
-                        </h1>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-cyan-400/50">PROOFFLOW // NFT PASSPORT</span>
+                            <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                {t('passport_title')}
+                            </h1>
+                        </div>
                     </div>
-                    <p className="text-sm text-text-muted max-w-xl">
+                    <p className="text-xs text-white/40 max-w-xl font-mono leading-relaxed pl-16">
                         {t('passport_subtitle_extra')}
                     </p>
                 </div>
 
                 {/* Audit counter (Relocated) */}
                 {isConnected && (
-                    <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-surface-elevated/30 border border-border/40 w-fit backdrop-blur-sm shadow-sm">
-                        <History className="w-4 h-4 text-accent-primary/70" />
-                        <div className="flex flex-col">
-                            <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted/60 leading-none mb-1">{t('passport_total_audits')}</span>
-                            <span className="text-lg font-mono font-bold text-white leading-none">{userCount}</span>
+                    <div className="relative overflow-hidden flex items-center gap-4 px-5 py-4 bg-[#0a0f18] border border-white/10 rounded-sm w-fit group animate-pulse" style={{ animationDuration: '3s' }}>
+                        {/* Breathing glow border */}
+                        <div className="absolute inset-0 rounded-sm border border-cyan-400/20 nft-card-glow pointer-events-none" />
+                        {/* Scanning line */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div className="nft-scanline absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/15 to-transparent" />
+                        </div>
+                        <History className="w-5 h-5 text-cyan-400/60" />
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-cyan-400/50 leading-none">{t('passport_total_audits')}</span>
+                            <span className="text-2xl font-bold text-white leading-none" style={{ fontFamily: 'Orbitron, sans-serif' }}>{userCount}</span>
                         </div>
                     </div>
                 )}
@@ -347,36 +362,56 @@ export default function PassportPage() {
             ) : (
                 /* ── Horizontal Scroll Grid ─────────────────────── */
                 <div className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-thin scrollbar-thumb-border scrollbar-track-transparent">
-                    <div className="flex gap-6 w-max lg:w-full lg:grid lg:grid-cols-3">
+                    <div className="flex gap-4 w-max lg:w-full lg:grid lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-0 lg:items-start">
                         {ACHIEVEMENTS.map((ach, i) => {
                             const isUnlocked = userCount >= ach.threshold;
-                            const prevThreshold = i === 0 ? 0 : ACHIEVEMENTS[i - 1].threshold;
-                            const isNext = !isUnlocked && userCount >= prevThreshold;
                             const progress = isUnlocked
                                 ? 100
-                                : isNext
-                                    ? Math.min(100, ((userCount - prevThreshold) / (ach.threshold - prevThreshold)) * 100)
-                                    : 0;
+                                : Math.min(100, Math.max(0, (userCount / ach.threshold) * 100));
 
                             return (
+                                <React.Fragment key={ach.id}>
                                 <motion.div
-                                    key={ach.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="w-[280px] lg:w-auto flex-shrink-0"
+                                    className="w-[280px] lg:w-full flex-shrink-0 group"
+                                >
+                                {/* Border Wrapper for Clip-Path */}
+                                <div 
+                                    className={cn(
+                                        "w-full transition-all duration-500 relative group p-[1px] rounded-sm",
+                                        isUnlocked
+                                            ? `bg-white/10 hover:bg-white/25`
+                                            : "bg-white/[0.04] opacity-70 hover:opacity-100 hover:bg-white/10"
+                                    )}
+                                    style={{
+                                        clipPath: 'polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px)'
+                                    }}
                                 >
                                     <button
                                         onClick={() => setSelected(ach)}
-                                        className={cn(
-                                            "w-full text-left rounded-2xl overflow-hidden border transition-all duration-500 group focus:outline-none",
-                                            isUnlocked
-                                                ? `border-white/10 ${ach.glow} hover:scale-[1.02]`
-                                                : "border-border/50 opacity-70 hover:opacity-90 hover:border-border"
-                                        )}
+                                        className="w-full h-full text-left overflow-hidden focus:outline-none bg-[#0a0f18] relative cursor-pointer"
+                                        style={{
+                                            clipPath: 'polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px)'
+                                        }}
                                     >
-                                        {/* ── 1:1 Square Thumbnail ─── */}
-                                        <div className="aspect-square w-full relative bg-background overflow-hidden">
+                                        {/* ── Floating Particles ─── */}
+                                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+                                            {/* Particle dots — staggered positions & sizes */}
+                                            <div className="particle particle-1 w-1 h-1 bg-cyan-400/60" style={{ bottom: '20%', left: '15%' }} />
+                                            <div className="particle particle-2 w-1.5 h-1.5 bg-cyan-300/40" style={{ bottom: '10%', left: '70%' }} />
+                                            <div className="particle particle-3 w-0.5 h-0.5 bg-white/50" style={{ bottom: '30%', left: '45%' }} />
+                                            <div className="particle particle-4 w-1 h-1 bg-cyan-500/50" style={{ bottom: '5%', left: '85%' }} />
+                                            <div className="particle particle-5 w-0.5 h-0.5 bg-white/40" style={{ bottom: '25%', left: '30%' }} />
+                                            <div className="particle particle-6 w-1 h-1 bg-cyan-400/30" style={{ bottom: '15%', left: '55%' }} />
+
+                                            {/* Scanline sweep */}
+                                            <div className="nft-scanline absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent" />
+                                        </div>
+
+                                        {/* ── 1:1 Square Thumbnail (LARGE) ─── */}
+                                        <div className="aspect-square w-full relative bg-[#060a12] overflow-hidden">
                                             {ach.thumbnailCid ? (
                                                 <>
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -393,7 +428,7 @@ export default function PassportPage() {
                                                     </div>
                                                 </>
                                             ) : (
-                                                <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-surface text-text-muted/30">
+                                                <div className="w-full h-full flex flex-col items-center justify-center gap-3 bg-[#0a0f18] text-white/20">
                                                     <Clock className="w-12 h-12" />
                                                     <span className="text-[10px] uppercase font-mono tracking-[0.2em]">Coming Soon</span>
                                                 </div>
@@ -401,54 +436,91 @@ export default function PassportPage() {
 
                                             {/* Lock overlay */}
                                             {!isUnlocked && (
-                                                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
-                                                    <Lock className="w-8 h-8 text-text-muted/60" />
-                                                    <span className="text-xs font-medium text-text-muted">{t('passport_unlock_at')}</span>
+                                                <div className="absolute inset-0 bg-[#0a0f18]/85 backdrop-blur-sm flex flex-col items-center justify-center gap-2">
+                                                    <Lock className="w-8 h-8 text-white/30" />
+                                                    <span className="text-xs font-mono text-white/40">{t('passport_unlock_at')}</span>
                                                     <span className="text-2xl font-mono font-bold text-white">{ach.threshold}</span>
-                                                    <span className="text-[10px] text-text-muted/60 uppercase tracking-widest">Audits</span>
+                                                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-mono">Audits</span>
                                                 </div>
                                             )}
 
-                                            {/* Discount badge */}
+                                            {/* Target badge (top-right) */}
                                             <div className={cn(
-                                                "absolute top-3 right-3 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest backdrop-blur-md transition-all duration-300 border",
+                                                "absolute top-3 right-3 px-2.5 py-1 rounded-sm text-[10px] font-mono font-bold uppercase tracking-widest border transition-all duration-500",
                                                 isUnlocked
-                                                    ? `bg-gradient-to-r ${ach.gradient} text-black border-transparent shadow-[0_4px_12px_-2px_rgba(0,0,0,0.4)] scale-110`
-                                                    : `bg-black/40 ${ach.text} border-white/10 opacity-90`
+                                                    ? `bg-gradient-to-r ${ach.gradient} text-black border-transparent shadow-[0_0_15px_rgba(255,255,255,0.2)]`
+                                                    : "bg-[#0a0f18]/80 text-white/40 border-white/10 backdrop-blur-sm"
                                             )}>
-                                                -{ach.discount}% {t('passport_discount')}
+                                                {ach.threshold} AUDITS
                                             </div>
                                         </div>
 
-                                        {/* ── Card Info ─── */}
-                                        <div className="p-4 bg-surface border-t border-border/50 space-y-3">
-                                            <div className="flex items-center justify-between">
-                                                <h3 className={cn("text-base font-bold tracking-tight", ach.text)}>
-                                                    {ach.name}
-                                                </h3>
-                                                <div className="flex items-center gap-1.5 text-xs font-mono text-text-muted">
-                                                    <span className="text-white font-bold">{Math.min(userCount, ach.threshold)}</span>
-                                                    <span>/</span>
-                                                    <span>{ach.threshold}</span>
-                                                </div>
+                                        {/* ── Cyberpunk Card Info ─── */}
+                                        <div className="p-4 space-y-2 border-t border-white/[0.04]">
+                                            {/* Tier Label */}
+                                            <div className={cn(
+                                                "text-[9px] font-mono tracking-[0.25em] uppercase font-bold",
+                                                isUnlocked ? "text-cyan-400" : "text-cyan-400/30"
+                                            )}>
+                                                TIER {i + 1} // {ach.id.toUpperCase()}
                                             </div>
-                                            <p className="text-[11px] text-text-muted/60 leading-relaxed">{ach.desc}</p>
 
-                                            {/* Progress bar */}
-                                            <div className="h-1 w-full bg-background rounded-full overflow-hidden">
+                                            {/* Name */}
+                                            <h3 className="text-lg font-bold tracking-wide text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                                {ach.name}
+                                            </h3>
+
+                                            {/* Description */}
+                                            <p className="text-[11px] text-white/40 leading-relaxed font-mono">
+                                                {ach.desc}
+                                            </p>
+
+                                            {/* Separator */}
+                                            <div className="w-full h-[1px] bg-white/[0.04]" />
+
+                                            {/* Bottom row: discount + progress */}
+                                            <div className="flex items-center justify-between pt-1">
+                                                <span className={cn(
+                                                    "text-[10px] font-bold tracking-widest uppercase font-mono",
+                                                    isUnlocked ? ach.text : "text-white/25"
+                                                )}>
+                                                    -{ach.discount}% {t('passport_discount')}
+                                                </span>
+                                                <span className="text-[10px] font-mono text-white/30">
+                                                    {Math.min(userCount, ach.threshold)} / {ach.threshold}
+                                                </span>
+                                            </div>
+
+                                            {/* Neon Progress Bar */}
+                                            <div className="h-[3px] w-full bg-white/[0.03] overflow-hidden">
                                                 <motion.div
                                                     initial={{ width: 0 }}
                                                     animate={{ width: `${progress}%` }}
-                                                    transition={{ duration: 1, delay: i * 0.15 }}
+                                                    transition={{ duration: 1.5, ease: "easeOut", delay: i * 0.15 }}
                                                     className={cn(
-                                                        "h-full rounded-full",
-                                                        isUnlocked ? `bg-gradient-to-r ${ach.gradient}` : "bg-accent-primary/60"
+                                                        "h-full relative",
+                                                        isUnlocked
+                                                            ? `bg-gradient-to-r ${ach.gradient} shadow-[0_0_10px_rgba(255,255,255,0.4)]`
+                                                            : `bg-gradient-to-r ${ach.gradient} opacity-30`
                                                     )}
                                                 />
                                             </div>
                                         </div>
                                     </button>
+                                </div>
                                 </motion.div>
+
+                                {/* Connecting Arrows (if not last) */}
+                                {i < ACHIEVEMENTS.length - 1 && (
+                                    <div className="hidden lg:flex items-center justify-center px-3 self-center">
+                                        <div className="flex items-center text-cyan-500/40">
+                                            <ChevronRight className="w-4 h-4 -mx-1.5" />
+                                            <ChevronRight className="w-4 h-4 -mx-1.5" />
+                                            <ChevronRight className="w-4 h-4 -mx-1.5 text-cyan-400/80" />
+                                        </div>
+                                    </div>
+                                )}
+                                </React.Fragment>
                             );
                         })}
                     </div>
@@ -456,117 +528,115 @@ export default function PassportPage() {
             )}
 
             {/* ── Genesis Section ─────────────────────────── */}
-            <div className="pt-8 space-y-6">
-                <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-xl bg-surface-elevated border border-border">
-                            <Zap className="w-6 h-6 text-yellow-400" />
+            <div className="pt-12 space-y-6">
+                <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-[#0a0f18] border border-white/10 rounded-sm flex items-center justify-center relative overflow-hidden">
+                            {/* Custom Minimalist Genesis SVG (Data Core / Pyramid shape) */}
+                            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L2 20H22L12 2Z" stroke="rgba(96, 165, 250, 0.8)" strokeWidth="1.2" fill="rgba(96, 165, 250, 0.05)" />
+                                <path d="M12 2L12 20" stroke="rgba(96, 165, 250, 0.4)" strokeWidth="1" />
+                                <path d="M7 11L17 11" stroke="rgba(96, 165, 250, 0.4)" strokeWidth="1" />
+                                <circle cx="12" cy="11" r="2" fill="rgba(96, 165, 250, 0.8)" />
+                                <circle cx="12" cy="2" r="1.5" fill="rgba(96, 165, 250, 0.8)" />
+                                <circle cx="2" cy="20" r="1.5" fill="rgba(96, 165, 250, 0.6)" />
+                                <circle cx="22" cy="20" r="1.5" fill="rgba(96, 165, 250, 0.6)" />
+                            </svg>
+                            <div className="absolute inset-0 nft-card-glow rounded-sm pointer-events-none" />
                         </div>
-                        <h2 className="text-xl md:text-2xl font-bold tracking-tight text-text-primary">
-                            {t('passport_genesis_title')}
-                        </h2>
+                        <div className="flex flex-col gap-1">
+                            <span className="text-[9px] font-mono font-bold uppercase tracking-[0.25em] text-blue-400/50">PROOFFLOW // SPECIAL COLLECTION</span>
+                            <h2 className="text-xl md:text-2xl font-bold tracking-wide text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                {t('passport_genesis_title')}
+                            </h2>
+                        </div>
                     </div>
-                    <p className="text-sm text-text-muted max-w-xl">
+                    <p className="text-xs text-white/40 max-w-xl font-mono leading-relaxed pl-16">
                         {t('passport_genesis_description')}
                     </p>
                 </div>
 
                 {/* Genesis NFT Card */}
-                <div className="w-full max-w-sm">
-                    <div className="bg-surface rounded-2xl border border-border overflow-hidden shadow-2xl relative group">
-                        {/* Status overlays */}
-                        <AnimatePresence>
-                            {mintStatus === 'pending' && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 z-20 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
-                                    <div className="w-10 h-10 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" />
-                                    <span className="text-sm font-medium text-text-primary animate-pulse">Waiting for signature...</span>
-                                </motion.div>
-                            )}
-                            {mintStatus === 'success' && (
-                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 z-20 bg-emerald-950/90 backdrop-blur-sm flex flex-col items-center justify-center gap-3">
-                                    <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center">
-                                        <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-                                    </div>
-                                    <span className="text-emerald-400 font-bold tracking-tight">Mint Initiated</span>
-                                    <span className="text-xs text-emerald-200/60 max-w-[200px] text-center">Your ProofFlow Agent will airdrop the NFT shortly.</span>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                <div className="w-full max-w-sm relative group p-[1px] rounded-sm bg-white/10 hover:bg-white/25 transition-all duration-500"
+                    style={{
+                        clipPath: 'polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px)'
+                    }}
+                >
+                    <div className="w-full h-full text-left overflow-hidden bg-[#0a0f18] relative"
+                        style={{
+                            clipPath: 'polygon(16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px), 0 16px)'
+                        }}
+                    >
+                        {/* ── Floating Particles ─── */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none z-[5]">
+                            {/* Particle dots — staggered positions & sizes */}
+                            <div className="particle particle-1 w-1 h-1 bg-blue-400/60" style={{ bottom: '20%', left: '15%' }} />
+                            <div className="particle particle-2 w-1.5 h-1.5 bg-blue-300/40" style={{ bottom: '10%', left: '70%' }} />
+                            <div className="particle particle-3 w-0.5 h-0.5 bg-white/50" style={{ bottom: '30%', left: '45%' }} />
+                            <div className="particle particle-4 w-1 h-1 bg-blue-500/50" style={{ bottom: '5%', left: '85%' }} />
+                            <div className="particle particle-5 w-0.5 h-0.5 bg-white/40" style={{ bottom: '25%', left: '30%' }} />
+                            <div className="particle particle-6 w-1 h-1 bg-blue-400/30" style={{ bottom: '15%', left: '55%' }} />
 
-                        {/* Video Area */}
-                        <div className="aspect-square w-full relative bg-black overflow-hidden">
+                            {/* Scanline sweep */}
+                            <div className="nft-scanline absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-blue-400/20 to-transparent" />
+                        </div>
+
+                        {/* ── 1:1 Square Thumbnail (LARGE) ─── */}
+                        <div className="aspect-square w-full relative bg-[#060a12] overflow-hidden">
                             <video
                                 src="https://ipfs.io/ipfs/bafybeidbcccvwwgcwphweysyiwaypa3n2g56y63aih6mcrfnczf3jnjzzu"
                                 autoPlay
                                 loop
                                 muted
                                 playsInline
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                                poster="https://ipfs.io/ipfs/bafybeih2pltdpd7qwzlrzdcdhuj6fe4mdvej52m6hvtwdeuzdyzpawktba"
+                                className="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105"
                             />
-                            {/* Metadata link */}
-                            <a
-                                href="https://ipfs.io/ipfs/bafkreiahvascdldplfsgzqptqphjtsga7djrc7czdy7atu6jx5vpv22nru"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-1.5 text-[10px] text-white/70 hover:text-white transition-colors z-10"
-                            >
-                                <ExternalLink className="w-3 h-3" />
-                                HIP-412 Metadata
-                            </a>
+                            
+                            {/* Target badge (top-right) */}
+                            <div className="absolute top-3 right-3 px-2.5 py-1 rounded-sm text-[10px] font-mono font-bold uppercase tracking-widest bg-blue-400/10 text-blue-400 border border-blue-400/30 backdrop-blur-md">
+                                EARLY ADOPTER
+                            </div>
                         </div>
-                        
-                        {/* Content Area */}
-                        <div className="p-5 space-y-4">
-                            <div className="flex justify-between items-start">
-                                <div>
-                                    <h3 className="text-lg font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-electric-blue">ProofFlow Genesis</h3>
-                                    <p className="text-[11px] text-text-muted mt-1 leading-relaxed">
-                                        The elite artifact reserved for pioneers. Electric blue liquid light encased in obsidian.
-                                    </p>
+
+                        {/* Card Info */}
+                        <div className="p-5 border-t border-white/[0.04] flex flex-col gap-4">
+                            <div>
+                                <div className="text-[9px] font-mono tracking-[0.25em] text-blue-400 uppercase font-bold mb-1">
+                                    EXCLUSIVE // COMMEMORATIVE
                                 </div>
+                                <h3 className="text-xl font-bold tracking-wide text-white" style={{ fontFamily: 'Orbitron, sans-serif' }}>
+                                    GENESIS EDITION
+                                </h3>
                             </div>
 
-                            {/* Progress bar (FCFS) */}
-                            <div className="space-y-2 pt-2 border-t border-border/50">
-                                <div className="flex justify-between items-center text-xs font-mono">
-                                    <span className="text-text-muted">Minted Supply</span>
-                                    <span className="text-cyan-400 font-bold">{genesisMintedCount} / {GENESIS_SUPPLY_CAP}</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-background rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        animate={{ width: `${(genesisMintedCount / GENESIS_SUPPLY_CAP) * 100}%` }}
-                                        transition={{ duration: 1.5, ease: "easeOut" }}
-                                        className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)]"
-                                    />
-                                </div>
-                                <div className="text-[10px] text-text-muted/60 text-right uppercase tracking-widest">First Come, First Serve</div>
-                            </div>
-
-                            {/* Mint Action */}
-                            <Button 
+                            <Button
                                 onClick={handleMintGenesis}
-                                disabled={isMinting || mintStatus !== 'idle' || hasMinted}
+                                disabled={!isConnected || mintStatus === 'pending' || mintStatus === 'success' || hasMinted}
                                 className={cn(
-                                    "w-full h-12 text-sm font-bold rounded-xl gap-2 border-none transition-all",
-                                    hasMinted 
-                                        ? "bg-white/5 text-white/50 cursor-not-allowed" 
-                                        : "bg-gradient-to-r from-blue-600 to-cyan-500 text-white hover:opacity-90 hover:scale-[1.01] shadow-[0_0_20px_-5px_rgba(6,182,212,0.4)]"
+                                    "w-full h-11 font-mono font-bold uppercase tracking-wider rounded-sm transition-all",
+                                    hasMinted || mintStatus === 'success'
+                                        ? "bg-white/5 text-white/40 border border-white/10 cursor-not-allowed"
+                                        : "bg-blue-500 hover:bg-blue-600 text-white border-transparent"
                                 )}
                             >
-                                {hasMinted ? (
-                                    <>
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                                        Claimed
-                                    </>
+                                {mintStatus === 'pending' ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                                        PROCESSING...
+                                    </div>
+                                ) : (hasMinted || mintStatus === 'success') ? (
+                                    <div className="flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4" />
+                                        CLAIMED
+                                    </div>
                                 ) : (
-                                    <>
-                                        <Sparkles className="w-4 h-4" />
-                                        Mint Genesis • {MINT_FEE_HBAR > 0 ? `${MINT_FEE_HBAR} HBAR` : 'Free'}
-                                    </>
+                                    "MINT GENESIS"
                                 )}
                             </Button>
+                            
+                            <p className="text-[9px] text-center text-white/30 uppercase tracking-widest font-mono">
+                                Limited supply · 1 per wallet
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -589,7 +659,7 @@ export default function PassportPage() {
                                 animate={{ scale: 1, opacity: 1, y: 0 }}
                                 exit={{ scale: 0.92, opacity: 0, y: 20 }}
                                 transition={{ type: 'spring', damping: 25 }}
-                                className="relative w-full max-w-md bg-surface rounded-2xl overflow-hidden shadow-2xl border border-border"
+                                className="relative w-full max-w-md bg-surface/80 backdrop-blur-2xl rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.8)] border border-white/10"
                                 onClick={(e) => e.stopPropagation()}
                             >
                                 {/* Close */}
@@ -635,8 +705,8 @@ export default function PassportPage() {
                                             <p className="text-xs text-text-muted mt-1">{selected.desc}</p>
                                         </div>
                                         <div className={cn(
-                                            "px-2.5 py-1 rounded-lg text-xs font-bold",
-                                            `bg-gradient-to-r ${selected.gradient} text-black`
+                                            "px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg",
+                                            `bg-gradient-to-r ${selected.gradient} text-black shadow-[0_0_15px_rgba(255,255,255,0.2)]`
                                         )}>
                                             -{selected.discount}%
                                         </div>
@@ -645,11 +715,9 @@ export default function PassportPage() {
                                     {/* Progress */}
                                     {(() => {
                                         const isUnlocked = userCount >= selected.threshold;
-                                        const idx = ACHIEVEMENTS.findIndex(a => a.id === selected.id);
-                                        const prev = idx === 0 ? 0 : ACHIEVEMENTS[idx - 1].threshold;
                                         const prog = isUnlocked
                                             ? 100
-                                            : Math.min(100, Math.max(0, ((userCount - prev) / (selected.threshold - prev)) * 100));
+                                            : Math.min(100, Math.max(0, (userCount / selected.threshold) * 100));
 
                                         return (
                                             <div className="space-y-2">
@@ -659,16 +727,22 @@ export default function PassportPage() {
                                                         {isUnlocked ? '✓ UNLOCKED' : `${Math.max(0, selected.threshold - userCount)} remaining`}
                                                     </span>
                                                 </div>
-                                                <div className="h-2 w-full bg-background rounded-full overflow-hidden border border-white/5">
+                                                <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 shadow-inner">
                                                     <motion.div
                                                         initial={{ width: 0 }}
                                                         animate={{ width: `${prog}%` }}
-                                                        transition={{ duration: 0.8 }}
+                                                        transition={{ duration: 1.5, ease: "easeOut" }}
                                                         className={cn(
-                                                            "h-full rounded-full",
-                                                            isUnlocked ? `bg-gradient-to-r ${selected.gradient}` : "bg-accent-primary"
+                                                            "h-full rounded-full relative",
+                                                            isUnlocked 
+                                                                ? `bg-gradient-to-r ${selected.gradient} shadow-[0_0_15px_rgba(255,255,255,0.5)]` 
+                                                                : `bg-gradient-to-r ${selected.gradient} opacity-40`
                                                         )}
-                                                    />
+                                                    >
+                                                        {isUnlocked && (
+                                                            <div className="absolute inset-0 bg-white/20 blur-[2px] animate-pulse" />
+                                                        )}
+                                                    </motion.div>
                                                 </div>
                                             </div>
                                         );
@@ -677,17 +751,29 @@ export default function PassportPage() {
                                     {/* Mint Button */}
                                     {(() => {
                                         const isUnlocked = userCount >= selected.threshold;
+                                        const tierLevels = ['free', 'bronze', 'silver', 'gold'];
+                                        const userTierLevel = tierLevels.indexOf(userTier?.id || 'free');
+                                        const selectedTierLevel = tierLevels.indexOf(selected.id);
+                                        const isClaimed = selectedTierLevel > 0 && userTierLevel >= selectedTierLevel;
+
                                         return (
                                             <Button
-                                                disabled={!isUnlocked}
+                                                disabled={!isUnlocked || isClaimed}
                                                 className={cn(
                                                     "w-full h-12 text-sm font-bold rounded-xl gap-2 transition-all",
-                                                    isUnlocked
-                                                        ? `bg-gradient-to-r ${selected.gradient} text-black hover:opacity-90 hover:scale-[1.01]`
-                                                        : "bg-white/5 text-white/30 border border-white/10 cursor-not-allowed"
+                                                    isClaimed
+                                                        ? "bg-white/5 text-emerald-400/70 border border-emerald-500/20 cursor-not-allowed"
+                                                        : isUnlocked
+                                                            ? `bg-gradient-to-r ${selected.gradient} text-black hover:opacity-90 hover:scale-[1.01]`
+                                                            : "bg-white/5 text-white/30 border border-white/10 cursor-not-allowed"
                                                 )}
                                             >
-                                                {isUnlocked ? (
+                                                {isClaimed ? (
+                                                    <>
+                                                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                                        Claimed On-Chain
+                                                    </>
+                                                ) : isUnlocked ? (
                                                     <>
                                                         <Sparkles className="w-4 h-4" />
                                                         {t('passport_mint_video')}

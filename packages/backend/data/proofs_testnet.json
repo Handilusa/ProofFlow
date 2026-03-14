@@ -3962,5 +3962,1624 @@
       "evmTxHash": "0x6a6e62d4c1d0302740e0554af4aa7986624aa3c3fa71f0fce17fec2f9e2d215e",
       "evmSettled": true
     }
+  ],
+  [
+    "b56ac994-5177-44f6-b4bf-f3c6ed646b47",
+    {
+      "proofId": "b56ac994-5177-44f6-b4bf-f3c6ed646b47",
+      "question": "Desmonta (o confirma) con datos la narrativa de que la gobernanza corporativa de Hedera frena el crecimiento retail descentralizado.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La narrativa a desmontar o confirmar postula que la gobernanza corporativa de Hedera, caracterizada por su Consejo Directivo empresarial, restringe el crecimiento descentralizado a nivel minorista. Para evaluar esta afirmación, es crucial examinar métricas que reflejen directamente la participación y el atractivo para el usuario minorista en un entorno descentralizado. Estas métricas incluyen la rentabilidad del staking nativo, la actividad y liquidez en las finanzas descentralizadas (DeFi) a través de los exchanges descentralizados (DEX), y la capitalización de mercado general en relación con el volumen de trading.",
+          "hash": "3a2d2344ea66000a23021128eccbfd16ecd5e69815f9f29537a299b205d4c2b3",
+          "timestamp": 1773349442785
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando los datos en vivo, observamos varios puntos clave para la participación minorista descentralizada. En cuanto al staking nativo de HBAR, el rendimiento porcentual anual (APR) es del 2.41%. Sin embargo, solo 6.500.000.000 HBAR de los 15.908.850.306 HBAR totales apostados están generando recompensas, lo que significa que una porción considerable del HBAR apostado (aproximadamente 59%) no está obteniendo rendimiento. En el ecosistema DeFi, el valor total bloqueado (TVL) combinado en los 5 principales pools de SaucerSwap V2 es de $18.195.339,92. El pool más lucrativo, WHBAR / USDC, ofrece un APR base de trading del 24.91% y tiene un TVL de $8.299.751,83 con un volumen de 24h de $2.266.151,04. Otros pools importantes como HBARX / WHBAR y HTS-WETH / WHBAR ofrecen APRs del 3.45% y 9.83% respectivamente, con volúmenes de 24h significativamente menores ($131.053,15 y $240.965,14). La capitalización de mercado de Hedera (HBAR) es de $4.072.106.691, con un volumen de 24h de $68.169.481 y una caída del 83.5% desde su máximo histórico (ATH).",
+          "hash": "f80463193ebe9686b52c92a168374427b5e7e701f429bb9af07d50315288df6a",
+          "timestamp": 1773349442785
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Al comparar la información obtenida, se observa que la rentabilidad del staking nativo de HBAR es relativamente baja (2.41%) y, además, está limitada en cuanto a la cantidad de HBAR que puede generar recompensas, lo que podría desincentivar a los inversores minoristas que buscan rendimiento pasivo en la red principal (Hedera Mirror Node data). Dentro del sector DeFi, el TVL combinado de SaucerSwap V2 es de aproximadamente $18.2 millones, lo cual es un valor modesto en comparación con la capitalización de mercado total de HBAR de más de $4 mil millones. Si bien el pool WHBAR / USDC ofrece un APR competitivo del 24.91%, la mayoría de los otros pools principales presentan APRs más bajos, algunos incluso por debajo del staking nativo. La baja participación de HBAR en staking nativo con recompensas, junto con un TVL DeFi relativamente bajo y volúmenes de trading moderados en el DEX principal, sugiere que el ecosistema descentralizado minorista en Hedera no está experimentando un crecimiento robusto en este momento. La caída del 83.5% desde el ATH de HBAR (CoinGecko data) también podría indicar una falta de interés sostenido por parte del capital minorista. Estos datos son consistentes con la hipótesis de que la priorización de casos de uso empresariales, inherente a un modelo de gobernanza corporativa, podría no estar fomentando un entorno vibrante para la participación minorista descentralizada, o al menos no ha logrado catalizarla en la medida de otras redes.",
+          "hash": "eb935ef88388d3e902cf0346621d7cb88906dbe999db49caed754cd7d7d59600",
+          "timestamp": 1773349442785
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La evidencia cuantitativa disponible no refuta la narrativa de que la gobernanza corporativa de Hedera frena el crecimiento minorista descentralizado; de hecho, los datos son consistentes con ella. La baja tasa de APR del staking nativo (2.41%) para una porción significativa del HBAR apostado (59% sin recompensas activas) y el TVL relativamente modesto de $18.2 millones en el principal DEX (SaucerSwap V2), en contraste con la capitalización de mercado de $4 mil millones de HBAR, indican una participación minorista limitada en el ecosistema descentralizado. Aunque existe un pool con un APR atractivo (WHBAR/USDC con 24.91%), no es representativo de todo el ecosistema DeFi de Hedera. En conclusión, el actual estado de las métricas de participación minorista y DeFi sugiere que, si bien la gobernanza corporativa puede enfocarse en la estabilidad y adopción empresarial, esto no se ha traducido en un crecimiento robusto y descentralizado para el usuario minorista.",
+          "hash": "dbd374783d397b19165290dd123dff19373984faed0ae618b6c9fb3bc2de547f",
+          "timestamp": 1773349442785
+        }
+      ],
+      "totalSteps": 4,
+      "createdAt": 1773349442786,
+      "dataSources": [
+        "Hedera Mirror Node (mainnet)",
+        "CoinGecko API",
+        "SaucerSwap Native API"
+      ],
+      "parentProofIds": [],
+      "parentProofs": [],
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "network": "testnet",
+      "rootHash": "da7f641cfb7d62b2742c0c38d297bb856c0e0d73b9d9d516badfacfbbae3d030",
+      "hcsSequenceNumbers": [
+        1060,
+        1061,
+        1062,
+        1063
+      ],
+      "tokenTxId": "0.0.7986674@1773349447.969851406",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773349447.969851406",
+      "evmTxHash": "0xe8358f59b09d5a9e807de8da0eb5d83aadfe17f626291a923fe592862cc32383",
+      "evmSettled": true
+    }
+  ],
+  [
+    "7102d80f-f5fe-4aa8-9e3b-c8146d2be255",
+    {
+      "proofId": "7102d80f-f5fe-4aa8-9e3b-c8146d2be255",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773353850005
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773353855005
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "6acf09eef45d31d18d27ba9a51e39576d6c900e4993a45e9a84727be5bad3576",
+      "createdAt": 1773353850005,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "2f105762-4c61-48a8-a17f-0c41e028fdec",
+    {
+      "proofId": "2f105762-4c61-48a8-a17f-0c41e028fdec",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773350250006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773350255006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "48ba6574cdb1871d05f50fb9eddb31835f17a07a9a3c3e00c2cdb3d0b8649805",
+      "createdAt": 1773350250006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "d0f287dc-dd9f-42fd-84bb-b85b7617ae3b",
+    {
+      "proofId": "d0f287dc-dd9f-42fd-84bb-b85b7617ae3b",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773346650006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773346655006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "c7d1f37fe99e23a2e60fe3f5dfddbbcb30e5bf83fae5a5fed5accf2387055a4d",
+      "createdAt": 1773346650006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "186c0e29-cb61-4661-a9b4-48b17aa610e5",
+    {
+      "proofId": "186c0e29-cb61-4661-a9b4-48b17aa610e5",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773343050006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773343055006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "1527b2d622757cac344a062e9fd18bc38db4959f1a457611232fbf41e9225845",
+      "createdAt": 1773343050006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "4ee3a722-7f52-4624-9344-3898994fa245",
+    {
+      "proofId": "4ee3a722-7f52-4624-9344-3898994fa245",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773339450006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773339455006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "bce375699b0b8fbaf8c34b09b0f69cde14bb077736692905f9de36f79cdf9ccf",
+      "createdAt": 1773339450006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a3ee5d61-ae3f-4b55-a69a-613f2b36021f",
+    {
+      "proofId": "a3ee5d61-ae3f-4b55-a69a-613f2b36021f",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773335850006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773335855006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "f5a58d415b230253e439b0a651558cbb0e8718f74bf9528e42b696483610a1ed",
+      "createdAt": 1773335850006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "ac8a2f40-37a2-4860-b8c1-5dad21073622",
+    {
+      "proofId": "ac8a2f40-37a2-4860-b8c1-5dad21073622",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773332250006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773332255006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "ef7bdb64450828a7e84ad7210024987a6f04d3424dc90e2b4434fed76b2a7458",
+      "createdAt": 1773332250006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "103bdf08-579b-4d53-be4b-0c24a32816f6",
+    {
+      "proofId": "103bdf08-579b-4d53-be4b-0c24a32816f6",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773328650006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773328655006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "8d1f0d0f8e0863e123a458f1a1353d4ae49ec9dc0df68353639a3b033a4ee73d",
+      "createdAt": 1773328650006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "f8658a34-2f2a-42d9-8769-21921db4ef39",
+    {
+      "proofId": "f8658a34-2f2a-42d9-8769-21921db4ef39",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773325050006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773325055006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "2d65cde4238e79e281822a653d5a402d3bda114e24b54d7bee2b6630e560b6a3",
+      "createdAt": 1773325050006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "61d24694-97c8-4fb9-bd66-b00ff7ad1560",
+    {
+      "proofId": "61d24694-97c8-4fb9-bd66-b00ff7ad1560",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773321450006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773321455006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "9ba4b3d5d090479f3c2503670921aef8010e4996b2fe329f31c40c5fc603bc7c",
+      "createdAt": 1773321450006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "97b16567-172c-4201-9268-ffe89d5271f1",
+    {
+      "proofId": "97b16567-172c-4201-9268-ffe89d5271f1",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773317850006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773317855006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "045ff8ed49f28d75db0a0867b273a336990f8366fe77aa761f3fe784f4f6a9a6",
+      "createdAt": 1773317850006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "dd220f84-74c8-4c2e-b91a-a3f48869ba34",
+    {
+      "proofId": "dd220f84-74c8-4c2e-b91a-a3f48869ba34",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773314250006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773314255006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "85b7d7564ca5520b3ddfb4e290e002f271218761c396f8d1e0299ec49bb7081f",
+      "createdAt": 1773314250006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "5780a89a-52c2-48b0-87db-20dacf4f6150",
+    {
+      "proofId": "5780a89a-52c2-48b0-87db-20dacf4f6150",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773310650006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773310655006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "c7df0e03fb423fcbe8b75e12d7f18e667e55f4d95cc99d06c1156ceed97e1d39",
+      "createdAt": 1773310650006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "f6ae2100-0c0c-4bc1-8a86-719ef64c58b6",
+    {
+      "proofId": "f6ae2100-0c0c-4bc1-8a86-719ef64c58b6",
+      "question": "Simulated audit for tier validation",
+      "answer": "This is a simulated audit record created to verify the system's tier progression and reward logic.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "INIT",
+          "content": "Initializing simulated audit...",
+          "timestamp": 1773307050006
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Simulated audit complete.",
+          "timestamp": 1773307055006
+        }
+      ],
+      "totalSteps": 2,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "rootHash": "eb85bb86f8e9d31f69849ab8531b07b1d8e64c55179274f8d7242a99164b6493",
+      "createdAt": 1773307050006,
+      "requesterAddress": "0x4fe67ee27fb2e259b3cb6f4244b256488340d892",
+      "network": "testnet",
+      "evmSettled": true
+    }
+  ],
+  [
+    "2039b541-4383-4093-b04b-e4ac0f611e8c",
+    {
+      "proofId": "2039b541-4383-4093-b04b-e4ac0f611e8c",
+      "question": "Analiza la velocidad de circulación de HBAR. ¿El uso real de la red justifica su precio actual?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La velocidad de circulación de un activo digital como HBAR se refiere a la frecuencia con la que una unidad de la criptomoneda se utiliza en transacciones dentro de un período determinado. Una alta velocidad implica un uso frecuente y una demanda transaccional robusta, mientras que una baja velocidad puede indicar un mayor holding o una menor actividad en la red. Para este análisis, se considerarán métricas clave como el volumen de trading, la liquidez en pools de DeFi y la cantidad de HBAR en staking nativo, ya que estas influyen directamente en la cantidad de HBAR que está activamente circulando o siendo bloqueado.",
+          "hash": "5311e1f0175b36d6df49bdcc1c113ad51b0920f739cfc32812c67c0397064315",
+          "timestamp": 1773429101876
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando los datos proporcionados, la velocidad de circulación de HBAR presenta características mixtas. El volumen de trading en 24 horas es de $99.756.631 (CoinGecko), lo que representa aproximadamente el 2.42% de la capitalización de mercado actual de $4.122.446.596. Este ratio indica que una parte relativamente pequeña del valor total de HBAR se intercambia diariamente. Además, la liquidez combinada en los 5 principales pools de SaucerSwap V2 es de $16.442.896,49, con un volumen de trading en 24 horas de $3.918.078,06 para estos pools. El staking nativo de HBAR muestra que 15.898.035.502 HBAR están bloqueados, lo que representa aproximadamente el 36.71% de la oferta circulante total de 43.303.421.565 HBAR. Esta cantidad bloqueada reduce significativamente la oferta disponible para transacciones rápidas y trading, lo que tiende a disminuir la velocidad de circulación efectiva para propósitos especulativos, pero indica un compromiso a largo plazo por parte de los holders. La emisión diaria de recompensas de staking es de 445.140 HBAR, lo que añade una cantidad marginal a la oferta circulante diariamente.",
+          "hash": "f2950f611b2ab828c98017f3e459cb46ac095b3a38115b7655c567370b23c5d6",
+          "timestamp": 1773429101876
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La justificación del precio actual de HBAR ($0.09522) en relación con el uso real de la red es compleja. Si bien hay una actividad de trading de casi $100 millones en 24 horas y una liquidez significativa en DeFi, la proporción de la oferta circulante en staking (36.71%) sugiere que una gran parte de HBAR está siendo retenida, no activamente circulada. Esto podría interpretarse como una señal de confianza a largo plazo, pero también podría limitar la velocidad de circulación en el corto plazo para fines transaccionales. Para que el uso de la red justifique un precio considerablemente más alto, la velocidad de circulación, medida por volúmenes de transacción (no provistos directamente en TPS, pero inferible por volúmenes de trading) y la actividad DeFi, necesitaría escalar proporcionalmente a la capitalización de mercado. Por ejemplo, si el volumen de trading diario fuera consistentemente del 10% o más de la capitalización de mercado, o si el TVL en DeFi fuera un porcentaje mucho mayor de la capitalización de mercado, esto indicaría una mayor utilidad y demanda transaccional. El precio actual representa una disminución del 83.2% desde su ATH de $0.569229, lo que sugiere que el mercado ha ajustado las expectativas de uso y adopción desde ese pico.",
+          "hash": "1e5dd932bb8278d44cd783f9aa019d65f8e9be2848b1898205e5d8a659856651",
+          "timestamp": 1773429101876
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La velocidad de circulación de HBAR, inferida a partir de los datos de trading y staking, indica una combinación de holding a largo plazo (36.71% de la oferta circulante en staking) y una actividad transaccional moderada (volumen de trading de $99.756.631 en 24 horas, que es el 2.42% de la capitalización de mercado). Si bien hay un uso activo en el ecosistema DeFi (TVL de $16.442.896,49 en los principales pools de SaucerSwap V2), el uso actual de la red justifica el precio de $0.09522 en el contexto de un mercado con expectativas moderadas, especialmente considerando que el activo está un 83.2% por debajo de su máximo histórico. Para justificar un precio significativamente más alto, se requeriría un incremento sustancial y sostenido en el volumen de transacciones diarias en la red Hedera y/o una expansión dramática en la actividad DeFi que eleve el TVL y los volúmenes de trading a porcentajes mucho mayores de la capitalización de mercado total.",
+          "hash": "97aea3ba082b4ec41d43cb0ebc5f25362a7fc99545bd278eff5afe9020a76525",
+          "timestamp": 1773429101876
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "6a3b9166367c0010735911c134c15a501152ac594009dc08d187e15052feb389",
+      "status": "CONFIRMED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1065,
+        1066,
+        1068,
+        1070
+      ],
+      "createdAt": 1773429110018,
+      "network": "testnet"
+    }
+  ],
+  [
+    "2251c257-9459-4d2b-8d39-0f15e12d3591",
+    {
+      "proofId": "2251c257-9459-4d2b-8d39-0f15e12d3591",
+      "question": "Analiza la velocidad de circulación de HBAR. ¿El uso real de la red justifica su precio actual?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La velocidad de circulación de HBAR se define como la frecuencia con la que un token cambia de manos dentro de un período determinado. Para HBAR, esto implica analizar el volumen de transacciones en exchanges centralizados y descentralizados (DEX), la cantidad de HBAR en staking (que reduce la oferta activa) y la actividad en protocolos DeFi. Los datos proporcionados incluyen el volumen de trading en 24 horas de CoinGecko para HBAR, el volumen de trading en 24 horas y el valor total bloqueado (TVL) en los pools de liquidez de SaucerSwap V2, la oferta circulante total y el HBAR en staking nativo.",
+          "hash": "635e250ae3154f39a30620270ac56ba61f87dda849a0baa26bcc65a386668cd1",
+          "timestamp": 1773429522401
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Para analizar la velocidad, primero se calcula el volumen total de transacciones observable en 24 horas. El volumen de trading de HBAR en CoinGecko es de $99.623.241. Los cinco principales pools de liquidez de SaucerSwap V2 muestran un volumen combinado de $3.896.603,02 en 24 horas (sumando los volúmenes individuales de $3.198.053,49, $420.008,48, $130.345,79, $27.097,83 y $121.098,43). Esto totaliza un volumen diario observable de $103.519.844,02. Con una capitalización de mercado de $4.122.446.596, la velocidad diaria aproximada (volumen / capitalización de mercado) es de 0.025. Esto significa que, en promedio, el 2.5% de la capitalización de mercado de HBAR se negocia diariamente. Además, 15.898.035.502 HBAR están en staking nativo, lo que representa aproximadamente el 36.7% de la oferta circulante de 43.303.421.565 HBAR. Este HBAR bloqueado reduce la oferta disponible para el comercio activo, lo que teóricamente debería aumentar la velocidad de la oferta *activa* restante o, alternativamente, estabilizar el precio al reducir la presión de venta. La emisión diaria de 445.140 HBAR en recompensas de staking introduce nueva oferta en el mercado, contrarrestando ligeramente el efecto de bloqueo del staking.",
+          "hash": "24dfa3f4b48087383deab7f11e9ab5d22fdb176b70cac1d394d0262fc2f2c11d",
+          "timestamp": 1773429522401
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La justificación del precio actual de HBAR ($0.095236) por el uso real de la red es una evaluación compleja. La velocidad diaria del 0.025 (o 2.5% de la capitalización de mercado) sugiere que una fracción relativamente pequeña de la valoración total se intercambia activamente cada día. Si bien el staking nativo y las actividades DeFi de SaucerSwap (con un TVL combinado de $16.443.201,76 en los 5 pools principales) demuestran utilidad y compromiso con el ecosistema, estos valores son modestos en comparación con la capitalización de mercado de más de $4.1 mil millones. Los altos APRs en algunos pools de SaucerSwap (hasta 34.73% para WHBAR/USDC) incentivan la provisión de liquidez, lo que bloquea HBAR y genera actividad, pero el volumen total de trading en DeFi sigue siendo una pequeña porción del volumen total de HBAR. El precio actual de HBAR está un 83.2% por debajo de su máximo histórico (ATH) de $0.569229, lo que indica que las expectativas pasadas sobre la utilidad o la adopción de la red eran significativamente más altas que el valor de mercado actual, o que ha habido una corrección significativa.",
+          "hash": "dea11d3856e347ffc95e8f8eb5eaebad673b672b0b30c071f427d23ff3a6e3cf",
+          "timestamp": 1773429522402
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "El uso actual de la red de Hedera, medido por la velocidad de circulación observable y la actividad DeFi, no proporciona una justificación *cuantitativa directa* para la capitalización de mercado de $4.122.446.596. La velocidad diaria, basada en un volumen combinado de $103.519.844,02 en 24 horas y la capitalización de mercado, es de aproximadamente 0.025. Esto sugiere que el precio actual de HBAR se basa en gran medida en el potencial futuro de la red y en la expectativa de una adopción y utilidad significativamente mayores, más que en la actividad transaccional actual. Aunque el staking y la actividad DeFi demuestran utilidad y retención de tokens, su escala es limitada en relación con la valoración total. Para que el uso real de la red justificara plenamente el precio actual basado en la velocidad, el volumen diario de transacciones necesitaría ser sustancialmente mayor, o la capitalización de mercado debería reflejar una expectativa de crecimiento más conservadora.",
+          "hash": "05febdcb19d94c83d5cade197d45360aff6e7b09bdd1255501918c4c95982ba6",
+          "timestamp": 1773429522402
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "1ae14a39728bf7ff039f7df97e80cfc71729e203b59b4f5623adf0335e1327a2",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1073,
+        1074,
+        1076,
+        1078
+      ],
+      "createdAt": 1773429532117,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773429528.711635542",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773429528.711635542",
+      "evmTxHash": "0xc7b96936c6992f7eb4393d2a1578abb2a006dee1ac16a429f5ab2df10c39236f",
+      "evmSettled": true
+    }
+  ],
+  [
+    "17beaa1d-1ddb-42c9-8602-e17014b207c0",
+    {
+      "proofId": "17beaa1d-1ddb-42c9-8602-e17014b207c0",
+      "question": "Con la volatilidad actual de BTC, ¿cómo se correlaciona HBAR a corto plazo? ¿Estamos cerca de un desacoplamiento?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El alcance de la pregunta requiere una evaluación de la correlación a corto plazo entre HBAR y BTC, y si un desacoplamiento es inminente, basándose en la volatilidad actual de BTC. Para ello, se analizarán los cambios porcentuales de precio en diferentes marcos temporales (1 hora, 24 horas, 7 días) utilizando los datos de mercado en tiempo real proporcionados.",
+          "hash": "134c27388c74514e15cc0432a272de019f21964110bbf7e583a322a14b1d4f02",
+          "timestamp": 1773429705288
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Se procede a extraer y comparar los datos de cambio de precio de CoinGecko para ambos activos. Bitcoin (BTC) muestra cambios de precio de 0.41% en 1 hora, 1.66% en 24 horas y 4.80% en 7 días, indicando una tendencia alcista general en estos marcos temporales a pesar de la volatilidad. Hedera (HBAR), por su parte, presenta un cambio de -0.23% en 1 hora, 1.24% en 24 horas y -1.41% en 7 días.",
+          "hash": "32984ec9e6ea0f04060dc3bb36e6fc5d705eba9d12b95de597452e4b3042c13e",
+          "timestamp": 1773429705288
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Al comparar los movimientos, se observa que en el marco de 1 hora, BTC subió mientras HBAR bajó, lo que sugiere una correlación negativa puntual. Sin embargo, en 24 horas, ambos activos mostraron una apreciación (BTC +1.66%, HBAR +1.24%), indicando una correlación positiva. En el marco de 7 días, BTC subió significativamente (+4.80%) mientras HBAR experimentó una ligera caída (-1.41%), lo que denota una divergencia en la tendencia a una semana. La volatilidad de BTC se manifiesta en su precio actual de $71235, que está un -43.5% por debajo de su ATH, mientras que HBAR está un -83.3% por debajo de su ATH de $0.569229. La divergencia en el rendimiento a 7 días, donde BTC sube y HBAR baja, sugiere una correlación débil o un inicio de desacoplamiento en ese período.",
+          "hash": "0522576eef5ef7461bb2b5fb12610689d913f63e0aa47bc4d451e8cfe6631705",
+          "timestamp": 1773429705288
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La correlación a corto plazo entre HBAR y BTC es inconsistente, mostrando una débil correlación positiva en el período de 24 horas (+1.66% BTC, +1.24% HBAR) y una divergencia notable en el período de 7 días (+4.80% BTC, -1.41% HBAR) según los datos de CoinGecko. Aunque hubo una correlación positiva en 24 horas, la diferencia de rendimiento en 7 días indica que no están moviéndose en perfecta sincronía. No estamos cerca de un desacoplamiento completo y sostenido en el corto plazo, ya que la correlación de 24 horas aún existe. Sin embargo, para que un desacoplamiento se establezca firmemente, HBAR necesitaría mantener una trayectoria de precio significativamente diferente a la de BTC durante un período prolongado (superior a 7 días), con movimientos de magnitud opuesta o desproporcionada.",
+          "hash": "0b996dc60b2015b021825e7d1ed0ce3688b08aa1db0f9ba9ea9ddf7f2b1d82b0",
+          "timestamp": 1773429705288
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "4cec22d0c9856b3187b3846b35c286fb79824c976d9f669a19eeade601d7b334",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1081,
+        1082,
+        1083,
+        1085
+      ],
+      "createdAt": 1773429711985,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773429710.939500553",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773429710.939500553",
+      "evmTxHash": "0xa1aa304f60e9d2595db1e1e1d7872b5059bfcdeee8934240166edd7dc127204a",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a3cf3619-b6cb-4ade-b9c8-cd9162d9214a",
+    {
+      "proofId": "a3cf3619-b6cb-4ade-b9c8-cd9162d9214a",
+      "question": "Analiza la FDV de Hedera frente a su adopción real por empresas. ¿El mercado la está valorando bien?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El primer paso es establecer la valoración diluida completa (FDV) de Hedera y definir el alcance de la pregunta. La FDV se calcula multiplicando el suministro total de un activo por su precio actual. Para Hedera (HBAR), el suministro total es de 50.000.000.000 HBAR y el precio actual es de $0.094959 (CoinGecko Market Data). Esto resulta en una FDV de 50.000.000.000 HBAR * $0.094959/HBAR = $4.747.950.000. La pregunta solicita una comparación de esta FDV con la \"adopción real por empresas\" y una evaluación de si el mercado está valorando bien el activo.",
+          "hash": "a2a5124d9b0a7575efd505ffb336189cd862d67c61c57be50301e7139ab4770c",
+          "timestamp": 1773431463258
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Para analizar la adopción real por empresas, es necesario investigar los casos de uso y las implementaciones de Hedera por parte de compañías.",
+          "hash": "cfee377363c0aaa927e9ade84ef39256abfc935ef9e690e819b69e2fc2d273d9",
+          "timestamp": 1773431463258
+        }
+      ],
+      "totalSteps": 2,
+      "rootHash": "010426b7185bfcac99b563cd0c0dcaf3b72643de1888cb605b88396fb20deb9e",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1088,
+        1089
+      ],
+      "createdAt": 1773431466102,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773431465.484643164",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773431465.484643164",
+      "evmTxHash": "0x94638b15aefc27523f20e66f2b640be379a8fda767a654f4870e714aac61b3bf",
+      "evmSettled": true
+    }
+  ],
+  [
+    "30cedf13-9566-4799-b8ee-ec80b04b3b11",
+    {
+      "proofId": "30cedf13-9566-4799-b8ee-ec80b04b3b11",
+      "question": "Analiza la FDV de Hedera frente a su adopción real por empresas. ¿El mercado la está valorando bien?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El primer paso es establecer las métricas de valoración fundamentales de Hedera (HBAR) utilizando los datos de mercado proporcionados. La capitalización de mercado (MCap) actual de HBAR es de $4.111.528.943, con un precio de $0.094959 por HBAR y una oferta circulante de 43.303.421.565 HBAR. La Oferta Total es de 50.000.000.000 HBAR. Calculamos la Valoración Totalmente Diluida (FDV) multiplicando la Oferta Total por el precio actual: 50.000.000.000 HBAR * $0.094959/HBAR = $4.747.950.000. La FDV es aproximadamente un 15,48% superior a la capitalización de mercado actual, lo que indica que una porción significativa de la oferta de HBAR aún no está en circulación y representa un factor a considerar en la valoración futura.",
+          "hash": "775ded3c8eadb5fcc6eb46214daf9ee6d55ddcec426d3e2defd29ce0c5f82640",
+          "timestamp": 1773431516445
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Para analizar la adopción real por empresas, se requiere examinar la composición del Consejo de Gobierno de Hedera y los casos de uso empresariales. El Consejo de Gobierno de Hedera está compuesto por grandes corporaciones globales como Boeing, Dell, Deutsche Telekom, DLA Piper, EDF (Électricité de France), FIS (WorldPay), Google, IBM, Indian Institute of Technology Madras, LG Electronics, Magalu, Shinhan Bank, Standard Bank, Swirlds, Tata Communications, Ubisoft, University College London, y Wipro Limited. Estas empresas participan en la gobernanza de la red y, en muchos casos, desarrollan o utilizan aplicaciones sobre Hedera. Por ejemplo, IBM y Google Cloud han estado involucrados en la infraestructura y servicios de Hedera. Casos de uso específicos incluyen soluciones de la cadena de suministro, pagos y tokenización de activos. Por ejemplo, Shinhan Bank ha explorado la emisión de stablecoins en Hedera, y Standard Bank ha participado en pruebas de pagos transfronterizos. Además, la plataforma Atma.io de Avery Dennison, una solución de trazabilidad para la cadena de suministro, utiliza Hedera para registrar miles de millones de eventos.",
+          "hash": "f3ec5de844720049794144a2cf6eda49ea5924c2f500ef1bf52b46836b46d9bb",
+          "timestamp": 1773431516445
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Al comparar la FDV de $4.747.950.000 con la adopción empresarial, se observa una base de gobernanza robusta y casos de uso activos. La participación de corporaciones de la magnitud de Google, IBM y Dell en el Consejo de Gobierno, junto con la implementación de soluciones empresariales como Atma.io, valida la credibilidad y el potencial de adopción de Hedera a escala. Sin embargo, la métrica clave para la valoración de una red de capa 1 es la actividad transaccional y la generación de ingresos por tarifas. Aunque la información proporcionada no incluye un volumen de transacciones total o ingresos por tarifas de la red, la existencia de estos miembros y casos de uso sugiere una utilidad subyacente que podría justificar la FDV actual. La liquidez en DEX como SaucerSwap V2, con un TVL combinado de $16.407.647,02 en los 5 pools principales, y un volumen de 24h de $3.173.064,75 para el pool WHBAR/USDC, demuestra una actividad de finanzas descentralizadas (DeFi) emergente que complementa la adopción empresarial, aunque no es el foco principal de la tesis de Hedera. El APR de staking nativo del 2.41% y el total de HBAR en staking (15.898.035.502 HBAR) también indican participación de la comunidad.",
+          "hash": "29569313b5075146ecbfc48176a6a65065044935c6e5e94449a68e440f9c8089",
+          "timestamp": 1773431516445
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "El mercado está valorando a Hedera (HBAR) de manera razonable en relación con su adopción empresarial existente y su modelo de gobernanza. La FDV de $4.747.950.000 refleja un reconocimiento del potencial de la red, anclado en la participación de corporaciones globales en su Consejo de Gobierno y la implementación de casos de uso empresariales tangibles que procesan grandes volúmenes de datos. La presencia de miembros del consejo de la talla de Google e IBM, junto con aplicaciones activas como Atma.io, proporciona una base sólida para la valoración. Para que la valoración se considere \"bien\" en el largo plazo, la red debe continuar demostrando un crecimiento sostenido en el volumen de transacciones de estos casos de uso empresariales y una monetización efectiva de la actividad de la red. Si el volumen diario de transacciones empresariales se expande significativamente, superando la emisión diaria de recompensas de staking de 445.140 HBAR/día en términos de tarifas quemadas, esto indicaría una subvaloración. En la ausencia de datos directos sobre el volumen de transacciones empresariales, la valoración actual es una apuesta por el crecimiento y la monetización futura de esta adopción.",
+          "hash": "4584493025abf66e6332e80f0a7287ca78293aa1b461329ab8248199cc126d0a",
+          "timestamp": 1773431516445
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "7f70643a88018d076ed3b95a21a7903edd098b9c3a8f07dcf6708aee08617fa0",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1091,
+        1092,
+        1095,
+        1096
+      ],
+      "createdAt": 1773431526900,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773431521.835661231",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773431521.835661231",
+      "evmTxHash": "0xb44a50d0e4d04bc72af1039214eaaf1b74101d5b5a97e7f5aa2c63991204a5cf",
+      "evmSettled": true
+    }
+  ],
+  [
+    "99d9019f-f28c-4d81-8801-835ab1d1d440",
+    {
+      "proofId": "99d9019f-f28c-4d81-8801-835ab1d1d440",
+      "question": "Con la volatilidad actual de BTC, ¿cómo se correlaciona HBAR a corto plazo? ¿Estamos cerca de un desacoplamiento?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta requiere un análisis de la correlación a corto plazo entre HBAR y BTC y una evaluación del potencial de desacoplamiento, utilizando los datos de mercado en tiempo real proporcionados. Para establecer la correlación, se examinarán las variaciones de precio en diferentes marcos temporales (1 hora, 24 horas y 7 días) para ambos activos. El desacoplamiento se evaluará si HBAR muestra una divergencia consistente y significativa de las tendencias de BTC.",
+          "hash": "5caf9b30f8d705e9f7fd33047093bcb230b248b2f2d125736cb3561f7ca27e26",
+          "timestamp": 1773432641046
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando los datos de CoinGecko, observamos las siguientes variaciones de precio en las últimas 24 horas: BTC ha experimentado un aumento del 1.12%, mientras que HBAR ha subido un 0.53%. En el marco de tiempo de 7 días, BTC ha mostrado un aumento del 4.57%, mientras que HBAR ha disminuido un -2.26%. En el período más corto de 1 hora, BTC ha subido un 0.02%, mientras que HBAR ha bajado un -0.29%. La capitalización de mercado de BTC es de $1.424.842.763.250 y su volumen en 24 horas es de $62.734.670.940, mientras que HBAR tiene una capitalización de mercado de $4.111.204.474 y un volumen en 24 horas de $100.182.183.",
+          "hash": "7bca81af0f6364ed515634b4c00a75ea2ca001565298f8b5ae774ca154874a79",
+          "timestamp": 1773432641048
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La correlación a corto plazo entre HBAR y BTC no es consistentemente directa según los datos proporcionados. En las últimas 24 horas, ambos activos mostraron movimientos positivos, lo que indica una correlación positiva débil (BTC +1.12%, HBAR +0.53%). Sin embargo, en el marco de 7 días, BTC subió un 4.57% mientras que HBAR descendió un -2.26%, lo que sugiere un desacoplamiento o una correlación negativa en ese período. En la última hora, BTC subió ligeramente (0.02%) mientras que HBAR bajó (-0.29%), lo que también indica un desacoplamiento a muy corto plazo. La volatilidad de BTC es evidente, pero HBAR no la está replicando con precisión en todos los marcos temporales. El volumen de 24 horas de HBAR de $100.182.183, aunque significativo, es considerablemente menor que el de BTC, lo que sugiere que HBAR es más susceptible a movimientos de precio impulsados por su propia dinámica o por un menor volumen de negociación en comparación con el mercado global de criptomonedas.",
+          "hash": "1fc09100554edb21275e3bbbd50bc4aa3bf18a7888ba0747664e43123f0c488a",
+          "timestamp": 1773432641049
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Basado en los datos en vivo, HBAR muestra una correlación inconsistente con BTC a corto plazo. Si bien hubo un movimiento positivo concurrente en las últimas 24 horas, los períodos de 7 días y 1 hora demuestran una divergencia clara, con HBAR moviéndose en la dirección opuesta a BTC. Esto sugiere que HBAR no está completamente acoplado a la volatilidad actual de BTC y está mostrando signos de desacoplamiento en ciertos marcos temporales. No estamos presenciando un desacoplamiento completo y sostenido, pero la falta de una correlación positiva fuerte y consistente indica que HBAR está comenzando a reaccionar a sus propias dinámicas de mercado o a factores específicos de la red Hedera, en lugar de seguir ciegamente los movimientos de BTC.",
+          "hash": "8e24065f51759338fe80fa161c157727e3c3d8ba316195894281da5cb7afc38e",
+          "timestamp": 1773432641050
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "cdfa8e9217f958dd179b29e003b36b306c1052d9a8a45516db6aee228f406414",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1099,
+        1100,
+        1101,
+        1103
+      ],
+      "createdAt": 1773432650019,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773432644.796206135",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773432644.796206135",
+      "evmTxHash": "0x40abeb358ef62ef9fcdc2f121f9dae451107b91318ef7d605cd95802c2583b3e",
+      "evmSettled": true
+    }
+  ],
+  [
+    "d9f9318c-cce7-4c33-80f1-4807f327ba47",
+    {
+      "proofId": "d9f9318c-cce7-4c33-80f1-4807f327ba47",
+      "question": "Si el market cap total de crypto cae un 15% la próxima semana, ¿dónde estarían los soportes clave de HBAR?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El alcance de la pregunta requiere una proyección del precio de HBAR basada en una caída hipotética del 15% en la capitalización de mercado total de las criptomonedas. Dado que no se proporciona la capitalización de mercado total de las criptomonedas, se asumirá que la capitalización de mercado de HBAR disminuirá proporcionalmente en un 15%, reflejando la tendencia general del mercado. Esta es una metodología estándar para estimar el impacto en un activo individual en ausencia de datos de correlación específicos para el escenario.",
+          "hash": "89ae6b74288d98ff2d9545c7d14475784b6f3580a8b2c48abdca921fe70f31d2",
+          "timestamp": 1773432811133
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Se procede al cálculo de la capitalización de mercado proyectada de HBAR y su precio correspondiente.\n*   La capitalización de mercado actual de HBAR es de $4.111.204.474 (CoinGecko Market Data).\n*   Una caída del 15% resultaría en una capitalización de mercado de HBAR de $4.111.204.474 * (1 - 0.15) = $3.494.523.799,9.\n*   Con un suministro circulante de 43.303.421.565 HBAR (CoinGecko Market Data), el precio hipotético de HBAR sería $3.494.523.799,9 / 43.303.421.565 HBAR = $0.08070.\nPor lo tanto, bajo el escenario de una caída del 15% en la capitalización de mercado total de las criptomonedas, el precio de HBAR se proyectaría en aproximadamente $0.08070.",
+          "hash": "59b7b10e972c95a1cb38e5fc8b9790b4a68221c77b83adb877139d9d572754cb",
+          "timestamp": 1773432811134
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Analizando el contexto del mercado, el Índice de Miedo y Avaricia de Crypto actualmente indica \"Miedo Extremo\" con un valor de 15/100 (datos del 2026-03-13), lo que sugiere una alta probabilidad de movimientos de precios impulsados por el pánico. El precio actual de HBAR de $0.094889 representa una disminución del 83.3% desde su máximo histórico (ATH) de $0.569229 (CoinGecko Market Data). Si el precio cae a $0.08070, la distancia desde el ATH se ampliaría, indicando que el activo ya se encuentra en un rango de precios significativamente deprimido. Este nivel de $0.08070 se establecería como el soporte clave inmediato bajo el escenario planteado. La liquidez en los pools de SaucerSwap V2, como WHBAR/USDC con un TVL de $8.385.432,83 y un volumen de 24h de $3.170.674,45, podría influir en la estabilidad del precio, aunque un descenso generalizado del mercado podría estresar incluso estas profundidades de liquidez.",
+          "hash": "48c9beb40305f50a403f2cb06b6d429142af6683c9f22f11add9a1b9e8595ddf",
+          "timestamp": 1773432811135
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Si la capitalización de mercado total de las criptomonedas cae un 15% la próxima semana, el soporte clave para HBAR se establecería en aproximadamente **$0.08070**. Este nivel se calcula asumiendo una disminución proporcional del 15% en la capitalización de mercado de HBAR, partiendo de su valor actual de $4.111.204.474 y su suministro circulante de 43.303.421.565 HBAR (CoinGecko Market Data). El mercado ya se encuentra en un estado de \"Miedo Extremo\" con un índice de 15/100 (Crypto Fear & Greed Index), lo que podría exacerbar la presión de venta en caso de una caída generalizada.",
+          "hash": "04a7a398498138ddd742a9544205ee6111b03ed21a241265c9a7c933d5466985",
+          "timestamp": 1773432811136
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "fe5fe867cf85bfde32eadcae908389c0039c7b5fa6c94e8640210483781f44c1",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1105,
+        1106,
+        1107,
+        1109
+      ],
+      "createdAt": 1773432818002,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773432813.475611724",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773432813.475611724",
+      "evmTxHash": "0x7c1960b8ce884503f5c6ca3ad922f4edf5446b8a3dde42aa2d0fd3def1001d7f",
+      "evmSettled": true
+    }
+  ],
+  [
+    "56a05f3b-50ab-482a-8e67-f7488db4d3bc",
+    {
+      "proofId": "56a05f3b-50ab-482a-8e67-f7488db4d3bc",
+      "question": "¿Qué riesgo sistémico tiene la transición de nodos permisionados a nodos comunitarios abiertos en Hedera?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta aborda el riesgo sistémico de la transición de Hedera de nodos permisionados a nodos comunitarios abiertos. Esto implica un cambio fundamental en la arquitectura de la red y el modelo de seguridad. Actualmente, los nodos de consenso de Hedera son operados por miembros del Consejo Gobernante, lo que garantiza una alta confianza, identidades conocidas y una gobernanza sólida. La transición a nodos comunitarios abiertos significa que cualquier poseedor de HBAR podría operar un nodo, lo que busca aumentar la descentralización pero introduce nuevos vectores de riesgo sistémico relacionados con la seguridad (integridad del consenso), el rendimiento de la red y los incentivos económicos.",
+          "hash": "f3d85efd9aca2b8554c5cf5b83e31c6dc38ebc87f7ad050374e7d264a6850126",
+          "timestamp": 1773433054361
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Los principales riesgos sistémicos identificados en esta transición son:\n1.  **Ataques Sybil y Compromiso del Consenso:** En un modelo abierto, aumenta el riesgo de que actores maliciosos operen múltiples nodos para obtener una influencia desproporcionada. El algoritmo de consenso Hashgraph de Hedera está diseñado para tolerar hasta 1/3 de nodos maliciosos. Para comprometer la integridad del consenso, una entidad maliciosa necesitaría adquirir y controlar más de 1/3 del HBAR en stake que participa en el consenso. Actualmente, hay 15.898.035.502 HBAR en stake. Un tercio de esta cantidad es aproximadamente 5.300.000.000 HBAR. Al precio actual de $0.094918 por HBAR (CoinGecko Market Data), esto representa una inversión de aproximadamente $503.065.400. Esta cifra es sustancial pero no insuperable para actores con grandes recursos.\n2.  **Rendimiento y Fiabilidad de la Red:** Los nodos comunitarios podrían tener especificaciones de hardware, conectividad y experiencia operativa variables en comparación con los nodos de grado empresarial del Consejo. Esto podría resultar en un aumento de la latencia, una reducción del rendimiento o una inestabilidad general de la red, aunque el diseño ABFT de Hashgraph debería asegurar la vivacidad incluso con algunos nodos defectuosos.\n3.  **Desalineación de Incentivos Económicos y Centralización del Staking:** La Tasa de Porcentaje Anual (APR) de staking nativo de HBAR es del 2.41% (Hedera Network Supply & Staking). Esta APR es significativamente menor que las APRs ofrecidas por algunos pools de liquidez en SaucerSwap V2, como el pool WHBAR/USDC con un 34.42% (SaucerSwap V2 Liquidity Pools). Esta disparidad podría desincentivar a los miembros de la comunidad a operar nodos o a mantener su HBAR en staking nativo, buscando mayores rendimientos en DeFi. Si la operación de nodos no es suficientemente atractiva, podría llevar a una concentración de la operación de nodos en manos de unos pocos grandes poseedores de HBAR o entidades con motivaciones no financieras, lo que resultaría en una forma diferente de centralización. La restricción de \"Max Stake Earning Rewards: 6.500.000.000 HBAR\" también podría limitar el atractivo del staking si el total de HBAR en stake excede significativamente este umbral, reduciendo el APR efectivo para los stakers individuales.",
+          "hash": "dee8376ba1415654f0c2ea4f2bf090e9ff872df46aaa2532207a0c12a9d9fb61",
+          "timestamp": 1773433054362
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La transición a nodos comunitarios abiertos introduce un cambio del modelo de seguridad basado en identidades confiables a uno basado en incentivos económicos y garantías criptográficas. Para comprometer la integridad de la red (controlar 1/3 de los nodos), un atacante necesitaría aproximadamente 5.300 millones de HBAR, lo que implica una inversión de alrededor de $503 millones al precio actual de $0.094918 por HBAR. Si se considera la totalidad del suministro circulante (43.303.421.565 HBAR), el umbral de 1/3 sería de aproximadamente 14.430 millones de HBAR, con un costo de $1.370 millones, lo que representa un costo de ataque significativamente mayor. La brecha entre el APR de staking nativo (2.41%) y los rendimientos de DeFi (ej., 34.42% en WHBAR/USDC de SaucerSwap V2) presenta un riesgo de que el capital se desvíe de la seguridad de la red hacia oportunidades de mayor rendimiento, lo que podría conducir a una menor participación en la operación de nodos o a una mayor concentración de HBAR en stake entre unos pocos grandes actores. Las estrategias de mitigación futuras, como el proxy staking y el sharding, serán cruciales para abordar estos riesgos, pero su implementación y efectividad determinarán el nivel de riesgo sistémico durante la transición.",
+          "hash": "71558fe71da85a0534164e4522f3511d8103436e1c0ddfdfe883c1a2f0beaf0a",
+          "timestamp": 1773433054364
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La transición de Hedera de nodos permisionados a nodos comunitarios abiertos presenta un riesgo sistémico moderado pero manejable, principalmente derivado de la posible centralización económica y la seguridad del consenso. El costo de un ataque Sybil para controlar 1/3 del HBAR actualmente en stake es de aproximadamente $503 millones (basado en 5.300 millones de HBAR y un precio de $0.094918 por HBAR), lo cual es sustancial pero no imposible para actores bien financiados. El riesgo se amplifica por la discrepancia de rendimiento entre el staking nativo de HBAR (2.41% APR) y las oportunidades de liquidez en DeFi (hasta 34.42% APR en SaucerSwap V2), lo que podría desincentivar la participación distribuida en la operación de nodos y concentrar el poder de stake. Para mitigar este riesgo, Hedera deberá asegurar que los incentivos económicos para operar nodos comunitarios sean competitivos y que se implementen mecanismos robustos (como el proxy staking y el sharding) que permitan una distribución de poder de voto más amplia y resistente a ataques Sybil antes de la transición completa.",
+          "hash": "0f9e4dc92e446c56955bd472c1dad359996fd1cd796cfc219bf2b6828fb6a6ba",
+          "timestamp": 1773433054365
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "7dbf960bbcf2fd9b0f494de36fc0a0aa67c41d5b21e37ae059068ddba1c91e0e",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1111,
+        1112,
+        1115,
+        1118
+      ],
+      "createdAt": 1773433063641,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773433058.772278581",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773433058.772278581",
+      "evmTxHash": "0x0ed17506d38d1b8f2b593f6f04dae7097908d1e1e38687177dd84856c62496f5",
+      "evmSettled": true
+    }
+  ],
+  [
+    "ae18b145-df56-4986-a169-e5bc0bc18bc8",
+    {
+      "proofId": "ae18b145-df56-4986-a169-e5bc0bc18bc8",
+      "question": "Compara los trade-offs de seguridad del hashgraph de Hedera contra cadenas PoS tradicionales para DeFi institucional.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta solicita una comparación de las compensaciones de seguridad entre el hashgraph de Hedera y las cadenas PoS tradicionales para DeFi institucional. Esto requiere analizar las arquitecturas de consenso subyacentes, los modelos de gobernanza y la distribución de la participación, relacionándolos con la robustez contra ataques y la idoneidad para casos de uso institucionales. Se utilizarán los datos de mercado en vivo proporcionados para cuantificar aspectos relevantes de la seguridad de Hedera.",
+          "hash": "e21c339e31105b869ab798f7d30dbc82d98ba28327a7427b1f55b2f8473ed2aa",
+          "timestamp": 1773433351605
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Hedera Hashgraph emplea un consenso asíncrono bizantino tolerante a fallos (ABFT) que garantiza la finalidad instantánea y la resistencia a la manipulación del orden de las transacciones (MEV), lo cual es crítico para las instituciones que requieren determinismo y previsibilidad. Su gobernanza está descentralizada a través del Consejo de Gobierno de Hedera, compuesto por hasta 39 organizaciones globales diversas, lo que mitiga el riesgo de centralización de la toma de decisiones visto en algunas cadenas PoS. En cuanto a la seguridad económica, los datos en vivo muestran que actualmente hay 15.898.035.502 HBAR apostados en el staking nativo, con una APR del 2,41%. Aunque una parte significativa del suministro está apostada, la seguridad de Hedera no depende únicamente de la cantidad apostada, sino de la diversidad y reputación de los miembros del Consejo y las garantías matemáticas del ABFT. El valor de mercado de HBAR de $0.094977 y una capitalización de mercado de $4.111.456.924 (CoinGecko) proporciona una capa económica, pero el diseño de consenso es la principal protección contra ataques.",
+          "hash": "70fa4519877a7d1e4ac9a29adb1f2f3cb478d0382688f26b8c79521304bff5a5",
+          "timestamp": 1773433351606
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Las cadenas PoS tradicionales, por otro lado, dependen principalmente de la seguridad económica a través del staking de tokens. La seguridad de estas cadenas es directamente proporcional al valor total de los tokens apostados y al costo de adquirir una participación mayoritaria para llevar a cabo un ataque del 51%. El riesgo de slashing (pérdida de tokens apostados por mal comportamiento) es un disuasivo clave, pero también introduce complejidad para los participantes institucionales que deben gestionar este riesgo. Para DeFi institucional, esto significa que la seguridad puede fluctuar con el precio del token y la distribución de los validadores. Una APR de staking alta en algunas cadenas PoS podría incentivar una mayor participación, pero también podría atraer actores con menor compromiso a largo plazo. La gobernanza en PoS a menudo se basa en la votación ponderada por tokens, lo que puede llevar a una mayor centralización si la distribución de tokens es desigual. Aunque no se proporcionan datos de staking para cadenas PoS tradicionales, el TVL total de Hedera en DeFi es de $61.640.536,039 (DefiLlama), lo que indica una adopción creciente, pero sigue siendo menor en comparación con las principales cadenas PoS, lo que podría implicar una menor liquidez para los tokens de staking si se necesitara una rápida salida en un escenario de ataque.",
+          "hash": "992cfdd995c10a07df3870748e14a7f7428778c9d580df597d823a9b33af8d39",
+          "timestamp": 1773433351607
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Para DeFi institucional, Hedera Hashgraph ofrece una propuesta de seguridad superior en términos de finalidad y resistencia a MEV debido a su consenso ABFT, lo que es un trade-off favorable para la previsibilidad y la gestión de riesgos que las instituciones demandan. Su modelo de gobernanza a través del Consejo de Gobierno de Hedera, con miembros institucionales diversos, proporciona una robustez adicional contra la centralización del poder decisorio que puede ser un riesgo en cadenas PoS con gobernanza basada puramente en la tenencia de tokens. Mientras que las cadenas PoS tradicionales dependen en gran medida de la seguridad económica a través de la cantidad y el valor de los tokens apostados, con riesgos de slashing y posibles vulnerabilidades si el valor del token o la participación disminuyen drásticamente, la seguridad de Hedera está más arraigada en las garantías criptográficas de su algoritmo de consenso y la diversidad de su consejo. El riesgo para Hedera, aunque bajo, podría ser la percepción de centralización debido a su consejo de gobierno fijo en comparación con un conjunto de validadores PoS más abierto, aunque esto se mitiga con la diversidad y reputación de sus miembros. La liquidez de los pools de DeFi en Hedera, como se ve en SaucerSwap V2 con un TVL combinado de $16.411.045,36 en los 5 pools principales, es un factor a considerar para la adopción institucional a gran escala, ya que la profundidad del mercado es crucial para grandes transacciones.",
+          "hash": "e24d49a8ded4630a5a1c0a9dc02de10ddf3ee65423c47105fb9ac00318a6ca8f",
+          "timestamp": 1773433351608
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "012b41a3ba5b2f9b40cbc8ac440024f573ac8801dea1049660e44e212e1e09f6",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1120,
+        1121,
+        1123,
+        1125
+      ],
+      "createdAt": 1773433360331,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773433355.703201357",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773433355.703201357",
+      "evmTxHash": "0xfde55ac54dd08dc4a5a047a8da1ca6e480bd88463ca91997ef6b4644eeae3eb7",
+      "evmSettled": true
+    }
+  ],
+  [
+    "548fd57c-7acf-4ddd-9ef2-6cc8edab775d",
+    {
+      "proofId": "548fd57c-7acf-4ddd-9ef2-6cc8edab775d",
+      "question": "Desmonta (o confirma) con datos la narrativa de que la gobernanza corporativa de Hedera frena el crecimiento retail descentralizado.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta solicita una evaluación de la narrativa que sugiere que la gobernanza corporativa de Hedera ralentiza el crecimiento minorista descentralizado, utilizando datos de mercado en tiempo real. Para abordar esto, es crucial examinar las métricas clave que reflejan la participación minorista y el desarrollo descentralizado, como el staking, la liquidez de los exchanges descentralizados (DEX) y los rendimientos asociados. El modelo de gobernanza de Hedera, a través de su Consejo de Gobierno compuesto por grandes corporaciones, es un punto central de la narrativa.",
+          "hash": "0884dd7d3339eacd739093d6a32512fdfdefdb3cdd7d4a19ebb3df39dd1fdffc",
+          "timestamp": 1773434239147
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando los datos de staking nativo de Hedera, se observa que, aunque el Total HBAR Staked asciende a 15.898.035.502 HBAR, solo 6.500.000.000 HBAR están habilitados para ganar recompensas (Max Stake Earning Rewards). Esto significa que una porción considerable del HBAR apostado no está generando rendimientos. El APR nativo de staking es del 2.41% sobre la cantidad elegible. Sin embargo, si calculamos el APR efectivo para *todos* los HBAR apostados (15.898.035.502 HBAR) en base al Daily Reward Pool de 445.140 HBAR/día, el rendimiento anualizado para el total de HBAR apostado es aproximadamente del 1.02% anual (162.476.100 HBAR anuales / 15.898.035.502 HBAR apostados). Este rendimiento significativamente menor para la mayoría de los stakers minoristas, debido a la limitación de la recompensa, podría percibirse como un freno al incentivo para la participación minorista descentralizada en el staking nativo de la red [cite: Hedera Mirror Node].",
+          "hash": "1a72631f9fed145250ccd4eca2820d69a163d6f0d1c9120c4dd58e1ef3b48051",
+          "timestamp": 1773434239148
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "En cuanto a la actividad DeFi minorista, la liquidez total combinada de los 5 pools principales en SaucerSwap V2, el DEX más grande en Hedera, es de $16.411.313,9 [cite: SaucerSwap Native API]. Aunque algunos pools ofrecen APRs competitivos, como el 34.10% para WHBAR/USDC [cite: SaucerSwap Native API], el TVL global es relativamente bajo en comparación con otras redes de capa 1 con una capitalización de mercado similar. Por ejemplo, la capitalización de mercado de Hedera es de $4.109.595.049 [cite: CoinGecko]. Un TVL de $16.4M en el DEX principal representa solo aproximadamente el 0.4% de la capitalización de mercado, lo que sugiere una adopción limitada del ecosistema DeFi por parte de los usuarios minoristas. La narrativa de que la gobernanza corporativa prioriza los casos de uso empresariales podría, indirectamente, no fomentar un ecosistema DeFi minorista tan vibrante como el visto en cadenas con una gobernanza más orientada a la comunidad o a la descentralización de los operadores de nodos.",
+          "hash": "e864eacd3adbe0f0eb558f95bf36580f7cafb862a75d2954ef43826592ae97d1",
+          "timestamp": 1773434239149
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La narrativa de que la gobernanza corporativa de Hedera frena el crecimiento minorista descentralizado encuentra apoyo en los datos proporcionados. La limitación en el staking nativo, donde solo una fracción del HBAR apostado es recompensada, resulta en un APR efectivo del 1.02% para el total de HBAR apostado, significativamente inferior al 2.41% publicitado para el capital elegible. Esta restricción en las recompensas de staking para una gran parte de los poseedores de HBAR podría desincentivar la participación minorista. Además, la liquidez relativamente baja en SaucerSwap V2, con un TVL combinado de $16.4M a pesar de algunos APRs atractivos, indica una adopción limitada del DeFi minorista en la red. Si bien la gobernanza corporativa puede aportar estabilidad y atraer a empresas, los datos sugieren que ciertos aspectos de la estructura actual de Hedera, como la gestión de las recompensas de staking y el tamaño del ecosistema DeFi minorista, no están impulsando un crecimiento robusto en la participación descentralizada de los usuarios individuales.",
+          "hash": "c7a6e6e4a5da05a4fe866db32e82aeb7a3fe58e5faa6637ae54032f88947778d",
+          "timestamp": 1773434239150
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "31fc251928aa0eec7a21222d70c77896b0b9f8d47635e6647360abdc86ddbffa",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1128,
+        1129,
+        1131,
+        1133
+      ],
+      "createdAt": 1773434246350,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773434242.546438805",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773434242.546438805",
+      "evmTxHash": "0x390cd688f224d85aed1078e22ed8e9e8ecc3530b00419febc17186f774791b2d",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a60d2a56-af26-493b-8e9b-f5aa991de6ea",
+    {
+      "proofId": "a60d2a56-af26-493b-8e9b-f5aa991de6ea",
+      "question": "Explica por qué una L1 con comisiones fijas en USD (Hedera) puede rendir mejor que modelos de fees dinámicas en mercados alcistas.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta requiere una explicación sobre la ventaja de un modelo de comisiones fijas en USD (como Hedera) frente a modelos de comisiones dinámicas en mercados alcistas. Esto implica analizar cómo cada modelo reacciona a los aumentos de precio de los activos y la congestión de la red durante períodos de alta demanda. El núcleo de la diferencia radica en la previsibilidad de costos para los usuarios y desarrolladores.",
+          "hash": "6245f800f597b0245f2ed7c6d95367f20e14517d611fa62b3a7ba935392ef35d",
+          "timestamp": 1773434333251
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "En un mercado alcista, las redes con modelos de comisiones dinámicas (donde las tarifas se pagan en el token nativo y aumentan con la congestión) experimentan un efecto doble de encarecimiento. Primero, el valor del token nativo aumenta, lo que automáticamente encarece las comisiones denominadas en ese token. Segundo, la mayor actividad y demanda de bloques durante un mercado alcista provoca congestión, lo que a su vez eleva las tarifas de gas debido a la competencia por el espacio en el bloque. Esto crea incertidumbre y puede disuadir a usuarios y aplicaciones de interactuar con la red. En contraste, Hedera, con su modelo de comisiones fijas en USD, desacopla el costo de la transacción del precio volátil de su token nativo (HBAR) y de la congestión de la red. Esto significa que, independientemente del aumento del precio de HBAR o del volumen de transacciones, el costo en USD para el usuario final permanece constante y predecible.",
+          "hash": "44a9c59cb0ec9f8bfcb82fb0e93a9c935bd755b12e4409ec69831f92a0da308e",
+          "timestamp": 1773434333252
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Analizando los datos en vivo, el precio actual de HBAR es de $0.094974 (CoinGecko Market Data). Su máximo histórico (ATH) es de $0.569229, lo que representa una diferencia significativa. Si consideramos una comisión estándar de Hedera para una transferencia de token, que es aproximadamente $0.0001 USD, el costo en HBAR sería el siguiente:\n*   Al precio actual: $0.0001 USD / $0.094974 HBAR/USD ≈ 0.00105 HBAR.\n*   Al ATH: $0.0001 USD / $0.569229 HBAR/USD ≈ 0.000175 HBAR.\nEste cálculo demuestra que a medida que el precio de HBAR se aprecia en un mercado alcista, la cantidad de HBAR requerida para pagar la comisión fija en USD *disminuye*. Esto contrasta directamente con las redes de comisiones dinámicas donde la cantidad del token nativo requerida puede aumentar, y su valor en USD se dispararía. La previsibilidad de los costos en USD de Hedera permite a los desarrolladores y empresas construir aplicaciones con modelos de negocio estables, sin el riesgo de que las fluctuaciones del mercado o la congestión de la red disparen sus gastos operativos. Los volúmenes de 24h en los pools de liquidez de SaucerSwap V2, como WHBAR/USDC con $3.133.117,04, indican una actividad de red que, en un modelo de comisiones dinámicas, podría llevar a aumentos de tarifas, mientras que en Hedera, la comisión en USD se mantendría constante.",
+          "hash": "bf73e542b7f0f08688fd403ce2dd18e4f645953bf67cbeecc91411722ea67fd1",
+          "timestamp": 1773434333253
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La capacidad de Hedera para mantener comisiones fijas en USD ofrece una ventaja competitiva superior en mercados alcistas en comparación con modelos de tarifas dinámicas. Esta previsibilidad de costos mitiga el riesgo de transacciones excesivamente caras y volátiles que caracterizan a las redes de comisiones dinámicas cuando la demanda y el precio del token nativo se disparan. Como se demostró con el precio de HBAR actual ($0.094974) y su ATH ($0.569229), un costo fijo de $0.0001 USD se traduce en una cantidad decreciente de HBAR a medida que el valor de HBAR aumenta. Esto protege a los usuarios y desarrolladores de la inflación de tarifas, fomenta la adopción sostenida y permite la planificación financiera a largo plazo, haciendo que Hedera sea una plataforma más atractiva para aplicaciones empresariales y de alto volumen en entornos de mercado alcistas.",
+          "hash": "7eaecc6a78f9d80267acac82da2b60a1071e823389f073bc9c1b863ac6269bab",
+          "timestamp": 1773434333254
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "aed3b8c4011806c3f7a5950f2542d6e18ff22af93b65e8056da3dfa48bfcc4ba",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1136,
+        1137,
+        1139,
+        1141
+      ],
+      "createdAt": 1773434341254,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773434337.106134106",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773434337.106134106",
+      "evmTxHash": "0x24bba0db523ca09bafa73b123104b091ea7b3050e1dd9a5fc286f3e2fbab3fbc",
+      "evmSettled": true
+    }
+  ],
+  [
+    "b81e324f-0be6-48e7-aa13-bcd2458c25dd",
+    {
+      "proofId": "b81e324f-0be6-48e7-aa13-bcd2458c25dd",
+      "question": "Calcula el coste de oportunidad de hacer staking nativo de HBAR vs. aportar liquidez en protocolos DeFi de Hedera.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El análisis requiere la comparación directa de los rendimientos porcentuales anuales (APR) entre el staking nativo de HBAR y la provisión de liquidez en protocolos DeFi dentro del ecosistema Hedera, utilizando los datos de mercado en vivo proporcionados. El APR para el staking nativo de HBAR es del 2.41% (Fuente: Hedera Network Supply & Staking). Para la provisión de liquidez en DeFi, se identifican las APRs de los pools principales en SaucerSwap V2, siendo el pool WHBAR / USDC el que ofrece el rendimiento más alto con un APR del 34.10% (Fuente: SaucerSwap V2 Liquidity Pools).",
+          "hash": "2ee0d0c20da2391f0bc7ea9a53efba19b9c73a4a0ef84f8ae6a85c812ea73b10",
+          "timestamp": 1773434546913
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "El coste de oportunidad se calcula como la diferencia entre el rendimiento potencial de la mejor alternativa (provisión de liquidez en DeFi) y el rendimiento de la opción elegida (staking nativo de HBAR). En este escenario, el coste de oportunidad directo de elegir el staking nativo de HBAR frente a la provisión de liquidez en el pool WHBAR / USDC de SaucerSwap V2 es: 34.10% (APR de DeFi) - 2.41% (APR de staking nativo) = 31.69%. Esto significa que, en términos de rendimiento porcentual anual puro, un inversor renuncia a un potencial de ganancias adicional del 31.69% al optar por el staking nativo.",
+          "hash": "3171c9f5959852d1d755e1fe5287dcbe51d9aff10bc4a3a12c9fd654fa8e9101",
+          "timestamp": 1773434546914
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Además del rendimiento directo, es crucial considerar los riesgos asociados. La provisión de liquidez en DeFi, especialmente en pools con pares volátiles como WHBAR/USDC o HTS-WETH/WHBAR, conlleva el riesgo de pérdida impermanente (IL), que no está reflejado en el APR base de trading. Si el valor relativo de los activos en el pool cambia significativamente, la IL puede erosionar o incluso superar las ganancias por comisiones de trading. Los protocolos DeFi también introducen riesgos de contrato inteligente y de exploits. Por otro lado, el staking nativo de HBAR, con un APR del 2.41%, es generalmente percibido como una opción de menor riesgo, ya que está integrado en la seguridad de la red principal de Hedera y no expone al inversor a la IL o a riesgos de contratos inteligentes de terceros en la misma medida. El índice Crypto Fear & Greed en \"Extreme Fear\" (15/100) (Fuente: Crypto Fear & Greed Index) sugiere una aversión al riesgo predominante en el mercado, lo que podría hacer que el menor rendimiento pero mayor seguridad del staking nativo sea más atractivo para algunos inversores a pesar del coste de oportunidad.",
+          "hash": "f35c3cd26e7ad207fbd9637e983a3b6d3f570efc830bc1e2272e0badd5207bed",
+          "timestamp": 1773434546915
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "El coste de oportunidad de hacer staking nativo de HBAR (2.41% APR) en lugar de aportar liquidez en el pool WHBAR / USDC de SaucerSwap V2 (34.10% APR) es del 31.69% en términos de rendimiento porcentual anual. Esta cifra representa la ganancia potencial a la que se renuncia. Sin embargo, esta cuantificación directa debe sopesarse con los riesgos inherentes a la provisión de liquidez en DeFi, como la pérdida impermanente y el riesgo de contrato inteligente, que no están presentes en la misma medida en el staking nativo. La elección depende de la tolerancia al riesgo del inversor y de su perspectiva sobre la volatilidad del mercado de HBAR y los activos emparejados. Para un capital de $X, el inversor ganaría $X * 0.0241 con staking nativo, mientras que en el pool WHBAR/USDC podría ganar $X * 0.3410, asumiendo que no hay pérdida impermanente y que el APR se mantiene estable.",
+          "hash": "5811d2f556f075da3adc909c7caaabe1e8a1ceef6e34e3919c4b1de9d8d9171b",
+          "timestamp": 1773434546916
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "1991d6e04085ef57484b5f51117b4f4d38d6191553efb9beb7b8f8ebccf18304",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1144,
+        1145,
+        1146,
+        1148
+      ],
+      "createdAt": 1773434553831,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773434549.816388839",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773434549.816388839",
+      "evmTxHash": "0xd127064e6a018b65cffca483f19beff0230c585e2ed466610f03500270ff30e3",
+      "evmSettled": true
+    }
+  ],
+  [
+    "26fa26e6-2b1c-4f8a-8409-b8875d7959e2",
+    {
+      "proofId": "26fa26e6-2b1c-4f8a-8409-b8875d7959e2",
+      "question": "Compara el rendimiento de HCS con la última actualización de Solana. ¿Cuál encaja mejor para trading algorítmico de alta frecuencia?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El análisis requerido es una comparación del rendimiento de Hedera Consensus Service (HCS) y Solana para determinar su idoneidad en el trading algorítmico de alta frecuencia (HFT), considerando las últimas actualizaciones de Solana. La información en tiempo real proporcionada incluye datos de suministro y staking de Hedera, datos de mercado de Solana (precio, capitalización, volumen de 24 horas, etc.) de CoinGecko, y el Índice de Miedo y Avaricia. Es crucial destacar que los datos en vivo proporcionados no incluyen métricas directas de rendimiento de la red como transacciones por segundo (TPS), latencia de transacción, finalidad o costos de transacción detallados para HCS o Solana. Por lo tanto, el análisis de rendimiento se basará en las especificaciones técnicas conocidas y el diseño arquitectónico de ambas redes, asumiendo su rendimiento típico en ausencia de datos en tiempo real específicos de la red.",
+          "hash": "f932e16cf5c46d1ea6273b9b73e2794031b929b22da73887fbbc4202ea7bd4e8",
+          "timestamp": 1773435048485
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Para el trading algorítmico de alta frecuencia, las métricas de rendimiento críticas son la capacidad de procesamiento (TPS), la latencia de las transacciones, la finalidad, la previsibilidad de los costos de transacción y la estabilidad general de la red.\n*   **Hedera Consensus Service (HCS):** HCS, parte de la red Hedera Hashgraph, está diseñado para ofrecer un rendimiento de grado empresarial. Se basa en el algoritmo de consenso Hashgraph aBFT (Asynchronous Byzantine Fault Tolerant), que proporciona una finalidad determinista y casi instantánea (típicamente entre 3 y 5 segundos). La red Hedera está diseñada para manejar un alto rendimiento de mensajes HCS (se ha demostrado más de 10.000 TPS para mensajes HCS en entornos de prueba, con capacidad teórica para escalar aún más) y ofrece tarifas de transacción bajas y predecibles, fijadas en equivalentes en USD (por ejemplo, fracciones de centavo), lo que es crucial para estrategias de HFT con márgenes estrechos. Su arquitectura prioriza la estabilidad y la resistencia a la congestión.\n*   **Solana:** Solana emplea una combinación de Proof-of-History (PoH) y Proof-of-Stake (PoS) para lograr un alto rendimiento. Ha demostrado un alto TPS teórico, con picos reportados que superan las 65.000 TPS, y tiempos de bloque rápidos de aproximadamente 400 ms. La finalidad en Solana es probabilística pero rápida. Las tarifas de transacción son generalmente bajas, pero se ha observado que su previsibilidad puede verse afectada durante períodos de alta congestión de la red. Históricamente, Solana ha enfrentado desafíos de estabilidad, incluyendo interrupciones de la red y problemas de congestión, que son riesgos significativos para las operaciones de HFT. La \"última actualización\" de Solana, aunque busca mejorar la estabilidad y eficiencia, no cuantifica un cambio específico en las métricas de rendimiento directo en los datos proporcionados. El volumen de 24 horas de Solana es de $5.419.723.710, lo que indica una alta liquidez y actividad de mercado.",
+          "hash": "c799e17499abcd2a7e45ebc9f8e93e083c9ac48273ae6f7e2a4d1be7f0a74a68",
+          "timestamp": 1773435048486
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Al comparar HCS y Solana para HFT, se evalúan las características asumidas contra los requisitos.\n*   **Previsibilidad y Estabilidad:** HCS, con su consenso aBFT y tarifas fijas, ofrece una previsibilidad superior en latencia, finalidad y costos, lo cual es fundamental para los modelos de HFT. La estabilidad ha sido una prioridad de diseño, buscando evitar interrupciones. Solana, a pesar de su alto rendimiento bruto, ha mostrado una menor predictibilidad en la estabilidad de la red y en las tarifas de transacción bajo carga extrema, lo cual introduce un riesgo significativo para operaciones algorítmicas que requieren ejecución ininterrumpida y costos consistentes.\n*   **Finalidad:** La finalidad determinista y casi instantánea de HCS minimiza el riesgo de reorgs de bloques, un factor crítico para el HFT donde la confirmación irrevocable de una transacción es vital. Solana ofrece una finalidad rápida pero probabilística, y si bien las reorgs son poco frecuentes, son una consideración para estrategias de latencia ultra baja.\n*   **Costos de Transacción:** Las tarifas bajas y predecibles de HCS son una ventaja clave para el HFT, donde el costo por transacción se suma rápidamente. Las tarifas de Solana también son bajas, pero su variabilidad potencial en momentos de alta demanda podría erosionar los márgenes de las estrategias de HFT.\n*   **Volumen de Mercado (Indirecto):** El alto volumen de 24 horas de Solana de $5.419.723.710 (CoinGecko data) indica una profundidad de mercado y liquidez significativa, lo cual es favorable para el HFT en términos de oportunidades de trading. Sin embargo, esto no aborda directamente la fiabilidad o el rendimiento técnico de la red subyacente. El Índice de Miedo y Avaricia, que muestra \"Miedo Extremo\" (15/100 el 13 de marzo de 2026), refleja el sentimiento general del mercado pero no influye directamente en las capacidades técnicas de rendimiento de la red.",
+          "hash": "4ac2fecccb05818e5d90fee1f8b7cc603fad8ecf0bbee5a16f447bac618549bf",
+          "timestamp": 1773435048487
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Para el trading algorítmico de alta frecuencia, **Hedera Consensus Service (HCS) es intrínsecamente mejor adecuado** debido a su diseño para la previsibilidad, la finalidad determinista casi instantánea y los costos de transacción bajos y estables. Aunque Solana ofrece un rendimiento bruto de TPS muy alto y un volumen de mercado significativo ($5.419.723.710 en 24h, según CoinGecko), su historial de interrupciones de red y la posible variabilidad en las tarifas de transacción bajo congestión presentan riesgos considerables para las operaciones de HFT que exigen una fiabilidad y una previsibilidad absolutas. La arquitectura de HCS, con su consenso aBFT y tarifas fijas, minimiza la incertidumbre operativa, lo cual es un factor crítico para el éxito y la rentabilidad de las estrategias algorítmicas de alta frecuencia.",
+          "hash": "e0fbabc913e0082cfc06cead9e5a4b7045b339038d55afbeb4bd50dd41ad62e3",
+          "timestamp": 1773435048488
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "7976b4209432a6c424db5755c0f1c8be9748b0124de3f5b5931a6322d1acde96",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1151,
+        1153,
+        1156,
+        1159
+      ],
+      "createdAt": 1773435056670,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773435053.316295779",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773435053.316295779",
+      "evmTxHash": "0x77dd4e4e6f2f07caeaf2d44359d90ff940fe658ea3e2404ce64513bf546dedc5",
+      "evmSettled": true
+    }
+  ],
+  [
+    "577bf94d-9c10-435c-acf1-0cc36088d911",
+    {
+      "proofId": "577bf94d-9c10-435c-acf1-0cc36088d911",
+      "question": "Si las empresas queman X cantidad de HBAR al día, ¿cuándo podría Hedera volverse una red deflacionaria a precios actuales?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El primer paso es establecer la tasa actual de emisión diaria de HBAR en la red Hedera. Según los datos de \"Hedera Network Supply & Staking (Mainnet)\", la recompensa diaria del pool para el staking nativo es de 445.140 HBAR/día. Esta es la cantidad de nuevos HBAR que se introducen en la circulación cada día, contribuyendo a la inflación de la oferta.",
+          "hash": "1cd8c4bc1d0baf2eb9839e8d60d31c46e4547ce71d9eca7fd332ada4d4d3f05f",
+          "timestamp": 1773435241777
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Para que Hedera se convierta en una red deflacionaria, la cantidad de HBAR quemados diariamente (X) debe superar la cantidad de HBAR emitidos diariamente. Con base en la emisión diaria identificada en el Paso 1, el umbral de equilibrio para que la red sea deflacionaria es una quema diaria de HBAR que exceda los 445.140 HBAR/día. Si la quema diaria es inferior a esta cifra, la oferta neta de HBAR seguirá aumentando.",
+          "hash": "eb5ce54ed956be48f1daf5b1f8c861e643484fd7a80897ac68eb75e65c3ae010",
+          "timestamp": 1773435241778
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Si las empresas queman una cantidad X de HBAR al día, la red se volverá deflacionaria en el mismo momento en que X supere los 445.140 HBAR/día. Por ejemplo, si las empresas queman 500.000 HBAR/día, la red sería deflacionaria en 54.860 HBAR/día (500.000 - 445.140). El precio actual de HBAR ($0.095072, según CoinGecko) no afecta la *cantidad* de HBAR que debe quemarse para alcanzar la deflación, sino el valor fiduciario de esa quema. Los datos de liquidez de SaucerSwap V2 o el volumen de 24 horas tampoco son directamente relevantes para el cálculo del umbral de deflación basado en la quema y la emisión.",
+          "hash": "5003617770aa6127c7bd38c16e5cc76c10938f910a341e9f2efa908d595043be",
+          "timestamp": 1773435241779
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Para que la red Hedera se vuelva deflacionaria a los precios actuales, las empresas deben quemar una cantidad diaria de HBAR (X) que sea **superior a 445.140 HBAR por día**. Este es el umbral de equilibrio. Si la quema diaria de HBAR es exactamente de 445.140 HBAR, la oferta sería neutral. Si la quema es inferior a este valor, la red seguiría siendo inflacionaria. Este cálculo se basa directamente en la \"Daily Reward Pool\" de 445.140 HBAR/día, que es la emisión actual de recompensas por staking nativo de Hedera (Fuente: Hedera Network Supply & Staking Mainnet).",
+          "hash": "968489bb464d52fb788997ffaeba4ef301276a6ce9225dd8ab2ba73ca4de6016",
+          "timestamp": 1773435241780
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "a4e5e08d43b014d76dca664531008c0543aa65aa0d5136e759bc1b4f97b3007a",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1162,
+        1163,
+        1164,
+        1165
+      ],
+      "createdAt": 1773435248645,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773435245.631035767",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773435245.631035767",
+      "evmTxHash": "0xafc3369f44c7768571b628b0a2917996c272260322266196757e9f60df91232f",
+      "evmSettled": true
+    }
+  ],
+  [
+    "1d6876fd-abab-47fb-bc0d-b4a04e0a8171",
+    {
+      "proofId": "1d6876fd-abab-47fb-bc0d-b4a04e0a8171",
+      "question": "Compara el rendimiento de HCS con la última actualización de Solana. ¿Cuál encaja mejor para trading algorítmico de alta frecuencia?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "El trading algorítmico de alta frecuencia (HFT) exige plataformas con una latencia extremadamente baja, un rendimiento de transacciones (TPS) muy alto y una finalidad de transacción rápida y determinista. La capacidad de procesar y finalizar un gran volumen de operaciones en milisegundos es crucial. Para evaluar HCS y Solana, es necesario comparar sus métricas de rendimiento fundamentales, las cuales no están directamente presentes en los datos de mercado en vivo proporcionados, pero son características intrínsecas de la arquitectura de cada red.",
+          "hash": "cd579d06116dcd73829a7a3cebc28238cd923a04f26a2e96cefbbbc4b34d14d4",
+          "timestamp": 1773435499291
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Para comparar el rendimiento, se requiere información sobre la capacidad de procesamiento de transacciones (TPS), la latencia de las transacciones y la finalidad.\nSegún la información disponible, Hedera Consensus Service (HCS) está diseñado para ofrecer más de 10.000 transacciones por segundo (TPS) con una latencia de 3-5 segundos para la finalidad de transacción, y los servicios de tokens e HCS pueden alcanzar hasta 100.000 TPS. La finalidad es determinista debido a su algoritmo de consenso de hashgraph asincrónico tolerante a fallas bizantinas (ABFT).\nPor otro lado, Solana, con sus últimas actualizaciones, ha demostrado un rendimiento máximo teórico de hasta 65.000 TPS. Sin embargo, en condiciones de red reales y bajo carga, su rendimiento efectivo puede variar, y ha enfrentado desafíos de estabilidad y congestión en el pasado. La latencia de Solana es típicamente inferior a un segundo para la finalidad de bloque, pero la finalidad de transacción completa y confirmada puede ser ligeramente superior. La \"última actualización de Solana\" generalmente se refiere a mejoras continuas en su estabilidad y rendimiento a través de parches y optimizaciones del protocolo, buscando mitigar problemas de congestión y caídas de la red.",
+          "hash": "d21c35289385cc93bfc39853d4b83a64b8a68b9ff008645bf112af1014c6f787",
+          "timestamp": 1773435499292
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Al comparar las capacidades para HFT, la principal diferencia radica en la predictibilidad y la finalidad determinista. Hedera HCS, con su algoritmo ABFT, ofrece una finalidad de transacción determinista, lo que significa que una vez que una transacción es confirmada, es irreversible. Esto es una ventaja crítica para HFT, donde la certeza de la ejecución de una orden es primordial. Aunque Solana puede ofrecer una latencia de bloque más baja en algunos casos y un TPS teórico más alto, su finalidad es probabilística y ha experimentado periodos de inestabilidad y congestión que pueden afectar la ejecución confiable de estrategias HFT. Por ejemplo, el precio de Solana es de $88.86, con un volumen de 24h de $5.441.485.623, lo que indica una red activa, pero la volatilidad y la congestión son factores de riesgo para HFT. Los datos del Índice de Miedo y Avaricia (Extreme Fear) también sugieren un mercado con alta incertidumbre, lo que magnifica la necesidad de plataformas con alta fiabilidad y predictibilidad para HFT.",
+          "hash": "ba406416d198b67216e9c098b982933c84957fb423f3bdb1d3e3004ca8247d7f",
+          "timestamp": 1773435499293
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Para el trading algorítmico de alta frecuencia, Hedera Consensus Service (HCS) encaja mejor debido a su finalidad de transacción determinista y su rendimiento predecible. Aunque Solana ofrece un alto TPS teórico y baja latencia de bloque, la naturaleza probabilística de su finalidad y los antecedentes de congestión de la red introducen un nivel de riesgo e imprevisibilidad que es perjudicial para las estrategias HFT que dependen de la ejecución garantizada y en tiempo real. HCS, con una finalidad de 3-5 segundos y hasta 100.000 TPS para servicios de tokens y HCS, proporciona la certeza y estabilidad requeridas, superando la incertidumbre asociada con la \"última actualización\" de Solana en el contexto de la ejecución crítica de HFT.",
+          "hash": "9d69276146afa9e4d6bcb2c928b187fab64442272929716e96496de61c38ce0a",
+          "timestamp": 1773435499294
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "04af324f299165289e95a9654aebf4093d0a066c1613aa1d278d33abcf6b8199",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1167,
+        1168,
+        1170,
+        1172
+      ],
+      "createdAt": 1773435505978,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773435501.418549171",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773435501.418549171",
+      "evmTxHash": "0xbafdd95d744526ab325b145469b7e7f28d258eec711e3728471211d29dd635fd",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a0f7b2a1-a6fa-4fda-bb44-ff178ca8103a",
+    {
+      "proofId": "a0f7b2a1-a6fa-4fda-bb44-ff178ca8103a",
+      "question": "¿Qué impacto tienen las últimas incorporaciones al Governing Council de Hedera en la confianza institucional vs. métricas retail?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta central se enfoca en el impacto de las incorporaciones al Governing Council de Hedera en la confianza institucional frente a las métricas minoristas. Para abordar esto, identificaré los datos proporcionados que pueden servir como proxies para cada tipo de confianza. La confianza institucional puede reflejarse en la estabilidad de la capitalización de mercado, el volumen de operaciones y la participación en el staking nativo, que a menudo representa una inversión a más largo plazo. La confianza minorista, por otro lado, puede ser más sensible a las fluctuaciones de precios a corto plazo, el sentimiento general del mercado (Fear & Greed Index) y las oportunidades de rendimiento en plataformas DeFi como los pools de liquidez.",
+          "hash": "59584d732e70499e98b7225ac71ebb7293b74c283568380c12ea3f5a94e68ad5",
+          "timestamp": 1773439817490
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando las métricas relevantes para la confianza institucional, observamos una capitalización de mercado de HBAR de $4.116.458.017 y un volumen de 24 horas de $102.262.197 (CoinGecko Market Data). Un volumen de negociación de más de 100 millones de dólares en 24 horas sugiere actividad, pero las variaciones de precios a corto plazo (-0.16% en 1h, 0.75% en 24h, -2.08% en 7d) muestran una tendencia lateral o ligeramente bajista a corto plazo, lo que podría indicar que las incorporaciones al consejo no han generado un impulso alcista inmediato y significativo. Sin embargo, el total de HBAR en staking nativo es de 15.898.035.502 HBAR, lo que representa aproximadamente el 36.7% del suministro circulante (15.898.035.502 / 43.303.421.565 * 100 = 36.7%). Este alto porcentaje de tokens bloqueados en staking con un APR nativo del 2.41% (Hedera Network Supply & Staking) sugiere una confianza subyacente y un compromiso a largo plazo por parte de los tenedores, lo que podría estar influenciado positivamente por la percepción de estabilidad y gobernanza robusta que aportan las incorporaciones institucionales al Governing Council.",
+          "hash": "297c695ca46248a29449312cf95c81f4fc61ccb759338953a1d405c2501c93af",
+          "timestamp": 1773439817491
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "En cuanto a las métricas de confianza minorista, el precio actual de HBAR de $0.095053 está un 83.3% por debajo de su ATH de $0.569229 (CoinGecko Market Data), lo que generalmente desmotiva a los inversores minoristas que buscan ganancias rápidas. El Crypto Fear & Greed Index muestra una tendencia consistente de \"Extreme Fear\" (15/100 el 13 de marzo y valores similares durante la semana), indicando un sentimiento de mercado minorista extremadamente bajista y cauteloso. A pesar de esto, los pools de liquidez de SaucerSwap V2 ofrecen APRs significativamente más altos que el staking nativo, como el 35.39% para WHBAR/USDC con un TVL de $8.379.956,21 (SaucerSwap V2 Liquidity Pools). Estas altas recompensas pueden atraer a participantes minoristas en busca de rendimiento, aunque el volumen de 24 horas en estos pools es moderado en comparación con el volumen total de HBAR. La disparidad entre el sentimiento de \"Extreme Fear\" y los rendimientos atractivos en DeFi sugiere que, si bien el sentimiento general es negativo, hay nichos de actividad minorista impulsados por oportunidades de alto rendimiento, que podrían no estar directamente correlacionados con las noticias del Governing Council.",
+          "hash": "401e459b7c59b757cd7da8b952b93e54e93d5cd781127ae0a5715466b00dfc17",
+          "timestamp": 1773439817492
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Las últimas incorporaciones al Governing Council de Hedera tienen un impacto diferenciado en la confianza institucional y minorista. Para la confianza institucional, el elevado porcentaje de HBAR en staking nativo (36.7% del suministro circulante con un APR del 2.41%) sugiere una base de tenedores comprometidos a largo plazo, lo que se alinea con la percepción de estabilidad y legitimidad que aportan los nuevos miembros del consejo. Aunque el precio a corto plazo no muestra un repunte significativo, la gobernanza robusta tiende a fomentar la inversión institucional a largo plazo. En contraste, la confianza minorista se ve predominantemente afectada por el sentimiento de mercado general, reflejado en el \"Extreme Fear\" del Crypto Fear & Greed Index y la caída del 83.3% del precio de HBAR desde su ATH. Si bien los altos APRs en los pools de liquidez de SaucerSwap V2 (ej. 35.39% para WHBAR/USDC) pueden atraer a algunos minoristas en busca de rendimiento, el sentimiento general indica que las noticias del Governing Council por sí solas no han sido suficientes para contrarrestar el pesimismo minorista predominante en el mercado bajista actual. Por lo tanto, el impacto es más perceptible en la consolidación de la percepción de estabilidad institucional a largo plazo, mientras que el impacto en la confianza minorista es marginal y eclipsado por el sentimiento general del mercado y la dinámica de precios.",
+          "hash": "cbaf08bc2a54ed9c68ef45ea64f80b04f9db355982ab8e12a955bea389be8052",
+          "timestamp": 1773439817493
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "4f73abe9bdc82c33f97e4a5404b2408b67f454c137a6ddaaa6d00c2a72deded7",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1174,
+        1175,
+        1177,
+        1179
+      ],
+      "createdAt": 1773439823748,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773439823.331856356",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773439823.331856356",
+      "evmTxHash": "0xdf9d05c8ca09bb6100fa93b63edb6032aa80de6ea186d2c3f3fcaf465bcd8c88",
+      "evmSettled": true
+    }
+  ],
+  [
+    "2d5eb4b9-fdd6-4bb0-8fdf-efb10bdbd1fd",
+    {
+      "proofId": "2d5eb4b9-fdd6-4bb0-8fdf-efb10bdbd1fd",
+      "question": "¿Qué impacto tienen las últimas incorporaciones al Governing Council de Hedera en la confianza institucional vs. métricas retail?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta solicita una evaluación del impacto de las últimas incorporaciones al Governing Council de Hedera en la confianza institucional versus las métricas minoristas, utilizando los datos de mercado en vivo proporcionados. Para abordar esto, primero definiré las métricas que representarán la \"confianza institucional\" y las \"métricas retail\" dentro de los datos disponibles. La confianza institucional se asociará con la capitalización de mercado general de HBAR, el Total Value Locked (TVL) en protocolos DeFi como SaucerSwap, y la cantidad total de HBAR en staking nativo. Las métricas retail se asociarán con el volumen de trading diario, las fluctuaciones de precios a corto plazo (1h, 24h, 7d) y el Crypto Fear & Greed Index, que refleja el sentimiento general del mercado minorista.",
+          "hash": "b656ea32b8f3f90b276b71728baba03aa7021dc50b4678e7c46e033050675340",
+          "timestamp": 1773493741631
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Analizando los datos en vivo:\n*   **Métricas de Confianza Institucional:**\n    *   La Capitalización de Mercado de HBAR es de $4.005.220.166 (CoinGecko Market Data). Este es un valor sustancial, pero el HBAR se encuentra un -83.8% por debajo de su ATH de $0.569229.\n    *   El TVL combinado de los 5 principales pools de SaucerSwap V2 es de $16.036.227,15 (SaucerSwap V2 Liquidity Pools). Este TVL indica una participación activa en DeFi dentro del ecosistema Hedera, pero en comparación con la capitalización de mercado total, representa una fracción relativamente pequeña (aproximadamente 0.4%).\n    *   El Total HBAR Staked es de 15.902.247.139 HBAR (Hedera Network Supply & Staking), lo que representa el 36.7% del suministro circulante actual (15.902.247.139 / 43.303.421.565 * 100). Sin embargo, solo 6.500.000.000 HBAR están generando recompensas, lo que sugiere una limitación en la participación activa en el staking recompensado.\n*   **Métricas Retail:**\n    *   El precio de HBAR ha experimentado una caída significativa en el corto plazo: -0.54% en 1h, -6.70% en 24h y -3.88% en 7d (CoinGecko Market Data).\n    *   El volumen de trading en 24h es de $90.889.649 (CoinGecko Market Data), lo que indica actividad comercial, pero en el contexto de la capitalización de mercado, esto es aproximadamente el 2.2% del MCap, lo cual es moderado.\n    *   El Crypto Fear & Greed Index muestra \"Extreme Fear\" consistentemente durante los últimos 7 días, con valores entre 8/100 y 18/100 (Crypto Fear & Greed Index), lo que indica un sentimiento de mercado minorista extremadamente bajista y temeroso.",
+          "hash": "df6452b1531143dca403c1fc6bcf047e09117bb569bcca0f1b01ff393456488e",
+          "timestamp": 1773493741633
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La falta de detalles específicos sobre las \"últimas incorporaciones\" al Governing Council impide una correlación directa y precisa con los datos actuales. Sin embargo, analizando las métricas, se observa una disparidad. Mientras que la capitalización de mercado de Hedera es considerable y el staking nativo mantiene una porción significativa del suministro circulante, las métricas retail (precio a corto plazo, volumen y el índice de miedo y codicia) reflejan un sentimiento fuertemente negativo. Si las incorporaciones al Governing Council estuvieran generando un impacto positivo en la confianza institucional, se esperaría ver una mayor estabilidad o crecimiento en el TVL, una recuperación en el precio de HBAR, o al menos una mejora en el Fear & Greed Index. Actualmente, el mercado minorista está en \"Extreme Fear\". Para que estas incorporaciones se traduzcan en una mejora *visible* en el sentimiento minorista, el Fear & Greed Index necesitaría alcanzar al menos el umbral de \"Neutral\" (45-54/100). En el escenario actual, los datos no reflejan un impacto positivo discernibl en las métricas retail, mientras que el staking, aunque alto en volumen, tiene un APR nativo del 2.41%, lo cual es relativamente bajo en comparación con las APR de los pools de liquidez DeFi de SaucerSwap (ej. 30.76% para WHBAR/USDC), lo que podría desincentivar a los inversores minoristas a optar por el staking nativo sobre las oportunidades DeFi de mayor rendimiento.",
+          "hash": "aa44987dc25c35eeff956e65699c995daa7c2b4d6b0c184f19f108735a8ec6bf",
+          "timestamp": 1773493741634
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Las métricas actuales sugieren que el impacto de las últimas incorporaciones al Governing Council de Hedera, si bien pueden tener una influencia a largo plazo en la confianza institucional no directamente medible con los datos proporcionados, no se ha traducido en una mejora perceptible en las métricas retail o el sentimiento general del mercado. La confianza institucional se mantiene en un nivel base dado el tamaño de la capitalización de mercado de HBAR y el volumen de HBAR en staking (36.7% del suministro circulante). Sin embargo, las métricas retail muestran un claro \"Extreme Fear\" (16/100 en el Fear & Greed Index), una caída de precio en el corto plazo (-6.70% en 24h según CoinGecko Market Data) y un volumen de trading moderado. Para que se perciba un impacto positivo en la confianza retail, el Fear & Greed Index debería superar el umbral de 44/100 para salir del rango de \"Fear\". Actualmente, los datos no respaldan un aumento en la confianza minorista atribuible a las incorporaciones del Governing Council, y las métricas de mercado reflejan un sentimiento bajista general.",
+          "hash": "1ee7b2530868ae54c9f3c262069fe6d54eb3a2e47b7ba5a82e537158cc9e2858",
+          "timestamp": 1773493741635
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "f40417026c1e0aaba9b6966653a44f1cb619057d1267a2e44941915b952268e2",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1182,
+        1184,
+        1186,
+        1188
+      ],
+      "createdAt": 1773493750197,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773493747.772582199",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773493747.772582199",
+      "evmTxHash": "0x4b4efc48bac1521700e4c780e68e37e39546ad151a541d9cadb491a05fbfb4c8",
+      "evmSettled": true
+    }
+  ],
+  [
+    "2ac4d009-f39f-4c32-9459-07c69d465af3",
+    {
+      "proofId": "2ac4d009-f39f-4c32-9459-07c69d465af3",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "FINAL",
+          "content": "La primera acción es establecer el tamaño proyectado del mercado de activos del mundo real (RWA) tokenizados, ya que no se proporciona en los datos en vivo. Este es un factor crítico para calcular la cuota de mercado objetivo de HBAR.",
+          "hash": "1b409f0869eb9fad8c591bb06d4eaf1a77f9019c0c7d69de23d74765c338c9b2",
+          "timestamp": 1773530242689
+        }
+      ],
+      "totalSteps": 1,
+      "rootHash": "95b549b019968cace29dfce6424b2bdbeb6080764d988ca95f61a88217ed190a",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1191
+      ],
+      "createdAt": 1773530244164,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773530238.423956430",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773530238.423956430",
+      "evmTxHash": "0xb6213d84f9148efc4a26cb3b8a194eeb1b820d3968bd7070c9ea4ff2b466e6b0",
+      "evmSettled": true
+    }
+  ],
+  [
+    "0080cfad-9f2f-49a6-9056-ed8ef1041984",
+    {
+      "proofId": "0080cfad-9f2f-49a6-9056-ed8ef1041984",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "FINAL",
+          "content": "El primer paso es establecer el tamaño proyectado del mercado global de activos tokenizados del mundo real (RWA) para calcular el objetivo de capitalización de mercado para HBAR. Dado que esta información no se proporciona en los datos en vivo, se requiere una búsqueda para obtener estimaciones actuales.",
+          "hash": "2c091b679d9d03edf47a339f02e9d175ad5587cb54b8fd9189d1c2226d20941d",
+          "timestamp": 1773530348613
+        }
+      ],
+      "totalSteps": 1,
+      "rootHash": "2d9e5815d2bfab0491135799faea642bd8cf3aa9d13c8637a85b0ee936444c2e",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1193
+      ],
+      "createdAt": 1773530351481,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773530348.398851715",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773530348.398851715",
+      "evmTxHash": "0x1371f55c2f35a48cb068d0ed1354ff9880779e44023af4a5f8ed976f7605ea6b",
+      "evmSettled": true
+    }
+  ],
+  [
+    "b2e00641-5c8e-47c8-ad9c-bd9116724887",
+    {
+      "proofId": "b2e00641-5c8e-47c8-ad9c-bd9116724887",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "La pregunta solicita una \"probabilidad\" de que HBAR capture el 5% del mercado de activos tokenizados del mundo real (RWA). Como un motor de razonamiento de IA, no puedo calcular probabilidades futuras de mercado. En su lugar, realizaré un análisis cuantitativo para determinar qué condiciones (capitalización de mercado e HBAR por precio unitario) serían necesarias para que HBAR logre una cuota del 5% del mercado RWA, y luego compararé esto con los datos de mercado actuales y el rendimiento histórico de HBAR.",
+          "hash": "43873c948c5f34ab430f11b4c69ce2c6f4acf4986ae1b2fb4cc1689ccd54a671",
+          "timestamp": 1773530383466
+        },
+        {
+          "stepNumber": 2,
+          "label": "FINAL",
+          "content": "Para cuantificar el objetivo, primero es necesario establecer el tamaño proyectado del mercado RWA. Realizaré una búsqueda para obtener estimaciones fiables del tamaño futuro de este mercado.",
+          "hash": "4e8830ad38d9083fc8537405ac92b43117688bc450a5f2210595ba498077e217",
+          "timestamp": 1773530383467
+        }
+      ],
+      "totalSteps": 2,
+      "rootHash": "7b4f50d940a183fa1a54cf75b86548bfa83bff87faf3a162548e12c68a0fd5ca",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1195,
+        1196
+      ],
+      "createdAt": 1773530386600,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773530382.546071640",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773530382.546071640",
+      "evmTxHash": "0x8dd075ae1cfbd723d6b47dde505d7e413db5dc061270eb0b80c0a9b2541ae7ee",
+      "evmSettled": true
+    }
+  ],
+  [
+    "96f894af-3342-43e9-917d-5d06c47fe1a5",
+    {
+      "proofId": "96f894af-3342-43e9-917d-5d06c47fe1a5",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "FINAL",
+          "content": "La pregunta requiere una estimación de la probabilidad de que HBAR capture el 5% del mercado de activos tokenizados del mundo real (RWA). Para abordar esto cuantitativamente, primero es necesario establecer el tamaño proyectado del mercado global de RWA. Dado que el usuario no especifica un horizonte temporal, buscaré proyecciones para los próximos 5-10 años de fuentes autorizadas para establecer un objetivo de mercado razonable.",
+          "hash": "9b0234d50d5e1f02f0ece95d551688b6eb4d6b26f410960076ed8f8527d73c53",
+          "timestamp": 1773530535410
+        }
+      ],
+      "totalSteps": 1,
+      "rootHash": "8126d1537f1d4075302fec62de03c875f08b4492dad09a4741ea06bbcfb72a64",
+      "status": "CONFIRMED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1198
+      ],
+      "createdAt": 1773530538256,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773530537.742260437",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773530537.742260437"
+    }
+  ],
+  [
+    "00d3480e-fd71-4d87-9b9d-108abedb7f77",
+    {
+      "proofId": "00d3480e-fd71-4d87-9b9d-108abedb7f77",
+      "question": "Compara los market caps de SOL y HBAR. Teniendo en cuenta el consenso aBFT de Hedera, ¿cuál sería su valor justo relativo?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Se realizará una comparación directa de las capitalizaciones de mercado (market caps) de Solana (SOL) y Hedera (HBAR) utilizando los datos de mercado en tiempo real proporcionados por CoinGecko. Actualmente, la capitalización de mercado de Solana (SOL) asciende a $50,256,236,318, mientras que la de Hedera (HBAR) es de $4,049,768,337. Esto establece una relación de capitalización de mercado de SOL a HBAR de aproximadamente 12.41 a 1, lo que significa que la capitalización de mercado de Solana es más de doce veces mayor que la de Hedera.\n</STEP 1>",
+          "hash": "80c903653a1823484ec2249fb721e18e4a2b75eeaaaf8c0fed200e47f1fb1788",
+          "timestamp": 1773531433174
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "El consenso aBFT (asynchronous Byzantine Fault Tolerance) de Hedera es un elemento diferenciador clave. A diferencia de los mecanismos de consenso basados en Proof-of-Stake (PoS) y Proof-of-History (PoH) de Solana, el algoritmo Hashgraph de Hedera, que logra aBFT, ofrece finalidad garantizada, alta seguridad (resistente a ataques de hasta un tercio de nodos maliciosos) y un rendimiento predecible de transacciones con baja latencia. Estas características técnicas fundamentales son críticas para aplicaciones empresariales y casos de uso que requieren la máxima seguridad y determinismo. El índice de Miedo y Codicia actual, que se encuentra en \"Miedo Extremo\" (16/100 al 14 de marzo de 2026), indica un sentimiento de mercado bajista generalizado que afecta a la valoración de los activos.\n</STEP 2>",
+          "hash": "e41a5959cb2dfe0ea152d2450b278ba3710466a3d59cbc502935bf213e9bd85f",
+          "timestamp": 1773531433175
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Para determinar un \"valor justo relativo\" de HBAR en comparación con SOL, considerando las ventajas del consenso aBFT de Hedera, se establecerá un umbral cuantitativo. Si el mercado reconociera plenamente la seguridad, finalidad y rendimiento superior que ofrece el aBFT de Hedera, una suposición razonable para un \"valor justo relativo\" podría ser que la capitalización de mercado de HBAR alcanzara un 20% de la capitalización de mercado actual de SOL. Bajo esta hipótesis, la capitalización de mercado \"justa\" de HBAR sería del 20% de $50,256,236,318, lo que equivale a $10,051,247,263.6. Con una oferta circulante de HBAR de 43,303,421,565 HBAR, esto implicaría un precio de HBAR de aproximadamente $0.2321. Este valor representa un aumento significativo desde su precio actual de $0.09354.\n</STEP 3>",
+          "hash": "eb2b680c53f592abf6627e1353e1193461eca3b048d8fdc8c4912264ce0e8e03",
+          "timestamp": 1773531433176
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Actualmente, la capitalización de mercado de Solana es de $50,256,236,318 y la de Hedera es de $4,049,768,337, estableciendo una proporción de 12.41:1 a favor de SOL. Considerando las características superiores del consenso aBFT de Hedera, que ofrece finalidad garantizada y alta seguridad, el valor justo relativo de HBAR, si el mercado valorara estas propiedades en un 20% de la capitalización de mercado actual de Solana, se establecería en $10,051,247,263.6. Este escenario implicaría un precio de HBAR de $0.2321, basándose en la oferta circulante actual. Por lo tanto, para que HBAR alcance un valor justo relativo del 20% de la capitalización de mercado de SOL, su precio actual necesitaría aumentar aproximadamente un 148% desde su valor actual de $0.09354.\n</FINAL>",
+          "hash": "9784229ce226e87cccf21e7eb63077610aefe2c6eddf0677d14fea12ac0b6dc1",
+          "timestamp": 1773531433177
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "78b8b08aba1e03bba16a6cdc50f4bcb707c187a8a8a4c5266709007c87825bf9",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1200,
+        1201,
+        1203,
+        1205
+      ],
+      "createdAt": 1773531442217,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773531440.538171708",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773531440.538171708",
+      "evmTxHash": "0xc112bd279b6826c3557f23dd16910e4bccbdc3a17af2e07042ed6137631d5d8d",
+      "evmSettled": true
+    }
+  ],
+  [
+    "9759cf49-3a62-4f66-9363-69d31c1f1269",
+    {
+      "proofId": "9759cf49-3a62-4f66-9363-69d31c1f1269",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "FINAL",
+          "content": "La pregunta requiere evaluar la probabilidad de que HBAR capture el 5% del mercado global de activos tokenizados del mundo real (RWA). Para abordar esto, primero debemos establecer una estimación del tamaño total del mercado de RWA. Dado que el prompt no proporciona este valor, se realizará una búsqueda para obtener una estimación reciente y creíble del tamaño proyectado del mercado de RWA. Esta estimación servirá como la base cuantitativa para calcular el capitalización de mercado que HBAR necesitaría alcanzar.",
+          "hash": "f360e2979ed6d64102ffda601d058f8fa2b2f15a9d3840a3ffaace4d8485583a",
+          "timestamp": 1773531497034
+        }
+      ],
+      "totalSteps": 1,
+      "rootHash": "1f959494aab14e31d0f04513becf7f70359f7a09b95accba735264804c58ac39",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1207
+      ],
+      "createdAt": 1773531498677,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773531496.512204570",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773531496.512204570",
+      "evmTxHash": "0x75232049620c17471abb0a1bfd495378e5f0af41cb76f708dcc63472ccc3815d",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a3aceba5-31f8-47a8-8132-af4c43caf7fb",
+    {
+      "proofId": "a3aceba5-31f8-47a8-8132-af4c43caf7fb",
+      "question": "¿Qué probabilidades tiene HBAR de capturar un 5% del mercado de activos tokenizados del mundo real (RWA)?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Para evaluar la probabilidad de que HBAR capture el 5% del mercado de activos tokenizados del mundo real (RWA), primero es fundamental establecer una estimación del tamaño total de este mercado. Dado que la tokenización de RWA es un sector emergente, las proyecciones varían. Se buscarán estimaciones de mercado reputadas para establecer una base cuantitativa.",
+          "hash": "fcdf0e4d359b454b33a019f0c4157c5b44f592676aae08355f2d3d9319fb17ba",
+          "timestamp": 1773532071641
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Las proyecciones para el tamaño del mercado de tokenización de RWA para 2030 varían significativamente, desde los 2 billones de dólares (McKinsey) hasta los 30 billones de dólares (Standard Chartered + Synpulse, Binance, Phemex News). Ark Invest estima 11 billones de dólares para 2030. Roland Berger proyecta un valor de al menos 10 billones de dólares para 2030. Tomando un rango medio-alto de estas proyecciones para 2030, consideraremos una estimación de 10 billones de dólares como un escenario plausible para el tamaño del mercado de RWA. Esto es una suposición clara para el propósito de este análisis.\n\nSi HBAR capturara el 5% de un mercado de 10 billones de dólares, su capitalización de mercado para RWA debería ser de 500.000 millones de dólares (0.05 * 10.000.000.000.000 USD).\n\nActualmente, la capitalización de mercado de Hedera (HBAR) es de 4.052.274.821 dólares (CoinGecko Market Data). Para alcanzar una capitalización de mercado de 500.000 millones de dólares, HBAR necesitaría un aumento de aproximadamente 123.39 veces su capitalización de mercado actual (500.000.000.000 USD / 4.052.274.821 USD ≈ 123.39).\n\nCalculando el precio de HBAR necesario para alcanzar esta capitalización de mercado:\nPrecio objetivo = (Capitalización de mercado objetivo / Suministro circulante)\nPrecio objetivo = 500.000.000.000 USD / 43.303.421.565 HBAR ≈ 11.54 USD por HBAR.\n\nEl precio actual de HBAR es de 0.093648 USD (CoinGecko Market Data). Esto implicaría un aumento de precio de aproximadamente 123.23 veces (11.54 USD / 0.093648 USD ≈ 123.23). El ATH de HBAR es de 0.569229 USD, lo que significa que el precio objetivo de 11.54 USD es 20.27 veces superior a su máximo histórico.",
+          "hash": "b0863b63dd97e19b11f5feccbc4529dfc7b4362a6b92e4c3eaf4a8ce75fe025c",
+          "timestamp": 1773532071642
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Hedera se ha posicionado activamente en el sector de RWA, con menciones sobre su hashgraph consensus, bajas tarifas de transacción y alto rendimiento como atributos favorables para la tokenización de grandes instrumentos financieros. Se ha destacado su interés institucional creciente, con FedEx uniéndose al Consejo de Gobierno y un ETF de HBAR registrando entradas significativas. Hedera también ha forjado asociaciones estratégicas, como con Swarm, para la tokenización de bonos y acciones, conectando instrumentos financieros tradicionales con DeFi. RWA.xyz ya rastrea aproximadamente 119.1 millones de dólares en activos tokenizados en Hedera, incluyendo proyectos de Circle, RedSwan Digital Real Estate y Archax. Analistas han identificado a HBAR como una \"apuesta generacional\" en RWA junto con XRP y Ondo.\n\nSin embargo, alcanzar una capitalización de mercado de 500.000 millones de dólares requiere un crecimiento exponencial que supera con creces el máximo histórico de HBAR y la capitalización de mercado actual. El mercado actual de RWA tokenizados (excluyendo stablecoins) era de alrededor de 5.000 millones de dólares a principios de 2024, con un crecimiento a 23.600 millones de dólares en 2026. El crecimiento de un mercado de 23.600 millones de dólares a 10 billones de dólares para 2030 ya es un crecimiento masivo para la industria en general. Que una sola red capture el 5% de un mercado tan grande, que aún está en sus primeras etapas y es altamente competitivo, es un desafío considerable. La adopción a esta escala dependerá de la claridad regulatoria, la infraestructura de grado institucional y la capacidad de Hedera para superar a otras blockchains en este espacio emergente.",
+          "hash": "d1a4c5d4b59f1ec2010491466862abb235c0c9d3b6ee23a217dbca7d55d4380b",
+          "timestamp": 1773532071643
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "La probabilidad de que HBAR capture el 5% del mercado de activos tokenizados del mundo real (RWA) para 2030, asumiendo un tamaño de mercado de RWA de 10 billones de dólares para ese año, requeriría que la capitalización de mercado de HBAR alcanzara los 500.000 millones de dólares. Esto representa un incremento de aproximadamente 123.39 veces su capitalización de mercado actual de 4.052.274.821 dólares (CoinGecko Market Data), lo que se traduciría en un precio de HBAR de aproximadamente 11.54 USD. Este precio sería 20.27 veces superior al máximo histórico de HBAR de 0.569229 USD.\n\nAunque Hedera está bien posicionada tecnológicamente para RWA con su rendimiento, bajas tarifas y un consejo de gobierno empresarial, y ya tiene activos tokenizados por valor de 119.1 millones de dólares en su red (rwa.xyz), la escala de crecimiento necesaria para capturar el 5% de un mercado de 10 billones de dólares es extremadamente ambiciosa. Implica que HBAR no solo crecería masivamente, sino que también superaría a sus competidores en la adopción institucional a una magnitud sin precedentes. Si bien el potencial existe debido a su enfoque institucional y las proyecciones de crecimiento del mercado RWA, la probabilidad de alcanzar específicamente el 5% del mercado de 10 billones de dólares para 2030 es baja, aunque no imposible, dadas las condiciones actuales del mercado y la competencia. El umbral de breakeven para que HBAR capture el 5% de un mercado de RWA de 10 billones de dólares es un precio de 11.54 USD por token.",
+          "hash": "b1ba95302f4ef5de51c714dca34882658b56ef7d8cac89e7b3b272ac6c3c2cb5",
+          "timestamp": 1773532071644
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "6d14b25bd4e1559cbfbd9e64c971256eb05e077bf60f8b58901ca23235b3e510",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1209,
+        1210,
+        1212,
+        1214
+      ],
+      "createdAt": 1773532078949,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773532077.228206433",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773532077.228206433",
+      "evmTxHash": "0xe7220ccb4c92d60c8424d4a6105bf2f98664d1eb4628927f7cc357da14e8ee91",
+      "evmSettled": true
+    }
   ]
 ]
