@@ -37,10 +37,16 @@ jobs:
       - name: Backend API Tests
         working-directory: ./packages/backend
         env:
+          # Legacy mappings
           HEDERA_ACCOUNT_ID: ${{ secrets.HEDERA_ACCOUNT_ID }}
           HEDERA_PRIVATE_KEY: ${{ secrets.HEDERA_PRIVATE_KEY }}
           EVM_ADDRESS: ${{ secrets.EVM_ADDRESS }}
           TESTNET_OPERATOR_PRIVATE_KEY: ${{ secrets.TESTNET_OPERATOR_PRIVATE_KEY }}
+          # Dual-network mappings required by networkManager.js and server.js
+          HEDERA_ACCOUNT_ID_TESTNET: ${{ secrets.HEDERA_ACCOUNT_ID }}
+          HEDERA_PRIVATE_KEY_TESTNET: ${{ secrets.HEDERA_PRIVATE_KEY }}
+          EVM_ADDRESS_TESTNET: ${{ secrets.EVM_ADDRESS }}
+          EVM_PRIVATE_KEY_TESTNET: ${{ secrets.TESTNET_OPERATOR_PRIVATE_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           npm ci || npm install
