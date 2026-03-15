@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity, Trophy, AlertTriangle } from 'lucide-react';
+import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity, Trophy, AlertTriangle, Cpu } from 'lucide-react';
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha } from '@/lib/api';
@@ -755,19 +755,25 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                               animate={{ opacity: 1, y: 0, height: 'auto' }}
                               exit={{ opacity: 0, scale: 0.95, height: 0, margin: 0, padding: 0, overflow: 'hidden' }}
                               transition={{ duration: 0.4 }}
-                              className="border border-border/40 rounded-xl p-4 bg-surface/30 backdrop-blur flex items-center gap-3"
+                              className="relative overflow-hidden bg-[#060a12] border border-amber-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-amber-500/40"
+                              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
                             >
-                              <div className="relative shrink-0">
-                                  <div className="w-6 h-6 rounded-full border-2 border-amber-500/30 border-t-amber-400 animate-spin" />
-                              </div>
-                              <div>
-                                  <p className="text-xs font-semibold text-white font-mono flex items-center gap-2">
-                                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                                      {language === 'es' ? 'Anclaje EVM Autónomo en progreso...' : 'Autonomous EVM Anchor in progress...'}
-                                  </p>
-                                  <p className="text-[10px] text-text-muted mt-0.5">
-                                      {language === 'es' ? 'El Agente Autónomo está anclando este resultado en el Smart Contract de Hedera EVM.' : 'The Autonomous Agent is anchoring this result on the Hedera EVM Smart Contract.'}
-                                  </p>
+                              <div className="relative bg-[#0a0f18] w-full p-4 flex items-center gap-3"
+                                   style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                              >
+                                  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+                                  <div className="relative shrink-0 z-10">
+                                      <div className="w-6 h-6 rounded-full border-2 border-amber-500/30 border-t-amber-400 animate-spin" />
+                                  </div>
+                                  <div className="relative z-10 flex-1">
+                                      <h4 className="text-[11px] font-bold text-amber-500 font-mono uppercase tracking-widest flex items-center gap-2">
+                                          <Cpu className="w-3.5 h-3.5 text-amber-500" />
+                                          {language === 'es' ? 'Anclaje EVM Autónomo en progreso...' : 'Autonomous EVM Anchor in progress...'}
+                                      </h4>
+                                      <p className="text-[10px] text-white/40 font-mono mt-0.5 max-w-sm leading-relaxed">
+                                          {language === 'es' ? 'El Agente Autónomo está anclando este resultado en el Smart Contract de Hedera EVM.' : 'The Autonomous Agent is anchoring this result on the Hedera EVM Smart Contract.'}
+                                      </p>
+                                  </div>
                               </div>
                             </motion.div>
                           )}
@@ -775,26 +781,48 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
 
                         {/* 5th Pillar: Autonomous Agent EVM Settlement (shows after evmSettled is true) */}
                         {(result as any).evmSettled && (
-                          <div className="bg-surface/50 border border-border/50 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                            <div>
-                              <h4 className="text-white text-sm font-semibold flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-accent-primary" /> {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
-                              </h4>
-                              <p className="text-xs text-text-muted mt-1 max-w-sm">
-                                {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
-                              </p>
+                          <motion.div
+                              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                              className="relative overflow-hidden bg-[#060a12] border border-amber-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-amber-500/40"
+                              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                          >
+                            <div className="relative bg-[#0a0f18] w-full p-4 md:p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+                                 style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                            >
+                              <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+                              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-[40px] pointer-events-none" />
+
+                              <div className="relative z-10 flex-1">
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                      <Cpu className="w-4 h-4 text-amber-500" />
+                                      <h4 className="text-[11px] font-bold text-amber-500 font-mono uppercase tracking-widest">
+                                          {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
+                                      </h4>
+                                  </div>
+                                  <p className="text-[11px] text-white/40 font-mono mt-1 max-w-sm leading-relaxed">
+                                      {language === 'es' ? 'El Agente Autónomo ancla este resultado en el Smart Contract de Hedera EVM automáticamente — sin intervención del usuario.' : 'The Autonomous Agent anchors this result on the Hedera EVM Smart Contract automatically — zero user intervention.'}
+                                  </p>
+                              </div>
+
+                              <div className="relative z-10 shrink-0">
+                                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                                       style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
+                                  </div>
+                              </div>
                             </div>
-
-                            <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 whitespace-nowrap">
-                              <CheckCircle2 className="w-3 h-3 mr-1" /> {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
-                            </Badge>
-                          </div>
-                        )}
-
-                        {(result as any).evmTxHash && (
-                          <div className="text-[10px] text-text-muted text-center font-mono break-all px-4">
-                            EVM Tx: <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" className="text-accent-primary hover:underline">{(result as any).evmTxHash}</a>
-                          </div>
+                            
+                            {(result as any).evmTxHash && (
+                                <div className="relative z-10 bg-[#060a12]/80 border-t border-amber-500/10 px-4 py-2 flex items-center justify-between text-[10px] font-mono">
+                                    <span className="text-amber-500/50 font-bold tracking-widest">EVM TX:</span>
+                                    <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" 
+                                       className="text-amber-400 hover:text-amber-300 transition-colors truncate ml-2">
+                                        {(result as any).evmTxHash}
+                                    </a>
+                                </div>
+                            )}
+                          </motion.div>
                         )}
                       </motion.div>
                     )}
