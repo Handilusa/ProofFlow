@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, ChevronRight, Hash, Clock, Loader2 } from 'lucide-react';
+import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, ChevronRight, Hash, Clock, Loader2, Cpu } from 'lucide-react';
 import { Card, Button, Input, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import AuditPassport from '@/components/proofflow/AuditPassport';
@@ -377,7 +377,7 @@ function VerifyContent() {
 
                                         <div className="relative z-10 flex-1">
                                             <div className="flex items-center gap-2 mb-1.5">
-                                                <ShieldCheck className="w-4 h-4 text-amber-500" />
+                                                <Cpu className="w-4 h-4 text-amber-500" />
                                                 <h4 className="text-[11px] font-bold text-amber-500 font-mono uppercase tracking-widest">
                                                     {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
                                                 </h4>

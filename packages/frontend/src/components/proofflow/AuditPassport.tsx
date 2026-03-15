@@ -1,4 +1,4 @@
-import { ShieldCheck, ExternalLink, Coins, Hash } from 'lucide-react';
+import { Fingerprint, ExternalLink, Coins, Hash } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface AuditPassportProps {
@@ -33,7 +33,7 @@ export default function AuditPassport({ tokenTxId, proofId }: AuditPassportProps
                     {/* Header row */}
                     <div className="flex items-center justify-between mb-4 relative z-10 border-b border-emerald-500/10 pb-3">
                         <div className="flex items-center gap-2">
-                            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                            <Fingerprint className="w-4 h-4 text-emerald-400" />
                             <span className="text-[11px] font-bold text-emerald-400 font-mono uppercase tracking-widest">
                                 AUDIT_PASS : TOKEN_MINTED
                             </span>
