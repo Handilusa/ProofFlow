@@ -274,6 +274,33 @@ node packages/backend/src/scripts/openclaw-swarm.js
 4. The monologue is anchored to HCS + EVM.
 5. Only after verification is the agent authorized to execute its trade.
 
+### Visual Architecture: OpenClaw Auditable x402 Flow
+
+```mermaid
+sequenceDiagram
+    participant A as 🤖 OpenClaw Agent (0 HBAR)
+    participant P as ⛽ x402 Paymaster
+    participant PF as 🧠 ProofFlow Neural Engine
+    participant H as 📡 Hedera HCS
+    participant E as ⛓️ Hedera EVM
+
+    A->>P: 1. Request gas delegation for audit
+    P-->>PF: 2. Subsidizes HBAR micro-fee
+    A->>PF: 3. "Think out loud" (Internal Monologue)
+    PF->>H: 4. SHA-256 Hash of every reasoning step
+    PF->>E: 5. Anchor keccak256(rootHash)
+    PF-->>A: 6. Return Verified Proof ID
+    A->>A: 7. Execute Financial Trade (Authorized)
+```
+
+### 🌟 Why This is Revolutionary for the Agentic Society
+
+The industry is racing to build autonomous agents, but standard agents are fundamentally broken for enterprise and decentralized finance. ProofFlow fixes them:
+
+1. **Eradicates the "AI Black Box"**: Today, AutoGPT and OpenClaw agents execute trades. If they lose money, you don't know why. By forcing them to route their "Internal Monologue" to Hedera HCS *before* execution, you get a **tamper-proof, cryptographically secure post-mortem** of their exact logic.
+2. **Zero-Friction Onboarding (x402)**: You no longer need to manually fund 10,000 different agent wallets with gas. The x402 Paymaster model means agents can spin up, request gas dynamically, pay for their own audits, and execute without touching private keys.
+3. **Agent-to-Agent Trust**: Because agents earn PFR (Reputation Tokens) and their logic is on-chain, Agent A can mathematically verify the reasoning of Agent B before interacting with it. ProofFlow acts as the **Trust Layer** for the Agentic Web3 Economy.
+
 ### OpenClaw Bounty Compliance
 
 | Requirement | Status | Implementation |
