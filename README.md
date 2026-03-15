@@ -277,20 +277,21 @@ node packages/backend/src/scripts/openclaw-swarm.js
 ### Visual Architecture: OpenClaw Auditable x402 Flow
 
 ```mermaid
-sequenceDiagram
-    participant A as 🤖 OpenClaw Agent (0 HBAR)
-    participant P as ⛽ x402 Paymaster
-    participant PF as 🧠 ProofFlow Neural Engine
-    participant H as 📡 Hedera HCS
-    participant E as ⛓️ Hedera EVM
+flowchart LR
+    %% Entities
+    Agent["🤖 OpenClaw Agent<br>(Starts with 0 HBAR)"]
+    Paymaster["⛽ x402 Paymaster"]
+    Engine["🧠 ProofFlow Engine<br>(Forces Internal Monologue)"]
+    Ledger[("📡 Hedera HCS + EVM<br>(Immutable Audit Trail)")]
+    Trade["📈 Execute Trade<br>(DeFi Swap, Multi-sig, etc)"]
 
-    A->>P: 1. Request gas delegation for audit
-    P-->>PF: 2. Subsidizes HBAR micro-fee
-    A->>PF: 3. "Think out loud" (Internal Monologue)
-    PF->>H: 4. SHA-256 Hash of every reasoning step
-    PF->>E: 5. Anchor keccak256(rootHash)
-    PF-->>A: 6. Return Verified Proof ID
-    A->>A: 7. Execute Financial Trade (Authorized)
+    %% Flow
+    Agent -- "1. Delegates Gas Fee" --> Paymaster
+    Paymaster -- "2. Subsidizes 0.16 HBAR" --> Engine
+    Agent -- "3. 'Thinks Out Loud'" --> Engine
+    Engine -- "4. Hashes reasoning steps" --> Ledger
+    Engine -- "5. Returns Proof ID" --> Agent
+    Agent -- "6. Authorized to proceed" --> Trade
 ```
 
 ### 🌟 Why This is Revolutionary for the Agentic Society
