@@ -64,6 +64,15 @@ const translations = {
         verify_hcs_pending: 'HCS SYNC PENDING',
         verify_hcs_confirmed: 'CONFIRMED ON HEDERA',
         verify_hcs_evm_confirmed: 'HCS & EVM VERIFIED',
+        verify_anchor_title: 'HCS ANCHOR DETAILS',
+        verify_anchor_subtitle: 'Cryptographic evidence anchored to the Hedera public ledger. These identifiers are immutable and can be independently verified by any third party.',
+        verify_anchor_network: 'Network',
+        verify_anchor_consensus_topic: 'Consensus Topic',
+        verify_anchor_merkle_root: 'Merkle Root',
+        verify_anchor_seq_range: 'Sequence Range',
+        verify_anchor_explorer: 'Open in Hashscan Explorer',
+        verify_court_evidence: 'AI COURT EVIDENCE',
+        verify_court_desc: 'If an AI makes a financial decision, regulators can verify exactly why. This proof constitutes cryptographically secure evidence for compliance and AI governance.',
 
         // History Page
         history_title_personal: 'My Audit History',
@@ -216,6 +225,15 @@ const translations = {
         verify_hcs_pending: 'SINCRONIZANDO HCS',
         verify_hcs_confirmed: 'CONFIRMADO EN HEDERA',
         verify_hcs_evm_confirmed: 'HCS & EVM VERIFICADOS',
+        verify_anchor_title: 'ANCLAJE HCS',
+        verify_anchor_subtitle: 'Evidencia criptográfica anclada al libro público de Hedera. Estos identificadores son inmutables y verificables por cualquier tercero de forma independiente.',
+        verify_anchor_network: 'Red',
+        verify_anchor_consensus_topic: 'Topic de Consenso',
+        verify_anchor_merkle_root: 'Raíz de Merkle',
+        verify_anchor_seq_range: 'Rango de Secuencia',
+        verify_anchor_explorer: 'Abrir en Hashscan Explorer',
+        verify_court_evidence: 'EVIDENCIA JUDICIAL IA',
+        verify_court_desc: 'Si una IA toma una decisión financiera, los reguladores pueden verificar exactamente por qué. Esta prueba constituye evidencia criptográficamente segura para compliance y gobernanza de IA.',
 
         // History Page
         history_title_personal: 'Mi Historial',

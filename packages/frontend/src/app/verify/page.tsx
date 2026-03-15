@@ -195,6 +195,110 @@ function VerifyContent() {
                             topicId={proof.hcsTopicId} 
                         />
 
+                        {/* ═══ HCS ANCHOR DETAILS ═══ */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
+                            className="relative overflow-hidden bg-[#060a12] border border-cyan-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-cyan-500/40"
+                            style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                        >
+                            <div className="relative bg-[#0a0f18] w-full p-5 md:p-6"
+                                 style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                            >
+                                {/* Background Grid */}
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+
+                                <div className="relative z-10">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <Hash className="w-3.5 h-3.5 text-cyan-400/60" />
+                                        <span className="text-[10px] font-mono tracking-[0.25em] text-cyan-400/60 uppercase font-bold">
+                                            {t('verify_anchor_title')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] text-white/40 font-mono mb-5 leading-relaxed max-w-xl">
+                                        {t('verify_anchor_subtitle')}
+                                    </p>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        {/* Network */}
+                                        <div className="bg-[#060a12] border border-cyan-500/15 p-3"
+                                             style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[9px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_anchor_network')}</span>
+                                            <span className="text-sm font-mono text-white/90 flex items-center gap-2">
+                                                <Network className="w-3.5 h-3.5 text-cyan-400/60" />
+                                                {network.toUpperCase()}
+                                            </span>
+                                        </div>
+
+                                        {/* Topic ID */}
+                                        <div className="bg-[#060a12] border border-cyan-500/15 p-3"
+                                             style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[9px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_anchor_consensus_topic')}</span>
+                                            <a href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
+                                               className="text-sm font-mono text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1.5">
+                                                {proof.hcsTopicId} <ExternalLink className="w-3 h-3" />
+                                            </a>
+                                        </div>
+
+                                        {/* Sequence Range */}
+                                        {proof.hcsSequenceNumbers && proof.hcsSequenceNumbers.length > 0 && (
+                                            <div className="bg-[#060a12] border border-cyan-500/15 p-3"
+                                                 style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                                <span className="text-[9px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_anchor_seq_range')}</span>
+                                                <span className="text-sm font-mono text-white/90">
+                                                    SEQ #{proof.hcsSequenceNumbers[0]} — #{proof.hcsSequenceNumbers[proof.hcsSequenceNumbers.length - 1]}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        {/* Merkle Root */}
+                                        <div className="bg-[#060a12] border border-cyan-500/15 p-3 sm:col-span-2"
+                                             style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[9px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-1">{t('verify_anchor_merkle_root')}</span>
+                                            <span className="text-[11px] font-mono text-cyan-400/80 break-all">{proof.rootHash || '—'}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Explorer Button */}
+                                    <a href={`https://hashscan.io/${network}/topic/${proof.hcsTopicId}`} target="_blank" rel="noopener noreferrer"
+                                       className="mt-5 w-full h-10 bg-cyan-500/5 hover:bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 font-mono font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(34,211,238,0.08)]"
+                                       style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}
+                                    >
+                                        {t('verify_anchor_explorer')} <ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* ═══ AI COURT EVIDENCE ═══ */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+                            className="relative overflow-hidden bg-[#060a12] border border-emerald-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-emerald-500/40"
+                            style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                        >
+                            <div className="relative bg-[#0a0f18] w-full px-5 py-4 md:px-6 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+                                 style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                            >
+                                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+
+                                <div className="flex-1 relative z-10">
+                                    <div className="flex items-center gap-2 mb-1.5">
+                                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400/70" />
+                                        <span className="text-[10px] font-mono tracking-[0.25em] text-emerald-400/70 uppercase font-bold">
+                                            {t('verify_court_evidence')}
+                                        </span>
+                                    </div>
+                                    <p className="text-[11px] text-white/40 font-mono leading-relaxed max-w-lg">
+                                        {t('verify_court_desc')}
+                                    </p>
+                                </div>
+
+                                <div className="shrink-0 relative z-10 flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 text-emerald-400 font-mono font-bold text-[10px] tracking-widest uppercase"
+                                     style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
+                                    <ShieldCheck className="w-3.5 h-3.5" /> COMPLIANT
+                                </div>
+                            </div>
+                        </motion.div>
+
                         <div className="relative pl-6 pt-6 pb-6">
                             <div className="absolute left-[3px] top-8 bottom-4 w-[2px] bg-emerald-500/30" />
 
