@@ -248,45 +248,44 @@ ProofFlow incorporates a robust 3-layer security system to protect the autonomou
 
 ProofFlow is **agent-first public infrastructure** — the primary users are autonomous agents, not humans. The human-facing dashboard exists to *observe* agent activity.
 
-### How It Works
+We designed ProofFlow specifically to solve the two biggest blockers to enterprise AI agent adoption (like OpenClaw):
 
-ProofFlow acts as a **Verifiable Reasoning Oracle**. Agents can pay for a proof and *cryptographically reference* the proofs of other agents, building an immutable DAG of reasoning:
+### 1. Solving the Black Box: "OpenClaw Auditable"
+The biggest fear with frameworks like OpenClaw or AutoGPT is that they make autonomous financial decisions without anyone knowing *why*. ProofFlow fixes this by forcing agents to **"Think Out Loud"**. 
 
-1. **Bank Agent** pays HBAR and requests Risk Analysis → `Proof #1`
-2. **Security Agent** passes `Proof #1` hash and requests Audit → `Proof #2 (depends on #1)`
-3. **Market Agent** passes `Proof #1, #2` hashes and requests Strategy → `Proof #3 (depends on #1, #2)`
+Before an OpenClaw agent executes a trade or signs a multi-sig, it must route its internal monologue (the Neural Engine's `thinkingBudget`) to ProofFlow. ProofFlow hashes each step of the agent's reasoning to Hedera HCS in real-time. This creates an immutable, tamper-evident audit trail of the agent's decision-making process *before* the action is taken.
 
-### OpenClaw Swarm Simulation
+### 2. Solving Fee Friction: x402 Agentic Wallets
+Agents can't easily hold private keys to pay gas fees. ProofFlow's architecture is designed to support **Agentic Wallets (x402 / EIP-4337)**. In our model, the agent's wallet starts with 0 HBAR. When it needs to log an audit to HCS, an on-chain **Paymaster** dynamically subsidizes the ProofFlow micro-fee. The agent operates frictionlessly while still enforcing economic Sybil resistance.
 
-The project includes a **fully functional multi-agent simulation** (`openclaw-swarm.js`) that demonstrates autonomous agent collaboration on Hedera:
+### 🐝 OpenClaw x402 Swarm Simulation
+
+The project includes a **fully functional multi-agent simulation** (`openclaw-swarm.js`) that demonstrates this exact architecture live on Hedera Testnet:
 
 ```bash
 # Ensure ProofFlow backend is running on localhost:3001
 node packages/backend/src/scripts/openclaw-swarm.js
 ```
 
-The swarm creates specialized autonomous agents (Bank, Security, Market) that independently pay HBAR, query ProofFlow, and chain their proofs — demonstrating agent-to-agent composability without human intervention.
+**The flow:**
+1. Initialized OpenClaw Agents start with an empty wallet (0 HBAR).
+2. A simulated **x402 Paymaster** subsidizes their HBAR fee.
+3. The agents **Think Out Loud**, generating a cryptographic internal monologue.
+4. The monologue is anchored to HCS + EVM.
+5. Only after verification is the agent authorized to execute its trade.
 
 ### OpenClaw Bounty Compliance
 
 | Requirement | Status | Implementation |
 | :--- | :---: | :--- |
-| App is agent-first (OpenClaw agents are primary users) | ✅ | Agents autonomously pay, query, and chain proofs via REST API |
-| Autonomous or semi-autonomous agent behavior | ✅ | Full pipeline runs without human intervention after HBAR payment |
-| Clear value in multi-agent environment | ✅ | Proof DAG enables verifiable delegation and composable reasoning |
-| Hedera EVM, Token Service, or Consensus Service | ✅ | All three: HCS (audit) + HTS (reputation) + EVM (settlement/escrow) |
+| App is agent-first | ✅ | OpenClaw agents are the core users, routing logs via REST API. |
+| Autonomous behavior | ✅ | Agents autonomously pay via Paymaster and log thoughts without humans. |
+| Value in multi-agent env | ✅ | Creates a shared, verifiable knowledge graph of agent decisions. |
+| Hedera tech used | ✅ | All three: HCS (audit), HTS (reputation), EVM (settlement/escrow). |
 | Public repo | ✅ | [github.com/Handilusa/ProofFlow](https://github.com/Handilusa/ProofFlow) |
 | Live demo URL | ✅ | [proofflow-layer.vercel.app](https://proofflow-layer.vercel.app/) |
 | <3 min demo video | ✅ | [INSERT YOUTUBE LINK] |
-| README with setup + walkthrough | ✅ | You're reading it |
-
-### Agent-to-Agent Value Proposition
-
-ProofFlow gets **more valuable as more agents join**:
-- Each agent's proof can be referenced by other agents, creating network effects
-- Reputation tokens (PFR via HTS) enable trust scoring between agents
-- The proof DAG creates a shared knowledge graph that no single agent could build alone
-- Hedera's $0.0001 HCS fees make per-step logging economically viable at scale
+| README with setup | ✅ | You're reading it. |
 
 ---
 
