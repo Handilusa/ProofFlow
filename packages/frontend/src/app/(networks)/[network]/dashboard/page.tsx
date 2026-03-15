@@ -755,7 +755,7 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                               animate={{ opacity: 1, y: 0, height: 'auto' }}
                               exit={{ opacity: 0, scale: 0.95, height: 0, margin: 0, padding: 0, overflow: 'hidden' }}
                               transition={{ duration: 0.4 }}
-                              className="relative overflow-hidden bg-[#060a12] border border-amber-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-amber-500/40"
+                              className="relative overflow-hidden bg-[#060a12] border border-emerald-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-emerald-500/40"
                               style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
                             >
                               <div className="relative bg-[#0a0f18] w-full p-4 flex items-center gap-3"
@@ -763,11 +763,11 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                               >
                                   <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
                                   <div className="relative shrink-0 z-10">
-                                      <div className="w-6 h-6 rounded-full border-2 border-amber-500/30 border-t-amber-400 animate-spin" />
+                                      <div className="w-6 h-6 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin" />
                                   </div>
                                   <div className="relative z-10 flex-1">
-                                      <h4 className="text-[11px] font-bold text-amber-500 font-mono uppercase tracking-widest flex items-center gap-2">
-                                          <Cpu className="w-3.5 h-3.5 text-amber-500" />
+                                      <h4 className="text-[11px] font-bold text-emerald-500 font-mono uppercase tracking-widest flex items-center gap-2">
+                                          <Cpu className="w-3.5 h-3.5 text-emerald-500" />
                                           {language === 'es' ? 'Anclaje EVM Autónomo en progreso...' : 'Autonomous EVM Anchor in progress...'}
                                       </h4>
                                       <p className="text-[10px] text-white/40 font-mono mt-0.5 max-w-sm leading-relaxed">
@@ -783,19 +783,19 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                         {(result as any).evmSettled && (
                           <motion.div
                               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-                              className="relative overflow-hidden bg-[#060a12] border border-amber-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-amber-500/40"
+                              className="relative overflow-hidden bg-[#060a12] border border-emerald-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-emerald-500/40"
                               style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
                           >
                             <div className="relative bg-[#0a0f18] w-full p-4 md:p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
                                  style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
                             >
                               <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
-                              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-[40px] pointer-events-none" />
+                              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-[40px] pointer-events-none" />
 
                               <div className="relative z-10 flex-1">
                                   <div className="flex items-center gap-2 mb-1.5">
-                                      <Cpu className="w-4 h-4 text-amber-500" />
-                                      <h4 className="text-[11px] font-bold text-amber-500 font-mono uppercase tracking-widest">
+                                      <Cpu className="w-4 h-4 text-emerald-500" />
+                                      <h4 className="text-[11px] font-bold text-emerald-500 font-mono uppercase tracking-widest">
                                           {language === 'es' ? 'Anclaje EVM Autónomo' : 'Autonomous EVM Anchor'}
                                       </h4>
                                   </div>
@@ -805,7 +805,7 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                               </div>
 
                               <div className="relative z-10 shrink-0">
-                                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(16,185,129,0.15)]"
+                                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-[10px] font-mono font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(34,211,238,0.15)]"
                                        style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
                                       <CheckCircle2 className="w-3.5 h-3.5" />
                                       {language === 'es' ? 'Verificado por Agente' : 'Agent Verified'}
@@ -814,10 +814,10 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                             </div>
                             
                             {(result as any).evmTxHash && (
-                                <div className="relative z-10 bg-[#060a12]/80 border-t border-amber-500/10 px-4 py-2 flex items-center justify-between text-[10px] font-mono">
-                                    <span className="text-amber-500/50 font-bold tracking-widest">EVM TX:</span>
+                                <div className="relative z-10 bg-[#060a12]/80 border-t border-emerald-500/10 px-4 py-2 flex items-center justify-between text-[10px] font-mono">
+                                    <span className="text-emerald-500/50 font-bold tracking-widest">EVM TX:</span>
                                     <a href={`https://hashscan.io/${network}/tx/${(result as any).evmTxHash}`} target="_blank" rel="noreferrer" 
-                                       className="text-amber-400 hover:text-amber-300 transition-colors truncate ml-2">
+                                       className="text-emerald-400 hover:text-emerald-300 transition-colors truncate ml-2">
                                         {(result as any).evmTxHash}
                                     </a>
                                 </div>
