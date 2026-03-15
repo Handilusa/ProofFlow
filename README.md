@@ -5,7 +5,7 @@
 
 [![Hedera Testnet](https://img.shields.io/badge/Network-Hedera%20Testnet-success?logo=hedera)](https://hashscan.io/testnet/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-cyan.svg)](#)
+[![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-cyan.svg)](https://hackathon.stackup.dev/web/events/hedera-hello-future-apex-hackathon-2026)
 [![Live Demo](https://img.shields.io/badge/Demo-proofflow--layer.vercel.app-blueviolet)](https://proofflow-layer.vercel.app/)
 
 ---
