@@ -14,7 +14,7 @@ const TIER_COLORS = {
 };
 
 export function ConnectWallet() {
-    const { account, isConnected, isConnecting, userTier, connect, disconnect } = useWallet();
+    const { account, username, isConnected, isConnecting, userTier, connect, disconnect } = useWallet();
     const { t } = useLanguage();
     const [copied, setCopied] = React.useState(false);
 
@@ -28,6 +28,8 @@ export function ConnectWallet() {
     const truncatedAddress = account
         ? `${account.slice(0, 6)}...${account.slice(-4)}`
         : '';
+
+    const displayName = username || truncatedAddress;
 
     if (isConnected && account) {
         return (
@@ -44,8 +46,8 @@ export function ConnectWallet() {
                         className="flex items-center gap-2 group cursor-pointer"
                     >
                         <div className="w-2 h-2 bg-emerald-400 animate-pulse shrink-0 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                        <span className="text-xs font-mono font-bold tracking-wider text-cyan-400 group-hover:text-white transition-colors">
-                            {truncatedAddress}
+                        <span className="text-xs font-mono font-bold tracking-wider text-cyan-400 group-hover:text-white transition-colors truncate max-w-[120px]">
+                            {displayName}
                         </span>
                     </button>
                     <button

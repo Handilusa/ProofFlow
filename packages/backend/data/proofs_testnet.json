@@ -5581,5 +5581,58 @@
       "evmTxHash": "0xe7220ccb4c92d60c8424d4a6105bf2f98664d1eb4628927f7cc357da14e8ee91",
       "evmSettled": true
     }
+  ],
+  [
+    "4fa6c7e2-fbb3-43ee-8e4d-51b74735483b",
+    {
+      "proofId": "4fa6c7e2-fbb3-43ee-8e4d-51b74735483b",
+      "question": "Con la volatilidad actual de BTC, ¿cómo se correlaciona HBAR a corto plazo? ¿Estamos cerca de un desacoplamiento?",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Se ha identificado la consulta del usuario, la cual se centra en la correlación a corto plazo entre HBAR y BTC, dada la volatilidad de BTC, y si HBAR está cerca de un desacoplamiento. Para abordar esto, se analizarán los datos de precios en tiempo real proporcionados para ambos activos en intervalos de 1 hora, 24 horas y 7 días, obtenidos de CoinGecko. Este análisis permitirá evaluar la dirección y magnitud de los movimientos de precios para determinar la naturaleza de su correlación actual.",
+          "hash": "198e0e4296f3faf4512fd2952363c884f53ee0008c84465fac678411d2d2ec54",
+          "timestamp": 1773579910346
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "El análisis de los datos de mercado de CoinGecko revela lo siguiente:\n*   **Bitcoin (BTC):** En la última hora, BTC ha experimentado una caída del -0.14%. En las últimas 24 horas, ha mostrado una subida del 1.30%. A lo largo de los últimos 7 días, BTC ha subido un 6.15%. (Fuente: CoinGecko Market Data).\n*   **Hedera (HBAR):** En la última hora, HBAR ha registrado una caída del -0.56%. En las últimas 24 horas, ha subido un 3.92%. En los últimos 7 días, HBAR ha mostrado una subida del 0.68%. (Fuente: CoinGecko Market Data).\n\nAl comparar los movimientos:\n*   **En la última hora:** Ambos activos mostraron una disminución, con BTC bajando -0.14% y HBAR bajando -0.56%. Esto indica una correlación positiva, aunque HBAR experimentó una caída proporcionalmente mayor.\n*   **En las últimas 24 horas:** Ambos activos mostraron un aumento, con BTC subiendo 1.30% y HBAR subiendo 3.92%. Esto sugiere una correlación positiva, con HBAR superando a BTC en este período.\n*   **En los últimos 7 días:** Ambos activos mostraron un aumento, con BTC subiendo 6.15% y HBAR subiendo 0.68%. Esto también indica una correlación positiva, pero HBAR tuvo un rendimiento significativamente inferior a BTC durante la semana.",
+          "hash": "5fd0709161541698dda39008bbfc514f35eb090782fb943ae0d06c8e5f865e7a",
+          "timestamp": 1773579910347
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "La evidencia cuantitativa de los períodos de 1 hora, 24 horas y 7 días demuestra que HBAR ha seguido consistentemente la dirección del movimiento de precios de BTC. En todos los intervalos analizados, cuando BTC sube, HBAR sube; cuando BTC baja, HBAR baja. Esto confirma una correlación positiva a corto plazo. No se observa ningún patrón de movimiento inverso o de estabilidad de HBAR frente a movimientos significativos de BTC, lo cual sería indicativo de un desacoplamiento. Aunque la magnitud de los movimientos difiere (HBAR puede superar o quedar por debajo de BTC), la alineación direccional es clara. Otros factores como el staking nativo de HBAR con un APR del 2.41% o las APR de los pools de liquidez en SaucerSwap V2 (hasta 17.50% para WHBAR/USDC) representan oportunidades de rendimiento, pero no son indicadores directos de desacoplamiento de precios frente a BTC. Para que se produzca un desacoplamiento a corto plazo, HBAR necesitaría exhibir movimientos de precios opuestos o una independencia significativa de la dirección de BTC en períodos prolongados.",
+          "hash": "5bba089b5dea568250ac656103744146d05eb596e1dd310cc57762a816b43e34",
+          "timestamp": 1773579910348
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Con base en el análisis de los datos de mercado en tiempo real, HBAR mantiene una correlación positiva con BTC a corto plazo. En los últimos 1 hora, 24 horas y 7 días, los movimientos de precios de HBAR han seguido la misma dirección que los de BTC, aunque con magnitudes variables. Por ejemplo, en las últimas 24 horas, BTC subió un 1.30% mientras que HBAR subió un 3.92%, y en los últimos 7 días, BTC subió un 6.15% mientras que HBAR subió un 0.68% (Fuente: CoinGecko Market Data). Esta consistencia direccional indica que no estamos cerca de un desacoplamiento. Para que HBAR mostrara signos de desacoplamiento, sus movimientos de precio tendrían que ser consistentemente opuestos a los de BTC, o su precio debería mantenerse estable mientras BTC experimenta una volatilidad significativa. El umbral de ruptura para un desacoplamiento a corto plazo sería, por ejemplo, que HBAR aumentara al menos un 1% en un período de 24 horas mientras BTC disminuyera un 1% o más. Actualmente, HBAR sigue fuertemente ligado a la tendencia general del mercado impulsada por BTC.",
+          "hash": "4571a05cef0af9cd8e2420bb21ebd3f7ece15fa0696455af29aa205076e61870",
+          "timestamp": 1773579910349
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "c457576af560794baa53e435c3c8f00f50fcca2c88bed57d5d7caa8fdef16788",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1292,
+        1293,
+        1295,
+        1297
+      ],
+      "createdAt": 1773579918941,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773579915.681578300",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773579915.681578300",
+      "evmTxHash": "0x651a744d915f315969ec6d384ecbb4ac42750a4afe58518c14c60a29265b70f1",
+      "evmSettled": true
+    }
   ]
 ]

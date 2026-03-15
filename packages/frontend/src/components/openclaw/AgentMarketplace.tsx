@@ -96,7 +96,8 @@ export function AgentMarketplace() {
     }, [logPtr]);
 
     return (
-        <section className="relative py-24 px-6 overflow-hidden bg-surface/10 border-t border-border/30">
+        <section className="relative py-24 px-6 overflow-hidden bg-[#060a12] border-t border-border/10">
+            <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
             <div className="absolute inset-0 pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-cyan-900/8 rounded-full blur-[120px]" />
             </div>
@@ -369,8 +370,9 @@ export function AgentMarketplace() {
                         </p>
 
                         {/* Terminal */}
-                        <div className="w-full rounded-xl border border-white/10 bg-[#0a0f1a] overflow-hidden shadow-2xl">
-                            <div className="flex items-center gap-2 px-4 py-2.5 bg-white/[0.02] border-b border-white/5">
+                        <div className="w-full bg-[#0a0f1a] overflow-hidden shadow-[0_0_30px_rgba(34,211,238,0.1)] border border-cyan-500/20"
+                             style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                            <div className="flex items-center gap-2 px-4 py-2.5 bg-cyan-500/5 border-b border-cyan-500/20">
                                 <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
@@ -464,7 +466,8 @@ export function AgentMarketplace() {
                         ].map((feature, i) => (
                             <div
                                 key={i}
-                                className={`group relative p-8 rounded-3xl bg-[#0a0f1a]/80 backdrop-blur-xl border border-white/[0.05] hover:border-white/[0.1] transition-all duration-500 overflow-hidden ${feature.glow}`}
+                                className={`group relative p-8 bg-[#0a0f1a] border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-500 overflow-hidden ${feature.glow}`}
+                                style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}
                             >
                                 {/* Subtle Background Gradient inside the card */}
                                 <div className={`absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 rounded-full blur-[50px] opacity-0 group-hover:opacity-10 transition-opacity duration-500 ${feature.iconBg.replace('/10', '')}`} />
@@ -485,7 +488,8 @@ export function AgentMarketplace() {
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-100px" }}
-                        className="relative rounded-[2.5rem] bg-[#050914] border border-white/[0.05] overflow-hidden"
+                        className="relative bg-[#050914] border border-cyan-500/20 overflow-hidden"
+                        style={{ clipPath: 'polygon(32px 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%, 0 32px)' }}
                     >
                         {/* Background Glows */}
                         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-cyan-500/10 rounded-full blur-[120px]" />
@@ -509,12 +513,13 @@ export function AgentMarketplace() {
                                 </p>
                             </div>
 
-                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-px bg-white/[0.05] rounded-3xl overflow-hidden border border-white/[0.05]">
+                            <div className="flex flex-col lg:grid lg:grid-cols-2 gap-px bg-cyan-500/20 overflow-hidden border border-cyan-500/20"
+                                 style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
                                 {/* Traditional Agents */}
-                                <div className="bg-[#0a0f1a] p-6 lg:p-10 transition-colors duration-500 hover:bg-[#0b121f]">
+                                <div className="bg-[#060a12] p-6 lg:p-10 transition-colors duration-500 hover:bg-[#080d1a]">
                                     <div className="flex items-center gap-4 mb-6 lg:mb-8">
-                                        <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center">
-                                            <Building2 className="w-6 h-6 text-slate-500" />
+                                        <div className="w-12 h-12 bg-white/[0.02] border border-white/[0.05] flex items-center justify-center transform rotate-45">
+                                            <Building2 className="w-6 h-6 text-slate-500 -rotate-45" />
                                         </div>
                                         <h5 className="text-xl font-display font-semibold text-slate-300">
                                             Professional Agents
@@ -528,8 +533,8 @@ export function AgentMarketplace() {
                                             'Web2 subscription models (Credit Cards)'
                                         ].map((item, i) => (
                                             <li key={i} className="flex items-start gap-4">
-                                                <div className="mt-1 flex-shrink-0 w-4 h-4 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-red-500/50" />
+                                                <div className="mt-1 flex-shrink-0 w-4 h-4 bg-red-500/10 border border-red-500/20 flex items-center justify-center transform rotate-45">
+                                                    <span className="w-1.5 h-1.5 bg-red-500/50" />
                                                 </div>
                                                 <span className="text-sm text-slate-400 font-light leading-relaxed">{item}</span>
                                             </li>
@@ -538,13 +543,13 @@ export function AgentMarketplace() {
                                 </div>
 
                                 {/* ProofFlow */}
-                                <div className="relative bg-[#0c1424] p-6 lg:p-10 overflow-hidden transition-colors duration-500 hover:bg-[#0d1627]">
+                                <div className="relative bg-[#0a0f1a] p-6 lg:p-10 overflow-hidden transition-colors duration-500 hover:bg-[#0c1324]">
                                     {/* Inner subtle glow for the right panel */}
                                     <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-[80px]" />
 
                                     <div className="relative z-10 flex items-center gap-4 mb-6 lg:mb-8">
-                                        <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-                                            <Hexagon className="w-6 h-6 text-cyan-400" />
+                                        <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shadow-[0_0_15px_rgba(34,211,238,0.2)] transform rotate-45">
+                                            <Hexagon className="w-6 h-6 text-cyan-400 -rotate-45" />
                                         </div>
                                         <h5 className="text-xl font-display font-semibold text-white">
                                             ProofFlow <span className="text-cyan-400/60 font-medium ml-1">Edge</span>
@@ -558,8 +563,8 @@ export function AgentMarketplace() {
                                             { title: 'Audit-First', desc: 'Every "thought" is a public hash' }
                                         ].map((item, i) => (
                                             <li key={i} className="flex items-start gap-4">
-                                                <div className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center bg-cyan-500/10 rounded-full border border-cyan-500/20">
-                                                    <svg className="w-3 h-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                                <div className="mt-0.5 flex-shrink-0 w-5 h-5 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 shadow-[0_0_10px_rgba(34,211,238,0.2)] transform rotate-45">
+                                                    <svg className="w-3 h-3 text-cyan-400 -rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                                     </svg>
                                                 </div>
@@ -573,10 +578,11 @@ export function AgentMarketplace() {
                                 </div>
                             </div>
 
-                            <div className="mt-12 p-6 rounded-2xl bg-[#0a0f1a]/50 border border-cyan-500/10 backdrop-blur-sm relative overflow-hidden group">
-                                <div className="absolute -left-2 top-0 bottom-0 w-1.5 bg-cyan-500/50 rounded-r-full shadow-[0_0_15px_rgba(6,182,212,0.6)] group-hover:bg-cyan-400/80 transition-colors duration-500" />
-                                <p className="text-sm text-center text-cyan-100/70 font-light leading-relaxed pl-2">
-                                    "ProofFlow is the <strong className="text-cyan-300 font-medium">Git of Reasoning</strong>. It transforms AI from a chat interface into a verifiable infrastructure for the Agentic Society."
+                            <div className="mt-12 p-6 bg-[#0a0f1a] border border-cyan-500/30 relative overflow-hidden group shadow-[0_0_20px_rgba(34,211,238,0.05)]"
+                                 style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                                <div className="absolute -left-2 top-0 bottom-0 w-[14px] bg-cyan-500/50 shadow-[0_0_20px_rgba(6,182,212,0.8)] group-hover:bg-cyan-400 border-r border-cyan-300/50 transition-colors duration-500" />
+                                <p className="text-sm text-center text-cyan-100/80 font-mono tracking-wide leading-relaxed pl-4 uppercase">
+                                    "ProofFlow is the <strong className="text-cyan-300 font-bold">Git of Reasoning</strong>. It transforms AI from a chat interface into a verifiable infrastructure for the Agentic Society."
                                 </p>
                             </div>
                         </div>

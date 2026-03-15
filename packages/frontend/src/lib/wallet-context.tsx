@@ -6,10 +6,12 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { connectToHedera } from './hedera-walletconnect';
 import { UserTier, getConfig } from './api';
 import { toast } from 'react-hot-toast';
+import { API_URL } from './utils';
 
 interface WalletContextType {
     // Current active account (EVM or Hedera)
     account: string | null;
+    username: string | null;
     isConnected: boolean;
     isConnecting: boolean;
 
@@ -37,6 +39,7 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType>({
     account: null,
+    username: null,
     isConnected: false,
     isConnecting: false,
     network: 'testnet',
@@ -62,8 +65,9 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const [hederaAccount, setHederaAccount] = useState<string | null>(null);
     const [isHederaConnecting, setIsHederaConnecting] = useState(false);
 
-    // Tier State
+    // Tier & Profile State
     const [userTier, setUserTier] = useState<UserTier | null>(null);
+    const [username, setUsername] = useState<string | null>(null);
 
     // Modal State
     const [isSelectorOpen, setIsSelectorOpen] = useState(false);
@@ -91,15 +95,26 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     const refreshTier = useCallback(async () => {
         if (!account) {
             setUserTier(null);
+            setUsername(null);
             return;
         }
         try {
-            const config = await getConfig(network, account);
-            if (config.userTier) {
-                setUserTier(config.userTier);
+            const [configRes, profileRes] = await Promise.all([
+                getConfig(network, account).catch(() => null),
+                fetch(`${API_URL}/user/profile/${account}`, {
+                    headers: { 'x-network': network }
+                }).catch(() => null)
+            ]);
+
+            if (configRes && configRes.userTier) {
+                setUserTier(configRes.userTier);
+            }
+            if (profileRes && profileRes.ok) {
+                const profileData = await profileRes.json();
+                setUsername(profileData.username || null);
             }
         } catch (err) {
-            console.error('Failed to fetch user tier:', err);
+            console.error('Failed to fetch user data:', err);
         }
     }, [account, network]);
 
@@ -149,11 +164,13 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             setHederaAccount(null);
         }
         setUserTier(null);
+        setUsername(null);
     }, [isEvmConnected, disconnectEvm, hederaAccount]);
 
     return (
         <WalletContext.Provider value={{
             account,
+            username,
             isConnected,
             isConnecting,
             network,

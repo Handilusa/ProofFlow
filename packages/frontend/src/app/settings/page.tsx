@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
     const { language, setLanguage, t } = useLanguage();
-    const { account, isConnected, network, setNetwork, userTier } = useWallet();
+    const { account, isConnected, network, setNetwork, userTier, refreshTier } = useWallet();
     const [username, setUsername] = useState('');
     const [isSaving, setIsSaving] = useState(false);
     const [cooldownDays, setCooldownDays] = useState(0);
@@ -70,6 +70,7 @@ export default function SettingsPage() {
 
             toast.success(t('settings_saved'));
             await fetchProfileStatus();
+            await refreshTier();
         } catch (err) {
             console.error(err);
             toast.error('Could not save profile.');

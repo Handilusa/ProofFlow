@@ -99,7 +99,8 @@ export default function LandingPage() {
             </a>
             <Link
               href={`/${network}/dashboard`}
-              className="px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow-sm whitespace-nowrap"
+              className="px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-[#060a12] transition-all whitespace-nowrap"
+              style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
             >
               Launch App
             </Link>
@@ -158,9 +159,10 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-accent-primary/30 bg-accent-primary/5 mb-8">
-              <span className="w-2 h-2 rounded-full bg-accent-primary animate-pulse" />
-              <span className="text-xs font-mono text-accent-primary tracking-wide">LIVE ON HEDERA TESTNET</span>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/30 mb-8"
+                 style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}>
+              <span className="w-2 h-2 bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+              <span className="text-xs font-mono text-cyan-300 tracking-widest uppercase">LIVE ON HEDERA TESTNET</span>
             </div>
           </motion.div>
 
@@ -194,7 +196,8 @@ export default function LandingPage() {
           >
             <Link
               href={`/${network}/dashboard`}
-              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all shadow-glow"
+              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold bg-cyan-500 hover:bg-cyan-400 text-[#060a12] transition-all relative"
+              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
             >
               Launch App
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -203,10 +206,12 @@ export default function LandingPage() {
               href="https://github.com/Handilusa/ProofFlow"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold rounded-xl border border-border hover:border-accent-primary/50 text-text-muted hover:text-white transition-all"
+              className="w-full sm:w-auto group flex items-center justify-center gap-2 px-8 py-3.5 text-base font-semibold bg-transparent border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-500/10 text-cyan-100 transition-all relative"
+              style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
             >
-              <Github className="w-5 h-5" />
-              View Source
+              <div className="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <Github className="w-5 h-5 relative z-10" />
+              <span className="relative z-10">View Source</span>
             </a>
           </motion.div>
         </div>
@@ -304,15 +309,23 @@ export default function LandingPage() {
                   transition={{ delay: i * 0.15 }}
                   className="relative flex flex-col items-center text-center group"
                 >
-                  {/* Hexagon Node */}
-                  <div className={`relative w-20 h-20 rounded-2xl ${item.bg} border ${item.border} flex items-center justify-center mb-6 z-10 group-hover:-translate-y-2 transition-transform duration-500 shadow-2xl backdrop-blur-xl group-hover:shadow-[0_0_30px_-5px_var(--tw-shadow-color)]`} style={{ '--tw-shadow-color': item.bg.split('/')[0].replace('bg-', '') } as any}>
+                  {/* Neon Minimalist Node */}
+                  <div className={`relative w-20 h-20 ${item.bg} border ${item.border} flex items-center justify-center mb-6 z-10 group-hover:-translate-y-2 transition-all duration-500 shadow-2xl backdrop-blur-xl group-hover:shadow-[0_0_30px_-5px_var(--tw-shadow-color)]`} 
+                       style={{ 
+                         '--tw-shadow-color': item.bg.split('/')[0].replace('bg-', ''),
+                         clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)'
+                       } as any}>
                     {/* Inner subtle glow */}
-                    <div className="absolute inset-0 rounded-2xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    
+                    {/* Grid overlay inside the node */}
+                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:8px_8px] pointer-events-none opacity-20" />
 
                     <item.icon className={`w-8 h-8 ${item.color} relative z-10 transition-transform duration-500 group-hover:scale-110`} />
 
                     {/* Step badge */}
-                    <div className="absolute -top-3 -right-3 w-7 h-7 rounded-full bg-[#0a0f1a] border border-white/10 flex items-center justify-center text-[10px] font-bold text-white shadow-lg">
+                    <div className="absolute -top-2 -right-2 w-7 h-7 bg-[#0a0f1a] border border-cyan-500/30 flex items-center justify-center text-[10px] font-mono tracking-widest text-cyan-400 shadow-lg"
+                         style={{ clipPath: 'polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)' }}>
                       {item.step}
                     </div>
                   </div>
@@ -491,13 +504,15 @@ export default function LandingPage() {
           transition={{ duration: 0.8 }}
           className="relative z-10 w-full max-w-2xl mx-auto px-2 sm:px-4"
         >
-          <div className="rounded-2xl border border-white/10 bg-[#0F172A]/80 backdrop-blur-xl shadow-2xl overflow-hidden p-0.5 sm:p-1 relative">
-            {/* Mac-like header */}
-            <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-white/[0.02] border-b border-white/5">
-              <div className="w-3 h-3 rounded-full bg-red-500/80" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-              <div className="w-3 h-3 rounded-full bg-green-500/80" />
-              <span className="ml-4 text-xs font-mono text-text-muted/60">proofflow-agent-cli</span>
+          <div className="bg-[#060a12] border border-cyan-500/30 shadow-[0_0_30px_rgba(34,211,238,0.1)] overflow-hidden p-0.5 sm:p-1 relative"
+               style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}>
+            {/* Cyberpunk header */}
+            <div className="flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 bg-cyan-500/10 border-b border-cyan-500/20">
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-1 bg-cyan-500/80 skew-x-12" />
+                <div className="w-1.5 h-1 bg-cyan-500/50 skew-x-12" />
+                <span className="ml-2 text-[10px] font-mono tracking-widest text-cyan-400 uppercase">SYS.TERM // ProofFlow</span>
+              </div>
             </div>
 
             {/* Terminal Body */}
@@ -612,13 +627,14 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="group relative p-8 lg:p-10 rounded-3xl border border-white/[0.05] bg-white/[0.02] backdrop-blur-xl hover:border-cyan-500/20 hover:bg-cyan-500/[0.02] transition-colors duration-500 overflow-hidden"
+                className="group relative p-8 lg:p-10 bg-[#0a0f1a] border border-cyan-500/10 hover:border-cyan-400/40 hover:bg-cyan-500/[0.02] transition-colors duration-500 overflow-hidden"
+                style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}
               >
                 {/* Internal gradient decoration */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/5 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 rounded-full blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <div className="w-14 h-14 rounded-2xl bg-[#0a0f1a] border border-white/[0.05] flex items-center justify-center mb-6 group-hover:bg-cyan-950/30 transition-colors duration-500">
-                  <feature.icon className="w-6 h-6 text-cyan-400" />
+                <div className="w-14 h-14 bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(34,211,238,0.1)] group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-500 transform -skew-x-6">
+                  <feature.icon className="w-6 h-6 text-cyan-400 skew-x-6" />
                 </div>
                 <h3 className="text-xl lg:text-2xl font-display font-semibold text-white mb-3 tracking-tight">{feature.title}</h3>
                 <p className="text-sm lg:text-base text-text-muted/80 leading-relaxed font-light">{feature.description}</p>
@@ -649,16 +665,20 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
 
-            {/* Card 1: Single Tx (Large) */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="md:col-span-2 relative group p-8 lg:p-12 rounded-[2rem] border border-white/[0.05] bg-gradient-to-br from-[#111827] to-[#0a0f1a] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-blue-500/30"
+              className="md:col-span-2 relative group p-8 lg:p-12 border border-cyan-500/20 bg-[#060a12] overflow-hidden shadow-[0_0_30px_rgba(34,211,238,0.05)] transition-all duration-500 hover:border-cyan-400/50"
+              style={{ clipPath: 'polygon(32px 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%, 0 32px)' }}
             >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] -mr-20 -mt-20" />
-              <Network className="w-12 h-12 text-blue-400 mb-6 relative z-10" />
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(34,211,238,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,211,238,0.03)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-50" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] -mr-20 -mt-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/30 flex items-center justify-center mb-6 relative z-10 transform rotate-45 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-all duration-500">
+                <Network className="w-8 h-8 text-blue-400 -rotate-45" />
+              </div>
               <h3 className="text-2xl font-display font-semibold text-white mb-4 relative z-10 tracking-tight">Single-Transaction UX</h3>
               <p className="text-text-muted/80 leading-relaxed font-light relative z-10 max-w-md">
                 Users simply deposit HBAR into the EVM Smart Contract with their prompt. The agent abstract away HCS parsing, subgraph tracing, and EVM callback responses.
@@ -671,10 +691,14 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="relative group p-8 rounded-[2rem] border border-white/[0.05] bg-gradient-to-b from-[#111827] to-[#0a0f1a] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-cyan-400/30"
+              className="relative group p-8 border border-cyan-500/20 bg-[#060a12] overflow-hidden transition-all duration-500 hover:border-cyan-400/50"
+              style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}
             >
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-400/10 rounded-full blur-[60px] -ml-10 -mb-10" />
-              <ShieldAlert className="w-10 h-10 text-cyan-400 mb-6 relative z-10" />
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-400/20 rounded-full blur-[60px] -ml-10 -mb-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mb-6 relative z-10 transform rotate-45 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-500">
+                <ShieldAlert className="w-6 h-6 text-cyan-400 -rotate-45" />
+              </div>
               <h3 className="text-xl font-display font-semibold text-white mb-3 relative z-10 tracking-tight">DeFi Auditing</h3>
               <p className="text-sm text-text-muted/80 leading-relaxed font-light relative z-10">
                 Agents trace vulnerabilities before upgrades.
@@ -687,10 +711,14 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="relative group p-8 rounded-[2rem] border border-white/[0.05] bg-[#0c1322] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-purple-400/30"
+              className="relative group p-8 border border-purple-500/20 bg-[#060a12] overflow-hidden transition-all duration-500 hover:border-purple-400/50"
+              style={{ clipPath: 'polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px)' }}
             >
-              <div className="absolute top-0 left-0 w-40 h-40 bg-purple-400/10 rounded-full blur-[60px] -ml-10 -mt-10" />
-              <HeartPulse className="w-10 h-10 text-purple-400 mb-6 relative z-10" />
+              <div className="absolute top-0 left-0 w-40 h-40 bg-purple-400/20 rounded-full blur-[60px] -ml-10 -mt-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="w-12 h-12 bg-purple-500/10 border border-purple-500/30 flex items-center justify-center mb-6 relative z-10 transform rotate-45 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.3)] transition-all duration-500">
+                <HeartPulse className="w-6 h-6 text-purple-400 -rotate-45" />
+              </div>
               <h3 className="text-xl font-display font-semibold text-white mb-3 relative z-10 tracking-tight">Sub-Second Finality</h3>
               <p className="text-sm text-text-muted/80 leading-relaxed font-light relative z-10">
                 aBFT consensus means deterministic ordering instantly.
@@ -703,10 +731,15 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4 }}
-              className="md:col-span-2 relative group p-8 lg:p-12 rounded-[2rem] border border-white/[0.05] bg-[#0c1424] backdrop-blur-xl overflow-hidden shadow-2xl transition-all duration-500 hover:border-green-400/30"
+              className="md:col-span-2 relative group p-8 lg:p-12 border border-green-500/20 bg-[#060a12] overflow-hidden shadow-[0_0_30px_rgba(74,222,128,0.05)] transition-all duration-500 hover:border-green-400/50"
+              style={{ clipPath: 'polygon(32px 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%, 0 32px)' }}
             >
-              <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-[80px] -mr-20 -mb-20" />
-              <Scale className="w-10 h-10 text-green-400 mb-6 relative z-10" />
+              <div className="absolute inset-0 bg-[linear-gradient(rgba(74,222,128,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(74,222,128,0.03)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-50" />
+              <div className="absolute bottom-0 right-0 w-64 h-64 bg-green-500/20 rounded-full blur-[80px] -mr-20 -mb-20 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              
+              <div className="w-16 h-16 bg-green-500/10 border border-green-500/30 flex items-center justify-center mb-6 relative z-10 transform rotate-45 group-hover:shadow-[0_0_20px_rgba(74,222,128,0.3)] transition-all duration-500">
+                <Scale className="w-8 h-8 text-green-400 -rotate-45" />
+              </div>
               <h3 className="text-2xl font-display font-semibold text-white mb-4 relative z-10 tracking-tight">$0.0001 per Proof</h3>
               <p className="text-text-muted/80 leading-relaxed font-light relative z-10 max-w-md">
                 High-frequency AI decision making requires micro-transaction feasibility. Predictably fixed fiat fees make verifiable machine economies possible.
@@ -762,9 +795,15 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className={`p-10 rounded-3xl border border-white/[0.05] bg-[#0a0f1a] transition-all duration-300 hover:-translate-y-1 ${useCase.bg}`}
+                className={`group relative p-10 bg-[#060a12] border transition-all duration-300 hover:-translate-y-1 ${useCase.bg}`}
+                style={{ clipPath: 'polygon(24px 0, 100% 0, 100% calc(100% - 24px), calc(100% - 24px) 100%, 0 100%, 0 24px)' }}
               >
-                <useCase.icon className={`w-10 h-10 ${useCase.color} mb-6`} />
+                {/* Glow ring on hover */}
+                <div className="absolute inset-x-0 bottom-0 h-1 bg-current opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ color: useCase.color.replace('text-', '') }} />
+
+                <div className={`w-14 h-14 bg-current/10 border border-current/20 flex items-center justify-center mb-6 transform -skew-x-6 relative z-10`} style={{ color: useCase.color.replace('text-', '') }}>
+                  <useCase.icon className={`w-6 h-6 skew-x-6`} strokeWidth={1.5} />
+                </div>
                 <h3 className="text-xl font-display font-semibold text-white mb-3 tracking-tight">{useCase.title}</h3>
                 <p className="text-sm text-text-muted/80 leading-relaxed font-light">{useCase.desc}</p>
               </motion.div>
@@ -783,7 +822,8 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-10 sm:p-14 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-sm relative overflow-hidden"
+            className="p-10 sm:p-14 bg-[#0a0f1a] border border-cyan-500/20 relative overflow-hidden shadow-[0_0_30px_rgba(34,211,238,0.05)]"
+            style={{ clipPath: 'polygon(32px 0, 100% 0, 100% calc(100% - 32px), calc(100% - 32px) 100%, 0 100%, 0 32px)' }}
           >
             {/* Subtle top accent line */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-accent-primary/40 to-transparent" />
@@ -797,7 +837,8 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href={`/${network}/dashboard`}
-                className="group flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold rounded-xl bg-accent-primary hover:bg-accent-secondary text-black transition-all w-full sm:w-auto"
+                className="group flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold bg-cyan-500 hover:bg-cyan-400 text-[#060a12] transition-all w-full sm:w-auto relative"
+                style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
               >
                 Launch App
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -806,10 +847,12 @@ export default function LandingPage() {
                 href="https://github.com/Handilusa/ProofFlow"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold rounded-xl border border-white/10 hover:border-white/20 text-text-muted hover:text-white transition-all w-full sm:w-auto"
+                className="group flex items-center justify-center gap-2 px-10 py-4 text-base font-semibold bg-transparent border border-cyan-500/30 hover:border-cyan-400 hover:bg-cyan-500/10 text-cyan-100 transition-all w-full sm:w-auto relative"
+                style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
               >
-                <Github className="w-5 h-5" />
-                View Source
+                <div className="absolute inset-0 bg-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                <Github className="w-5 h-5 relative z-10" />
+                <span className="relative z-10">View Source</span>
               </a>
             </div>
           </motion.div>
@@ -876,7 +919,7 @@ export default function LandingPage() {
 
           <div className="mt-8 pt-6 border-t border-border/30 text-center">
             <p className="text-[11px] text-text-muted/50 uppercase tracking-widest">
-              © 2025 ProofFlow — Built for the Hedera Ecosystem
+              © 2026 ProofFlow — Built for the Hedera Ecosystem
             </p>
           </div>
         </div>
