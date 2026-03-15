@@ -7,13 +7,15 @@ import Sidebar from '@/components/proofflow/Sidebar';
 import ConnectWallet from '@/components/proofflow/ConnectWallet';
 import FooterText from '@/components/proofflow/FooterText';
 import { WalletSelector } from '@/components/proofflow/WalletSelector';
+import { SidebarProvider, useSidebar } from '@/lib/sidebar-context';
 
 import { API_URL } from '@/lib/utils';
 import { useEffect } from 'react';
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+function AppShellInner({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isLanding = pathname === '/';
+    const { collapsed } = useSidebar();
 
     useEffect(() => {
         console.log("APP_SHELL_MOUNTED: API_URL =", API_URL);
@@ -31,7 +33,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 Skip to main content
             </a>
             <Sidebar />
-            <div className="flex-1 flex flex-col lg:ml-[260px] min-h-screen relative overflow-x-hidden" role="region" aria-label="Main application area">
+            <div
+                className="flex-1 flex flex-col min-h-screen relative overflow-x-hidden transition-[margin-left] duration-300 ease-in-out"
+                style={{ marginLeft: collapsed ? '72px' : '260px' }}
+                role="region"
+                aria-label="Main application area"
+            >
+                {/* Responsive: only apply margin on lg+ screens via CSS */}
+                <style jsx>{`
+                    @media (max-width: 1023px) {
+                        div[role="region"] { margin-left: 0 !important; }
+                    }
+                `}</style>
 
                 {/* Mobile Header */}
                 <header className="lg:hidden flex items-center justify-between p-4 border-b border-border/50 bg-surface/50 backdrop-blur z-20 sticky top-0 gap-3" role="banner">
@@ -79,5 +92,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <WalletSelector />
             </div>
         </div>
+    );
+}
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+    return (
+        <SidebarProvider>
+            <AppShellInner>{children}</AppShellInner>
+        </SidebarProvider>
     );
 }
