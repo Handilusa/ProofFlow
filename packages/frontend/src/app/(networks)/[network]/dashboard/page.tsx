@@ -710,25 +710,33 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 }}
-                        className="border border-border/40 rounded-xl p-5 bg-surface/30 backdrop-blur"
+                        className="relative overflow-hidden bg-[#060a12] border border-cyan-500/20 rounded-sm p-[1px] transition-colors duration-500 hover:border-cyan-500/40"
+                        style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className="relative">
-                            <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin" />
+                        <div className="relative bg-[#0a0f18] w-full p-4 md:p-5"
+                             style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                          
+                          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none opacity-20" />
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] pointer-events-none" />
+
+                          <div className="relative z-10 flex items-center gap-3">
+                            <div className="relative">
+                              <div className="w-8 h-8 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-bold text-cyan-400 font-mono tracking-widest uppercase">
+                                {language === 'es' ? 'Asegurando en cadena...' : 'Securing on-chain...'}
+                              </p>
+                              <p className="text-[10px] text-white/50 font-mono mt-0.5">
+                                {language === 'es' ? 'Publicando en HCS → Acuñando $PFR' : 'Publishing to HCS → Minting $PFR'}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-sm font-semibold text-white font-mono">
-                              {language === 'es' ? 'Asegurando en cadena...' : 'Securing on-chain...'}
-                            </p>
-                            <p className="text-[11px] text-text-muted mt-0.5">
-                              {language === 'es' ? 'Publicando en HCS → Acuñando $PFR' : 'Publishing to HCS → Minting $PFR'}
-                            </p>
+                          <div className="relative z-10 mt-4 grid grid-cols-3 gap-2">
+                            <div className="h-[2px] rounded-full bg-cyan-500/60 animate-[pulse_1.5s_ease-in-out_infinite]" />
+                            <div className="h-[2px] rounded-full bg-cyan-500/30 animate-[pulse_1.5s_ease-in-out_infinite] [animation-delay:0.3s]" />
+                            <div className="h-[2px] rounded-full bg-cyan-500/10 animate-[pulse_1.5s_ease-in-out_infinite] [animation-delay:0.6s]" />
                           </div>
-                        </div>
-                        <div className="mt-4 grid grid-cols-3 gap-2">
-                          <div className="h-1 rounded-full bg-emerald-500/40 animate-pulse" />
-                          <div className="h-1 rounded-full bg-emerald-500/20 animate-pulse [animation-delay:0.3s]" />
-                          <div className="h-1 rounded-full bg-emerald-500/10 animate-pulse [animation-delay:0.6s]" />
                         </div>
                       </motion.div>
                     )}
