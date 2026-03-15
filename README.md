@@ -113,17 +113,15 @@ The user receives a **Proof ID** (UUID v4) for each audit. Using this ID, anyone
 
 ---
 
-## 🌍 Multi-Language AI Support
+## 🌍 Multi-Language DApp Interface
 
-ProofFlow's AI agent supports **automatic language detection** and responds in the user's native language. The system instruction includes a strict language rule:
+ProofFlow is designed for global accessibility from day one. The decentralized application (dApp) features a built-in language selector in the Options menu, allowing users to seamlessly switch the entire frontend interface between **English** and **Spanish**.
 
-- If the user writes in **English** → the agent responds entirely in English.
-- If the user writes in **Spanish** → the agent responds entirely in Spanish.
-- The agent **never mixes languages** within a single response.
+This localization extends to the autonomous agent as well. The ProofFlow Neural Engine automatically detects the user's language and enforces a strict localization rule:
+- If the user interacts in **English** → the agent responds and reasons entirely in English.
+- If the user interacts in **Spanish** → the agent responds and reasons entirely in Spanish.
 
-This is enforced at the Neural Engine system prompt level, meaning all structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<FINAL>`) are generated in the detected language, and the HCS audit trail preserves the original language of reasoning.
-
-The frontend interface also supports both English and Spanish as selectable UI languages, ensuring a fully localized experience for Spanish-speaking users across Latin America and Spain.
+This ensures a fully native, cohesive experience for users across Latin America, Spain, and the English-speaking world — both in the UI they navigate and the on-chain audit trails they generate.
 
 ---
 
