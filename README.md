@@ -6,6 +6,7 @@
 [![Hedera Testnet](https://img.shields.io/badge/Network-Hedera%20Testnet-success?logo=hedera)](https://hashscan.io/testnet/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-cyan.svg)](#)
+[![Live Demo](https://img.shields.io/badge/Demo-proofflow--layer.vercel.app-blueviolet)](https://proofflow-layer.vercel.app/)
 
 ---
 
@@ -16,13 +17,14 @@ ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem
 ---
 
 ## 🚀 Overview: The AI & Agents Challenge
-**ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon**. It solves the "Black Box" problem of AI by fusing decentralized infrastructure with autonomous reasoning. 
+
+**ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon**. It solves the "Black Box" problem of AI by fusing decentralized infrastructure with autonomous reasoning.
 
 When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where an off-chain AI agent (powered by Gemini) autonomously manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
 
 ---
 
-## 🌐 Why This Must Be Web3 (Not Web2)
+## 🌐 Why This Must Be Web3 (Not Web2) — Trustless Verification
 
 A centralized server with a database could store AI reasoning logs — but it cannot provide **trustless verification**:
 
@@ -35,16 +37,7 @@ A centralized server with a database could store AI reasoning logs — but it ca
 | **Autonomous agent settlement** | ❌ Needs custodial banking rails | ✅ Native HBAR micropayments, no intermediary |
 | **Cross-platform proof portability** | ❌ Locked in vendor silo | ✅ Proofs are on-chain public goods, composable across dApps |
 
-> **Bottom Line:** ProofFlow's value is *not* the AI reasoning itself — it's the **cryptographic guarantee** that the reasoning hasn't been altered, censored, or fabricated. Only a decentralized ledger provides this.
-
----
-
-## 🛡️ Enterprise-Grade Protection
-
-ProofFlow incorporates a robust 3-layer security system to protect the autonomous infrastructure:
-1. **Hedera Micropayments**: Every request requires an on-chain HBAR fee settlement.
-2. **hCaptcha Enterprise**: Prevents bot-net spam while dynamically ignoring valid on-chain agent requests.
-3. **Decentralized Rate Limiting**: Request throttling tied to the connected Hedera Wallet Address.
+> **Bottom Line:** ProofFlow's value is *not* the AI reasoning itself — it's the **cryptographic guarantee** that the reasoning hasn't been altered, censored, or fabricated. Only a decentralized ledger provides this. Every step is **cryptographic evidence anchored to the public book of Hedera**.
 
 ---
 
@@ -52,11 +45,250 @@ ProofFlow incorporates a robust 3-layer security system to protect the autonomou
 
 ProofFlow demonstrates a true **multi-service integration** on Hedera:
 
-1.  **Autonomous Trigger**: User deposits a native HBAR micro-fee ($0.0001 equivalent) into the platform.
-2.  **AI Inference**: The Backend Agent detects the payment, fetches live market context, and uses **Gemini 2.5 Flash** to decompose the problem into logical reasoning steps.
-3.  **HCS Audit Logging**: Every internal "thought" and step is hashed and published to the **Hedera Consensus Service (HCS)** topic in real-time. This creates an immutable, timestamped trail of *how* the AI reached its conclusion.
-4.  **HTS Reputation Minting**: Upon successful completion, the agent mints a **Hedera Token Service (HTS)** NFT/Badge called a "Reputation Passport" to the user's wallet as an on-chain receipt.
-5.  **EVM Settlement**: The Agent acts as its own operator, signing a transaction to the `ProofValidator.sol` **EVM Smart Contract** to record the cryptographic hash of the final result, ensuring permanent availability.
+1. **Autonomous Trigger**: User deposits a native HBAR micro-fee into the ProofValidator smart contract.
+2. **Market Data Enrichment**: The agent classifies the query by intent and fetches real-time data from up to 7 APIs simultaneously — CoinGecko, DexScreener, DefiLlama, Fear & Greed Index, SaucerSwap (via DexScreener), Hedera Mirror Node (mainnet), and Reddit — injecting quantitative context into the AI prompt.
+3. **AI Inference via Gemini 2.5 Flash (Thinking Mode)**: The agent uses Google's Gemini 2.5 Flash with a **16,384 thinking token budget** (`thinkingConfig.thinkingBudget`) to decompose the problem into structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<STEP 3>`, `<FINAL>`). This is not generic text generation — the model is instructed to reason *mathematically*, citing hard data, calculating breakeven thresholds, and using historical maximums as stress-test scenarios.
+4. **HCS Audit Logging**: Every internal "thought" and step is SHA-256 hashed and published to the **Hedera Consensus Service (HCS)** topic in real-time. This creates an immutable, timestamped trail of *how* the AI reached its conclusion.
+5. **HTS Reputation Minting**: Upon successful completion, the agent mints **PFR** (ProofFlow Reputation) fungible tokens to the user's wallet, tracking their lifetime audit count on-chain.
+6. **NFT Loyalty Pass Milestone**: If the user's PFR balance crosses a tier threshold, a **non-fungible loyalty NFT** is automatically minted (1-per-wallet enforcement via SDK `AccountBalanceQuery`).
+7. **EVM Settlement**: The Agent signs a transaction to the `ProofValidator.sol` smart contract to record the `keccak256` hash of the final result on-chain, creating permanent cryptographic evidence.
+
+### End-to-End Pipeline Diagram
+
+```mermaid
+flowchart TD
+    A["🧑 User submits question + HBAR fee"] --> B["🔍 Intent Classification"]
+    B --> C["📊 Market Data Enrichment\n(CoinGecko, DexScreener, DefiLlama,\nFear&Greed, Reddit, Mirror Node)"]
+    C --> D["🧠 Gemini 2.5 Flash\n(Thinking Mode — 16K budget)"]
+    D --> E["📝 Structured Output\nSTEP 1 → STEP 2 → STEP 3 → FINAL"]
+    E --> F["🔒 SHA-256 Hash\neach step individually"]
+    F --> G["📡 Publish to HCS\n(Topic 0.0.8001198)\nImmutable timestamped trail"]
+    G --> H["🔗 Concatenate all hashes\nrootHash = SHA-256(h1+h2+h3+hF)"]
+    H --> I["🪙 Mint PFR Token\n(HTS 0.0.8001202)\n+1 reputation to user"]
+    I --> J{"PFR balance\n≥ tier threshold?"}
+    J -- "Yes (50/250/750)" --> K["🏅 Mint NFT Loyalty Pass\n(Bronze / Silver / Gold)\n1-per-wallet enforced"]
+    J -- "No" --> L["⛓️ EVM Anchor"]
+    K --> L
+    L --> M["📜 recordAudit()\nkeccak256(rootHash) → ProofValidator.sol\n(Contract 0x8775...)"]
+    M --> N["✅ Proof Complete\nUser receives Proof ID (UUID v4)"]
+```
+
+> **Key insight:** The raw question and AI response **never** touch the blockchain. Only SHA-256 hashes of each step and the final `keccak256(rootHash)` are stored on-chain. The Proof ID allows anyone to independently verify the full chain via the HCS Mirror Node and the EVM contract.
+
+---
+
+## 🔐 Hash-Based On-Chain Privacy: What Actually Goes on the Blockchain
+
+A common misconception is that ProofFlow stores the raw questions and AI answers on the blockchain. **It does not.** What is stored on-chain are **cryptographic hashes** — compact, fixed-length fingerprints that prove the content existed at a specific point in time without revealing the content itself.
+
+**What goes on HCS (Hedera Consensus Service):**
+
+Each reasoning step is individually hashed using SHA-256 before being published:
+
+```
+Step content: "HBAR's current price is $0.18 with a 24h volume of..."
+     ↓ SHA-256
+On-chain hash: a3f8c9d2e1b4a7f6c5d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1
+```
+
+After all steps are published, their hashes are **concatenated and hashed again** to produce a single `rootHash` — a Merkle-like fingerprint of the entire reasoning chain:
+
+```
+rootHash = SHA-256(hash_step1 + hash_step2 + hash_step3 + hash_final)
+```
+
+**What goes on the EVM (ProofValidator.sol):**
+
+The `rootHash` is then converted to `keccak256` and submitted to the smart contract via `submitResult()` or `recordAudit()`. This creates a permanent, on-chain anchor that anyone can verify.
+
+**Verification flow:**
+
+The user receives a **Proof ID** (UUID v4) for each audit. Using this ID, anyone can:
+
+1. **Query the HCS topic** via Mirror Node to retrieve all `REASONING_STEP` messages for that Proof ID.
+2. **Recompute the hashes** from the step content and verify they match what's on-chain.
+3. **Check the EVM contract** to confirm the `rootHash` was settled and the audit was completed.
+
+> **Why this matters:** The blockchain acts as a **tamper-evident seal**, not a data store. If anyone modifies even a single character of any reasoning step, the hash chain breaks — providing irrefutable proof of tampering.
+
+---
+
+## 🌍 Multi-Language AI Support
+
+ProofFlow's AI agent supports **automatic language detection** and responds in the user's native language. The system instruction includes a strict language rule:
+
+- If the user writes in **English** → the agent responds entirely in English.
+- If the user writes in **Spanish** → the agent responds entirely in Spanish.
+- The agent **never mixes languages** within a single response.
+
+This is enforced at the Gemini system prompt level, meaning all structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<FINAL>`) are generated in the detected language, and the HCS audit trail preserves the original language of reasoning.
+
+The frontend interface also supports both English and Spanish as selectable UI languages, ensuring a fully localized experience for Spanish-speaking users across Latin America and Spain.
+
+---
+
+## 🔗 On-Chain Contracts & Tokens (Hedera Testnet)
+
+All infrastructure is **deployed and live on Hedera Testnet**. Every ID below can be independently verified on [HashScan](https://hashscan.io/testnet/).
+
+| Asset | Type | Hedera ID / Address | HashScan Link |
+| :--- | :--- | :--- | :--- |
+| **ProofValidator** | EVM Smart Contract | `0x8775602A748990a4204C4b21BF44d31549802A7f` | [View on HashScan](https://hashscan.io/testnet/contract/0x8775602A748990a4204C4b21BF44d31549802A7f) |
+| **Agent Wallet** | EVM Operator | `0xCaC05e7762a0B4e200f4fa217284D3Ac4a10ADe6` | [View on HashScan](https://hashscan.io/testnet/account/0xCaC05e7762a0B4e200f4fa217284D3Ac4a10ADe6) |
+| **PFR Token** | HTS Fungible (Reputation) | `0.0.8001202` | [View on HashScan](https://hashscan.io/testnet/token/0.0.8001202) |
+| **HCS Audit Topic** | HCS Topic | `0.0.8001198` | [View on HashScan](https://hashscan.io/testnet/topic/0.0.8001198) |
+| **Genesis NFT** | HTS Non-Fungible | `0.0.8170105` | [View on HashScan](https://hashscan.io/testnet/token/0.0.8170105) |
+| **Bronze Audit Pass** | HTS Non-Fungible | `0.0.8193220` | [View on HashScan](https://hashscan.io/testnet/token/0.0.8193220) |
+| **Silver Audit Pass** | HTS Non-Fungible | *(Minted on first Silver milestone)* | — |
+| **Gold Audit Pass** | HTS Non-Fungible | *(Minted on first Gold milestone)* | — |
+
+---
+
+## 🏅 Loyalty NFT Tier System & Fee Discounts
+
+ProofFlow rewards loyal users with a **tiered NFT loyalty program** that unlocks progressive fee discounts on the HBAR network fee. As users complete more audits and accumulate PFR tokens, they unlock increasingly valuable tiers:
+
+| Tier | PFR Required | NFT Pass | Fee Discount | Effective Network Fee |
+| :---: | :---: | :--- | :---: | :---: |
+| **Free** | 0 | — | 0% | ~0.16 HBAR |
+| **🥉 Bronze** | 50 PFR | ProofFlow Audit Pass - BRONZE | 10% | ~0.14 HBAR |
+| **🥈 Silver** | 250 PFR | ProofFlow Audit Pass - SILVER | 20% | ~0.13 HBAR |
+| **🥇 Gold** | 750 PFR | ProofFlow Audit Pass - GOLD | 30% | ~0.11 HBAR |
+| **🌟 Genesis** | Invite Only | Genesis NFT (Limited Edition) | Special | — |
+
+**Key Design Decisions:**
+
+- **1-per-wallet enforcement**: Each NFT tier is limited to 1 NFT per wallet, enforced via SDK `AccountBalanceQuery` on Hedera consensus nodes (not Mirror Node), ensuring trustless verification.
+- **Automatic minting**: When a user's PFR balance crosses a threshold after an audit, the NFT is minted and transferred automatically — no manual claim needed.
+- **On-chain elegance**: Tier ownership is checked via SDK consensus queries, not off-chain databases.
+
+### 🔀 EVM ↔ Hedera Address Resolution
+
+ProofFlow supports **both EVM wallets (MetaMask, OKX)** and **native Hedera wallets (HashPack)** seamlessly. Since users can connect with either format, the backend includes a universal address resolver that bridges both ecosystems:
+
+```
+User connects with 0x7a3F...  (EVM)     →  resolveAccountId()  →  0.0.8026799 (Hedera native)
+User connects with 0.0.8026799 (native)  →  resolveAccountId()  →  0.0.8026799 (Hedera native)
+```
+
+**How it works:**
+
+1. **Detection**: When any address reaches the backend, `resolveAccountId()` checks if it starts with `0x` (EVM) or `0.0.` (native Hedera).
+2. **EVM Resolution**: For EVM addresses, it uses `AccountId.fromEvmAddress(0, 0, evmAddress)` — a deterministic local conversion from the Hedera SDK that maps the 20-byte EVM alias to the corresponding Hedera `AccountId`.
+3. **Consensus Validation**: The resolved `AccountId` is then used in an `AccountBalanceQuery` against a Hedera consensus node to verify the account exists and check its token balances.
+4. **Graceful Handling**: If the account doesn't exist on Hedera yet (e.g., a brand-new MetaMask wallet that hasn't interacted with the network), the system returns `owned: false` instead of crashing — preventing false positives.
+
+**Why this matters for NFT enforcement:**
+
+Without this resolution layer, a user could theoretically bypass the 1-per-wallet limit by connecting once via MetaMask (`0x7a3F...`) and again via HashPack (`0.0.8026799`) — even though both point to the same on-chain account. ProofFlow's resolver ensures that **regardless of how the user connects, the same underlying Hedera account is checked**, making the 1-per-wallet rule truly trustless.
+
+---
+
+## 🧠 How Gemini Thinks: Mathematical Reasoning Engine
+
+ProofFlow doesn't use Gemini as a generic chatbot. It configures Gemini 2.5 Flash in **structured thinking mode** with specific parameters designed for quantitative, auditable analysis:
+
+```json
+{
+  "generationConfig": {
+    "temperature": 0.7,
+    "maxOutputTokens": 32768,
+    "thinkingConfig": {
+      "thinkingBudget": 16384
+    }
+  },
+  "tools": [{ "googleSearch": {} }]
+}
+```
+
+**What this means:**
+
+1. **16K Thinking Budget**: Gemini allocates up to 16,384 internal "thinking tokens" before generating its visible output, enabling deep multi-step mathematical reasoning.
+2. **Structured Step Output**: The system instruction forces Gemini to produce a minimum of 3 `<STEP N>` stages and 1 `<FINAL>` conclusion. Each step is independently hashed (SHA-256) and published to HCS.
+3. **Quantitative Mandate**: The agent is explicitly instructed to *never* say "Insufficient Data." Instead, it must:
+   - Calculate **breakeven thresholds** using available data.
+   - Use **historical maximums** as stress-test scenarios when variables are unknown.
+   - Always provide a **definitive quantitative conclusion**, labeling assumptions clearly.
+4. **Google Search Grounding**: Gemini has access to `googleSearch` tools for real-time web data during reasoning, complementing the Market Data Enrichment Engine.
+5. **Multi-Key Rotation**: The backend supports up to 10 Gemini API keys (`GEMINI_API_KEY`, `GEMINI_API_KEY_2`, ..., `GEMINI_API_KEY_10`) with round-robin rotation and exponential backoff to prevent rate-limit downtime.
+
+---
+
+## 📊 Market Data Enrichment Engine (7 Live APIs)
+
+Before the AI reasons, ProofFlow's **Intelligent API Router** classifies the user's question by intent and fetches *only* the relevant data from free, public APIs:
+
+| API Source | Data Provided | When Triggered |
+| :--- | :--- | :--- |
+| **CoinGecko** | Price, market cap, volume, ATH, supply, 1h/24h/7d changes | Any crypto price/comparison question |
+| **DexScreener** | DEX pair prices, liquidity, on-chain volume | Token-specific questions (non-HBAR) |
+| **SaucerSwap** (via DexScreener) | HBAR LP pools, TVL, calculated Base APR | HBAR DeFi / yield questions |
+| **DefiLlama** | Protocol TVL, chain TVL, TVL trends | DeFi protocol / ecosystem questions |
+| **Fear & Greed Index** | 7-day sentiment trend (0–100 scale) | Sentiment / market mood questions |
+| **Hedera Mirror Node** | Total supply, staking APR, stake totals, daily rewards | HBAR network / staking questions |
+| **Reddit** | Top posts from r/cryptocurrency, r/CryptoMarkets, etc. | News / social / opinion questions |
+
+**SaucerSwap APR Calculation** (genuine protocol math):  
+```
+Base APR = (24h_Volume × 0.25% LP Fee × 365) / TVL × 100
+```
+This is calculated using real DexScreener data, not inflated marketing numbers.
+
+---
+
+## 🛡️ Enterprise-Grade Protection
+
+ProofFlow incorporates a robust 3-layer security system to protect the autonomous infrastructure:
+
+1. **Hedera Micropayments**: Every request requires an on-chain HBAR fee settlement — no free rides.
+2. **hCaptcha Enterprise**: Prevents bot-net spam while dynamically ignoring valid on-chain agent requests.
+3. **Decentralized Rate Limiting**: Request throttling tied to the connected Hedera Wallet Address.
+
+---
+
+## 🤖 OpenClaw Bounty: Killer App for the Agentic Society
+
+ProofFlow is **agent-first public infrastructure** — the primary users are autonomous agents, not humans. The human-facing dashboard exists to *observe* agent activity.
+
+### How It Works
+
+ProofFlow acts as a **Verifiable Reasoning Oracle**. Agents can pay for a proof and *cryptographically reference* the proofs of other agents, building an immutable DAG of reasoning:
+
+1. **Bank Agent** pays HBAR and requests Risk Analysis → `Proof #1`
+2. **Security Agent** passes `Proof #1` hash and requests Audit → `Proof #2 (depends on #1)`
+3. **Market Agent** passes `Proof #1, #2` hashes and requests Strategy → `Proof #3 (depends on #1, #2)`
+
+### OpenClaw Swarm Simulation
+
+The project includes a **fully functional multi-agent simulation** (`openclaw-swarm.js`) that demonstrates autonomous agent collaboration on Hedera:
+
+```bash
+# Ensure ProofFlow backend is running on localhost:3001
+node packages/backend/src/scripts/openclaw-swarm.js
+```
+
+The swarm creates specialized autonomous agents (Bank, Security, Market) that independently pay HBAR, query ProofFlow, and chain their proofs — demonstrating agent-to-agent composability without human intervention.
+
+### OpenClaw Bounty Compliance
+
+| Requirement | Status | Implementation |
+| :--- | :---: | :--- |
+| App is agent-first (OpenClaw agents are primary users) | ✅ | Agents autonomously pay, query, and chain proofs via REST API |
+| Autonomous or semi-autonomous agent behavior | ✅ | Full pipeline runs without human intervention after HBAR payment |
+| Clear value in multi-agent environment | ✅ | Proof DAG enables verifiable delegation and composable reasoning |
+| Hedera EVM, Token Service, or Consensus Service | ✅ | All three: HCS (audit) + HTS (reputation) + EVM (settlement/escrow) |
+| Public repo | ✅ | [github.com/Handilusa/ProofFlow](https://github.com/Handilusa/ProofFlow) |
+| Live demo URL | ✅ | [proofflow-layer.vercel.app](https://proofflow-layer.vercel.app/) |
+| <3 min demo video | ✅ | [INSERT YOUTUBE LINK] |
+| README with setup + walkthrough | ✅ | You're reading it |
+
+### Agent-to-Agent Value Proposition
+
+ProofFlow gets **more valuable as more agents join**:
+- Each agent's proof can be referenced by other agents, creating network effects
+- Reputation tokens (PFR via HTS) enable trust scoring between agents
+- The proof DAG creates a shared knowledge graph that no single agent could build alone
+- Hedera's $0.0001 HCS fees make per-step logging economically viable at scale
 
 ---
 
@@ -64,11 +296,13 @@ ProofFlow demonstrates a true **multi-service integration** on Hedera:
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Logic** | Gemini 2.5 Flash | Higher-order reasoning and autonomous step decomposition. |
-| **Blockchain** | Hedera (HCS, HTS, EVM) | The backbone for consensus, identity, and settlement. |
+| **AI Reasoning** | Gemini 2.5 Flash (Thinking Mode) | 16K thinking budget, structured multi-step decomposition with Google Search grounding. |
+| **Blockchain** | Hedera (HCS, HTS, EVM) | The backbone for consensus-level audit trails, reputation tokens, and on-chain settlement. |
+| **Smart Contract** | Solidity (ProofValidator.sol) | Autonomous escrow: users deposit HBAR → agent delivers → contract settles bounty. |
+| **Market Data** | CoinGecko, DexScreener, DefiLlama, Fear & Greed, Reddit | 7 free APIs for real-time market intelligence injected into AI reasoning. |
 | **Frontend** | Next.js 14, Tailwind, Framer Motion | Premium dashboard with interactive terminal and live audit feed. |
-| **Backend** | Node.js, Express | Autonomous orchestrator and Hedera service manager. |
-| **Connectivity** | WalletConnect / RainbowKit | Multi-ecosystem wallet support (Hashpack, MetaMask, OKX). |
+| **Backend** | Node.js, Express | Autonomous orchestrator, market data router, and Hedera service manager. |
+| **Connectivity** | WalletConnect / RainbowKit | Multi-ecosystem wallet support (HashPack, MetaMask, OKX). |
 | **Security** | hCaptcha + DDoS Shield + Rate Limiter | 3-layer bot protection tied to wallet addresses. |
 
 ---
@@ -78,11 +312,13 @@ ProofFlow demonstrates a true **multi-service integration** on Hedera:
 | Decision | Choice | Rationale |
 | :--- | :--- | :--- |
 | **Why HCS for audit trail?** | Hedera Consensus Service | Sub-second finality (~3-5s), ordered timestamps, and $0.0001/msg makes it viable for per-step logging. No other L1 can do this economically. |
-| **Why Gemini 2.5 Flash?** | Google Gemini (thinking mode) | Native "thinking budget" parameter allows explicit multi-step reasoning that maps cleanly to our [STEP N] → [FINAL] structured output format. |
+| **Why Gemini 2.5 Flash?** | Google Gemini (thinking mode) | Native "thinking budget" parameter allows explicit multi-step reasoning that maps cleanly to our `<STEP N>` → `<FINAL>` structured output format. |
 | **Why EVM for settlement?** | Solidity Smart Contract (ProofValidator.sol) | Enables on-chain escrow (users deposit HBAR → agent delivers → contract settles), which is impossible with HCS alone. Also enables future cross-chain bridge verification. |
 | **Why fungible tokens for reputation?** | HTS Fungible (PFR) | Fungible tokens allow additive reputation scores queryable via Mirror Node, enabling leaderboards and tiered access without complex NFT metadata. |
-| **Why micropayments?** | 0.02 HBAR per query | Creates an economic Sybil barrier, generates sustainable revenue, and proves the "autonomous settlement" thesis. Hedera's $0.0001 tx fee makes sub-cent payments viable. |
-| **Why multi-key rotation?** | Round-robin Gemini API keys | Prevents rate limiting from killing the service during high-traffic periods (hackathon demos). Graceful degradation with exponential backoff. |
+| **Why NFTs for loyalty passes?** | HTS Non-Fungible (per tier) | NFTs serve as composable, on-chain credentials: Bronze/Silver/Gold badges grant fee discounts and signal user commitment across dApps. |
+| **Why SDK for ownership checks?** | `AccountBalanceQuery` (consensus node) | SDK queries hit consensus nodes directly, guaranteeing real-time accuracy. Mirror Node has propagation delays that could allow exploits. |
+| **Why micropayments?** | 0.16 HBAR per query (decreasing with tier) | Creates an economic Sybil barrier, generates sustainable revenue, and proves the "autonomous settlement" thesis. Hedera's $0.0001 tx fee makes sub-cent payments viable. |
+| **Why multi-key rotation?** | Round-robin Gemini API keys (up to 10) | Prevents rate limiting from killing the service during high-traffic periods. Graceful degradation with exponential backoff. |
 
 ---
 
@@ -104,49 +340,7 @@ Retrieves the full HCS reasoning chain and metadata for a specific proof.
 Returns deep lineage verification data, tracing the full DAG of proof dependencies down to their root EVM transaction hashes.
 
 ### `GET /api/v1/leaderboard`
-Ranks users based on their HTS Reputation Token balances indexed via the Mirror Node.
-
----
-
-## 🤖 OpenClaw Bounty: Killer App for the Agentic Society
-
-ProofFlow is **agent-first public infrastructure** — the primary users are autonomous agents, not humans. The human-facing dashboard exists to *observe* agent activity.
-
-### How It Works
-
-ProofFlow acts as a **Verifiable Reasoning Oracle**. Agents can pay for a proof and *cryptographically reference* the proofs of other agents, building an immutable DAG of reasoning:
-
-1. **Bank Agent** pays HBAR and requests Risk Analysis → `Proof #1`
-2. **Security Agent** passes `Proof #1` hash and requests Audit → `Proof #2 (depends on #1)`
-3. **Market Agent** passes `Proof #1, #2` hashes and requests Strategy → `Proof #3 (depends on #1, #2)`
-
-### OpenClaw Bounty Compliance
-
-| Requirement | Status | Implementation |
-| :--- | :---: | :--- |
-| App is agent-first (OpenClaw agents are primary users) | ✅ | Agents autonomously pay, query, and chain proofs via REST API |
-| Autonomous or semi-autonomous agent behavior | ✅ | Full pipeline runs without human intervention after HBAR payment |
-| Clear value in multi-agent environment | ✅ | Proof DAG enables verifiable delegation and composable reasoning |
-| Hedera EVM, Token Service, or Consensus Service | ✅ | All three: HCS (audit) + HTS (reputation) + EVM (settlement/escrow) |
-| Public repo | ✅ | `github.com/Handilusa/ProofFlow` |
-| Live demo URL | ✅ | [INSERT DEMO URL] |
-| <3 min demo video | ✅ | [INSERT YOUTUBE LINK] |
-| README with setup + walkthrough | ✅ | You're reading it |
-
-### Agent-to-Agent Value Proposition
-
-ProofFlow gets **more valuable as more agents join**:
-- Each agent's proof can be referenced by other agents, creating network effects
-- Reputation tokens (PFR via HTS) enable trust scoring between agents
-- The proof DAG creates a shared knowledge graph that no single agent could build alone
-- Hedera's $0.0001 HCS fees make per-step logging economically viable at scale
-
-**Run the live DAG simulation:**
-```bash
-# Ensure ProofFlow backend is running on localhost:3001
-node packages/backend/src/scripts/openclaw-swarm.js
-```
-This script creates a swarm of autonomous agents that independently pay and query ProofFlow, demonstrating agent-to-agent composability on Hedera.
+Ranks users based on their HTS Reputation Token (PFR) balances indexed via the Mirror Node. Includes Genesis NFT holder badge.
 
 ---
 
@@ -155,19 +349,25 @@ This script creates a swarm of autonomous agents that independently pay and quer
 ```bash
 # Clone and install
 git clone https://github.com/Handilusa/ProofFlow.git
+cd ProofFlow
 npm install
 
-# Configure Backend (.env)
-HEDERA_ACCOUNT_ID="0.0.xxxx"
-HEDERA_PRIVATE_KEY="xxxx"
+# Configure Backend (.env in packages/backend/)
+HEDERA_ACCOUNT_ID_TESTNET="0.0.xxxx"
+HEDERA_PRIVATE_KEY_TESTNET="xxxx"
+TESTNET_OPERATOR_PRIVATE_KEY="xxxx"  # EVM-compatible key for contract interaction
 GEMINI_API_KEY="xxxx"
+# Optional: GEMINI_API_KEY_2, GEMINI_API_KEY_3, ... up to _10
 
 # Run stack
-npm run dev # within packages/frontend
-npm start   # within packages/backend
+cd packages/backend && npm start       # Backend on :3001
+cd packages/frontend && npm run dev    # Frontend on :3000
 ```
+
+> **Windows Users**: Set `NEXT_IGNORE_INCORRECT_LOCKFILE=true` before running `npm run dev` to bypass a known Next.js 14 monorepo lockfile bug.
 
 ---
 
 ## ⚖️ License
-MIT License - Developed for the **Hedera Apex 2026 Hackathon**.
+
+MIT License — Developed for the **Hedera Apex 2026 Hackathon** 🚀
