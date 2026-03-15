@@ -4,8 +4,7 @@ import {
     PrivateKey,
     TokenCreateTransaction,
     TokenType,
-    TokenSupplyType,
-    TokenMintTransaction
+    TokenSupplyType
 } from "@hashgraph/sdk";
 import fs from "fs";
 import path from "path";

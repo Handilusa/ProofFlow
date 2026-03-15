@@ -3,7 +3,6 @@ import {
     TokenType,
     TokenSupplyType,
     TokenMintTransaction,
-    TokenAssociateTransaction,
     TransferTransaction,
     PrivateKey,
     AccountBalanceQuery,

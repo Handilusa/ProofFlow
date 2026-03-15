@@ -12,7 +12,7 @@ try {
     // Filter out proofs that:
     // 1. Are not VERIFIED or CONFIRMED (i.e. stuck in PUBLISHING / PROCESSING)
     // 2. Are VERIFIED/CONFIRMED but missing the evmTxHash (no tx reward generated)
-    const filteredData = data.filter(([key, value]) => {
+    const filteredData = data.filter(([_key, value]) => {
         const isComplete = value.status === 'CONFIRMED' || value.status === 'VERIFIED';
         const hasTxReward = !!value.evmTxHash;
 

@@ -3,8 +3,7 @@ import {
     Client,
     PrivateKey,
     TokenMintTransaction,
-    TransferTransaction,
-    AccountId
+    TransferTransaction
 } from "@hashgraph/sdk";
 
 dotenv.config();

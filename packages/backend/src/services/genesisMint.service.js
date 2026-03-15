@@ -1,4 +1,4 @@
-import { Client, PrivateKey, TokenMintTransaction, TransferTransaction, AccountBalanceQuery, AccountId, TokenId } from '@hashgraph/sdk';
+import { TokenMintTransaction, TransferTransaction, AccountBalanceQuery, AccountId, TokenId } from '@hashgraph/sdk';
 import { getClient } from './hedera/networkManager.js';
 
 const GENESIS_TOKEN_ID = "0.0.8170105";

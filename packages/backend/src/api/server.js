@@ -742,7 +742,9 @@ app.get("/api/v1/config", async (req, res) => {
     if (address) {
         try {
             userTier = await auditPassService.getUserTier(address, network);
-        } catch (e) { }
+        } catch (e) {
+            console.error("[API] Failed to fetch user tier for config:", e.message);
+        }
     }
 
     return res.status(200).json({

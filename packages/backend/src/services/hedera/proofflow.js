@@ -2,8 +2,6 @@ import { ethers } from "ethers";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { publishHash } from "./hcs-logger.js";
-import { mintReputation } from "./reputation-token.js";
 import { getRpcUrl, getEvmPrivateKey, getConfigDirPath, getNetwork } from "./networkManager.js";
 import "dotenv/config";
 

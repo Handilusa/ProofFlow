@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import fs from 'fs';
 
 async function main() {
     const topicId = '0.0.8001198';

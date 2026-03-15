@@ -148,7 +148,7 @@ describe("3-Layer API Protection System", () => {
         it("should issue a CAPTCHA challenge for suspicious traffic patterns", async () => {
             const { createCaptchaChallenge } = await import("../api/middleware/captchaChallenge.js");
 
-            const { middleware, verifyHandler } = createCaptchaChallenge({
+            const { middleware } = createCaptchaChallenge({
                 suspicionThreshold: 3,  // Low threshold for testing
             });
 

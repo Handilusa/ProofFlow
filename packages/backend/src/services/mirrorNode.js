@@ -1,10 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import { getMirrorNodeUrl, getConfigDirPath, getNetwork } from "./hedera/networkManager.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 function getTopicId(networkStr) {
     const network = getNetwork(networkStr);
@@ -107,7 +103,9 @@ export async function fetchLeaderboard(userService, networkStr = "testnet") {
                 const accData = await accRes.json();
                 evmAddress = accData.evm_address || null;
             }
-        } catch (e) { }
+        } catch (e) {
+            // Ignored, account might not have an EVM equivalent
+        }
 
         let isGenesis = genesisHolders.has(b.account);
 
@@ -122,7 +120,9 @@ export async function fetchLeaderboard(userService, networkStr = "testnet") {
                         isGenesis = true;
                     }
                 }
-            } catch (err) { }
+            } catch (err) {
+                // Ignored, relationship might not exist
+            }
         }
         
         // Lookup username using both native ID and EVM alias

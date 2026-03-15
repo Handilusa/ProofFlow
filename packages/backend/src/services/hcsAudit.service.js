@@ -270,7 +270,9 @@ export class HCSAuditService {
                                 foundFinal = true;
                             }
                         }
-                    } catch (e) { }
+                    } catch (e) { 
+                        // Ignored intentionally
+                    }
                 }
                 nextUrl = data.links?.next ? `${mirrorNodeBaseUrl}${data.links.next}` : null;
             }
