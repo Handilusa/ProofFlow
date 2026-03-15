@@ -12,7 +12,7 @@
 
 ## 📝 Project Description (100 words)
 
-ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem by creating verifiable, immutable audit trails for every AI reasoning step. When a user pays a native HBAR micro-fee, an off-chain AI agent (Gemini 2.5 Flash) decomposes their query into logical steps, hashes each step onto Hedera Consensus Service (HCS), mints a reputation credential via Hedera Token Service (HTS), and settles the final proof on an EVM smart contract — all autonomously, without human intervention. ProofFlow enables trustless agent-to-agent composability through cryptographically chained proof DAGs, positioning Hedera as the trust backbone for the Agentic Economy.
+ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem by creating verifiable, immutable audit trails for every AI reasoning step. When a user pays a native HBAR micro-fee, the **ProofFlow Neural Engine v2** — a crypto-specialized reasoning agent trained with Gemini 2.5 Flash — decomposes their query into logical steps, hashes each step onto Hedera Consensus Service (HCS), mints a reputation credential via Hedera Token Service (HTS), and settles the final proof on an EVM smart contract — all autonomously, without human intervention. ProofFlow enables trustless agent-to-agent composability through cryptographically chained proof DAGs, positioning Hedera as the trust backbone for the Agentic Economy.
 
 ---
 
@@ -20,7 +20,7 @@ ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem
 
 **ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon**. It solves the "Black Box" problem of AI by fusing decentralized infrastructure with autonomous reasoning.
 
-When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where an off-chain AI agent (powered by Gemini) autonomously manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
+When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where the **ProofFlow Neural Engine v2** — a crypto-specialized autonomous agent — manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
 
 ---
 
@@ -47,7 +47,7 @@ ProofFlow demonstrates a true **multi-service integration** on Hedera:
 
 1. **Autonomous Trigger**: User deposits a native HBAR micro-fee into the ProofValidator smart contract.
 2. **Market Data Enrichment**: The agent classifies the query by intent and fetches real-time data from up to 7 APIs simultaneously — CoinGecko, DexScreener, DefiLlama, Fear & Greed Index, SaucerSwap (via DexScreener), Hedera Mirror Node (mainnet), and Reddit — injecting quantitative context into the AI prompt.
-3. **AI Inference via Gemini 2.5 Flash (Thinking Mode)**: The agent uses Google's Gemini 2.5 Flash with a **16,384 thinking token budget** (`thinkingConfig.thinkingBudget`) to decompose the problem into structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<STEP 3>`, `<FINAL>`). This is not generic text generation — the model is instructed to reason *mathematically*, citing hard data, calculating breakeven thresholds, and using historical maximums as stress-test scenarios.
+3. **Neural Engine v2 Inference (Thinking Mode)**: The **ProofFlow Neural Engine v2** — a crypto-specialized reasoning agent trained with Gemini 2.5 Flash — uses a **16,384 thinking token budget** to decompose the problem into structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<STEP 3>`, `<FINAL>`). This is not generic text generation — the engine is instructed to reason *mathematically*, citing hard data, calculating breakeven thresholds, and using historical maximums as stress-test scenarios.
 4. **HCS Audit Logging**: Every internal "thought" and step is SHA-256 hashed and published to the **Hedera Consensus Service (HCS)** topic in real-time. This creates an immutable, timestamped trail of *how* the AI reached its conclusion.
 5. **HTS Reputation Minting**: Upon successful completion, the agent mints **PFR** (ProofFlow Reputation) fungible tokens to the user's wallet, tracking their lifetime audit count on-chain.
 6. **NFT Loyalty Pass Milestone**: If the user's PFR balance crosses a tier threshold, a **non-fungible loyalty NFT** is automatically minted (1-per-wallet enforcement via SDK `AccountBalanceQuery`).
@@ -58,19 +58,19 @@ ProofFlow demonstrates a true **multi-service integration** on Hedera:
 ```mermaid
 flowchart TD
     A["🧑 User submits question + HBAR fee"] --> B["🔍 Intent Classification"]
-    B --> C["📊 Market Data Enrichment\n(CoinGecko, DexScreener, DefiLlama,\nFear&Greed, Reddit, Mirror Node)"]
-    C --> D["🧠 Gemini 2.5 Flash\n(Thinking Mode — 16K budget)"]
-    D --> E["📝 Structured Output\nSTEP 1 → STEP 2 → STEP 3 → FINAL"]
-    E --> F["🔒 SHA-256 Hash\neach step individually"]
-    F --> G["📡 Publish to HCS\n(Topic 0.0.8001198)\nImmutable timestamped trail"]
-    G --> H["🔗 Concatenate all hashes\nrootHash = SHA-256(h1+h2+h3+hF)"]
-    H --> I["🪙 Mint PFR Token\n(HTS 0.0.8001202)\n+1 reputation to user"]
-    I --> J{"PFR balance\n≥ tier threshold?"}
-    J -- "Yes (50/250/750)" --> K["🏅 Mint NFT Loyalty Pass\n(Bronze / Silver / Gold)\n1-per-wallet enforced"]
+    B --> C["📊 Market Data Enrichment<br/>(CoinGecko · DexScreener · DefiLlama<br/>Fear&amp;Greed · Reddit · Mirror Node)"]
+    C --> D["🧠 ProofFlow Neural Engine v2<br/>(Thinking Mode — 16K budget)"]
+    D --> E["📝 Structured Output<br/>STEP 1 → STEP 2 → STEP 3 → FINAL"]
+    E --> F["🔒 SHA-256 Hash<br/>each step individually"]
+    F --> G["📡 Publish to HCS<br/>(Topic 0.0.8001198)<br/>Immutable timestamped trail"]
+    G --> H["🔗 Concatenate all hashes<br/>rootHash = SHA-256 h1+h2+h3+hF"]
+    H --> I["🪙 Mint PFR Token<br/>(HTS 0.0.8001202)<br/>+1 reputation to user"]
+    I --> J{"PFR balance<br/>≥ tier threshold?"}
+    J -- "Yes (50/250/750)" --> K["🏅 Mint NFT Loyalty Pass<br/>(Bronze / Silver / Gold)<br/>1-per-wallet enforced"]
     J -- "No" --> L["⛓️ EVM Anchor"]
     K --> L
-    L --> M["📜 recordAudit()\nkeccak256(rootHash) → ProofValidator.sol\n(Contract 0x8775...)"]
-    M --> N["✅ Proof Complete\nUser receives Proof ID (UUID v4)"]
+    L --> M["📜 recordAudit<br/>keccak256 rootHash → ProofValidator.sol<br/>(Contract 0x8775...)"]
+    M --> N["✅ Proof Complete<br/>User receives Proof ID (UUID v4)"]
 ```
 
 > **Key insight:** The raw question and AI response **never** touch the blockchain. Only SHA-256 hashes of each step and the final `keccak256(rootHash)` are stored on-chain. The Proof ID allows anyone to independently verify the full chain via the HCS Mirror Node and the EVM contract.
@@ -121,7 +121,7 @@ ProofFlow's AI agent supports **automatic language detection** and responds in t
 - If the user writes in **Spanish** → the agent responds entirely in Spanish.
 - The agent **never mixes languages** within a single response.
 
-This is enforced at the Gemini system prompt level, meaning all structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<FINAL>`) are generated in the detected language, and the HCS audit trail preserves the original language of reasoning.
+This is enforced at the Neural Engine system prompt level, meaning all structured reasoning steps (`<STEP 1>`, `<STEP 2>`, `<FINAL>`) are generated in the detected language, and the HCS audit trail preserves the original language of reasoning.
 
 The frontend interface also supports both English and Spanish as selectable UI languages, ensuring a fully localized experience for Spanish-speaking users across Latin America and Spain.
 
@@ -184,9 +184,9 @@ Without this resolution layer, a user could theoretically bypass the 1-per-walle
 
 ---
 
-## 🧠 How Gemini Thinks: Mathematical Reasoning Engine
+## 🧠 ProofFlow Neural Engine v2: Mathematical Reasoning Agent
 
-ProofFlow doesn't use Gemini as a generic chatbot. It configures Gemini 2.5 Flash in **structured thinking mode** with specific parameters designed for quantitative, auditable analysis:
+The **ProofFlow Neural Engine v2** is a crypto-specialized autonomous reasoning agent trained with Google's Gemini 2.5 Flash. Unlike generic AI chatbots, it is configured in **structured thinking mode** with specific parameters designed for quantitative, auditable analysis:
 
 ```json
 {
@@ -203,14 +203,14 @@ ProofFlow doesn't use Gemini as a generic chatbot. It configures Gemini 2.5 Flas
 
 **What this means:**
 
-1. **16K Thinking Budget**: Gemini allocates up to 16,384 internal "thinking tokens" before generating its visible output, enabling deep multi-step mathematical reasoning.
-2. **Structured Step Output**: The system instruction forces Gemini to produce a minimum of 3 `<STEP N>` stages and 1 `<FINAL>` conclusion. Each step is independently hashed (SHA-256) and published to HCS.
+1. **16K Thinking Budget**: The engine allocates up to 16,384 internal "thinking tokens" before generating its visible output, enabling deep multi-step mathematical reasoning.
+2. **Structured Step Output**: The system instruction forces the engine to produce a minimum of 3 `<STEP N>` stages and 1 `<FINAL>` conclusion. Each step is independently hashed (SHA-256) and published to HCS.
 3. **Quantitative Mandate**: The agent is explicitly instructed to *never* say "Insufficient Data." Instead, it must:
    - Calculate **breakeven thresholds** using available data.
    - Use **historical maximums** as stress-test scenarios when variables are unknown.
    - Always provide a **definitive quantitative conclusion**, labeling assumptions clearly.
-4. **Google Search Grounding**: Gemini has access to `googleSearch` tools for real-time web data during reasoning, complementing the Market Data Enrichment Engine.
-5. **Multi-Key Rotation**: The backend supports up to 10 Gemini API keys (`GEMINI_API_KEY`, `GEMINI_API_KEY_2`, ..., `GEMINI_API_KEY_10`) with round-robin rotation and exponential backoff to prevent rate-limit downtime.
+4. **Live Search Grounding**: The engine has access to `googleSearch` tools for real-time web data during reasoning, complementing the Market Data Enrichment Engine.
+5. **Multi-Key Rotation**: The backend supports up to 10 API keys with round-robin rotation and exponential backoff to prevent rate-limit downtime during high-traffic periods.
 
 ---
 
@@ -296,7 +296,7 @@ ProofFlow gets **more valuable as more agents join**:
 
 | Layer | Technology | Purpose |
 | :--- | :--- | :--- |
-| **AI Reasoning** | Gemini 2.5 Flash (Thinking Mode) | 16K thinking budget, structured multi-step decomposition with Google Search grounding. |
+| **AI Reasoning** | ProofFlow Neural Engine v2 (trained with Gemini 2.5 Flash) | 16K thinking budget, structured multi-step decomposition with live search grounding. |
 | **Blockchain** | Hedera (HCS, HTS, EVM) | The backbone for consensus-level audit trails, reputation tokens, and on-chain settlement. |
 | **Smart Contract** | Solidity (ProofValidator.sol) | Autonomous escrow: users deposit HBAR → agent delivers → contract settles bounty. |
 | **Market Data** | CoinGecko, DexScreener, DefiLlama, Fear & Greed, Reddit | 7 free APIs for real-time market intelligence injected into AI reasoning. |
@@ -312,13 +312,13 @@ ProofFlow gets **more valuable as more agents join**:
 | Decision | Choice | Rationale |
 | :--- | :--- | :--- |
 | **Why HCS for audit trail?** | Hedera Consensus Service | Sub-second finality (~3-5s), ordered timestamps, and $0.0001/msg makes it viable for per-step logging. No other L1 can do this economically. |
-| **Why Gemini 2.5 Flash?** | Google Gemini (thinking mode) | Native "thinking budget" parameter allows explicit multi-step reasoning that maps cleanly to our `<STEP N>` → `<FINAL>` structured output format. |
+| **Why this foundation model?** | Gemini 2.5 Flash (thinking mode) | Native "thinking budget" parameter allows explicit multi-step reasoning that maps cleanly to our `<STEP N>` → `<FINAL>` structured output format. The Neural Engine v2 adds crypto-specific system instructions and API enrichment on top. |
 | **Why EVM for settlement?** | Solidity Smart Contract (ProofValidator.sol) | Enables on-chain escrow (users deposit HBAR → agent delivers → contract settles), which is impossible with HCS alone. Also enables future cross-chain bridge verification. |
 | **Why fungible tokens for reputation?** | HTS Fungible (PFR) | Fungible tokens allow additive reputation scores queryable via Mirror Node, enabling leaderboards and tiered access without complex NFT metadata. |
 | **Why NFTs for loyalty passes?** | HTS Non-Fungible (per tier) | NFTs serve as composable, on-chain credentials: Bronze/Silver/Gold badges grant fee discounts and signal user commitment across dApps. |
 | **Why SDK for ownership checks?** | `AccountBalanceQuery` (consensus node) | SDK queries hit consensus nodes directly, guaranteeing real-time accuracy. Mirror Node has propagation delays that could allow exploits. |
 | **Why micropayments?** | 0.16 HBAR per query (decreasing with tier) | Creates an economic Sybil barrier, generates sustainable revenue, and proves the "autonomous settlement" thesis. Hedera's $0.0001 tx fee makes sub-cent payments viable. |
-| **Why multi-key rotation?** | Round-robin Gemini API keys (up to 10) | Prevents rate limiting from killing the service during high-traffic periods. Graceful degradation with exponential backoff. |
+| **Why multi-key rotation?** | Round-robin API keys (up to 10) | Prevents rate limiting from killing the service during high-traffic periods. Graceful degradation with exponential backoff. |
 
 ---
 
