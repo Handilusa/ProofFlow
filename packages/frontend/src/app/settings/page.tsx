@@ -269,7 +269,7 @@ export default function SettingsPage() {
                         </div>
                     </div>
                     <div className="flex-1 flex items-center gap-4">
-                        <span className="text-sm text-white/60 font-mono">ProofFlow v1.0.4</span>
+                        <span className="text-sm text-white/60 font-mono">ProofFlow v1.2.0</span>
                         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/5 border border-white/10">
                             <ShieldCheck className="w-3 h-3 text-emerald-400" />
                             <span className="text-[10px] text-white/50 uppercase tracking-widest font-medium">Hello Future Apex</span>

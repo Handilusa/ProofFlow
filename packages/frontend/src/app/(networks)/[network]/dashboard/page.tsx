@@ -4,7 +4,16 @@ import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, FileUp, Hash, ExternalLink, ShieldCheck, CheckCircle2, Lock, Loader2, Activity, Trophy, AlertTriangle, Cpu } from 'lucide-react';
+import {
+  ArrowRight, Activity, Wallet, PieChart, Info, Map, CheckCircle2,
+  ExternalLink, BarChart3, AlertTriangle, Key, Search,
+  ArrowUpRight, ArrowDownRight, Clock, ShieldCheck, Zap, Server, Database, Globe,
+  Cpu,
+  ChevronDown,
+  Loader2,
+  Terminal,
+  Fingerprint, Send, FileUp, Hash, Lock, Trophy
+} from "lucide-react";
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
 import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha } from '@/lib/api';
@@ -129,6 +138,12 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
   const [randomVectors, setRandomVectors] = useState<string[]>([]);
   const [paymentStatus, setPaymentStatus] = useState<'idle' | 'pending' | 'confirming' | 'done' | 'cancelled'>('idle');
   const [pfConfig, setPfConfig] = useState<ProofFlowConfig | null>(null);
+  const [isExecutingSwap, setIsExecutingSwap] = useState(false);
+  const [swapTxHash, setSwapTxHash] = useState<string | null>(null);
+  const [swapError, setSwapError] = useState<string | null>(null);
+  const [confirmText, setConfirmText] = useState("");
+  const [forceConfirmStep, setForceConfirmStep] = useState(false);
+  const [lastProofId, setLastProofId] = useState<string | null>(null);
 
   // CAPTCHA State
   const [captchaData, setCaptchaData] = useState<{ token: string; question: string } | null>(null);
@@ -144,6 +159,59 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
   const expectedChainId = network === 'mainnet' ? 295 : 296;
   const isNetworkMismatch = account?.startsWith('0x') && walletChainId && walletChainId !== expectedChainId;
   const walletNetworkName = walletChainId === 295 ? 'Mainnet' : walletChainId === 296 ? 'Testnet' : `Chain ${walletChainId}`;
+
+  const handleExecuteSwap = async () => {
+    if (!result?.txData) return;
+    setIsExecutingSwap(true);
+    setSwapTxHash(null);
+    setSwapError(null);
+    console.log('[SwapExec] Starting swap execution...', { proofId: result?.proofId, txData: result?.txData });
+    try {
+      console.log('[SwapExec] Calling sendTransactionAsync with value:', result.txData.value);
+      const hash = await sendTransactionAsync({
+        to: result.txData.to as `0x${string}`,
+        value: BigInt(result.txData.value),
+        data: result.txData.data as `0x${string}`,
+      });
+      console.log('[SwapExec] Transaction hash received:', hash);
+      const txHash = typeof hash === 'string' ? hash : String(hash);
+      setSwapTxHash(txHash);
+      setResult(prev => prev ? { ...prev, status: "PUBLISHING_TO_HEDERA" } : null);
+
+      // Trigger HCS and EVM Core anchoring for the swap
+      if (result?.proofId) {
+        try {
+          console.log('[SwapExec] Calling /swap/anchor with:', { proofId: result.proofId, txHash });
+          const anchorRes = await fetch(`${API_URL}/swap/anchor`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'x-network': network 
+            },
+            body: JSON.stringify({
+              proofId: result.proofId,
+              txHash,
+              swapDetails: result.swapDetails
+            })
+          });
+          console.log('[SwapExec] /swap/anchor response:', anchorRes.status, anchorRes.statusText);
+          
+          // Force the effect to start polling this proofId to catch the HCS/EVM updates
+          setIsPolling(true);
+          
+        } catch (e) {
+          console.error("[SwapExec] Failed to trigger swap anchor", e);
+        }
+      } else {
+        console.warn('[SwapExec] No proofId available, skipping anchor');
+      }
+    } catch (e: any) {
+      console.error("[SwapExec] Swap Execution Failed:", e);
+      setSwapError(e?.shortMessage || e?.message || 'Unknown error');
+    } finally {
+      setIsExecutingSwap(false);
+    }
+  };
 
   // Minimal ABI for the ProofValidator contract (only what the frontend needs)
   const PROOF_VALIDATOR_ABI = [
@@ -258,15 +326,28 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
             // During the gap between initial response and HCS confirmation,
             // Mirror Node may return empty/fewer steps. We keep the richer
             // data we already have and only update metadata & status.
+            // STATUS PRIORITY: Never regress to an earlier status during polling.
+            const STATUS_PRIORITY: Record<string, number> = {
+              "PENDING_EXECUTION": 0,
+              "PUBLISHING_TO_HEDERA": 1,
+              "CONFIRMED": 2,
+              "VERIFIED": 3,
+              "FAILED": 3,
+            };
+
             setResult(prev => {
               if (!prev) return updatedProof;
               const prevSteps = prev.steps || [];
               const newSteps = updatedProof.steps || [];
+              const prevPriority = STATUS_PRIORITY[prev.status as string] ?? 0;
+              const newPriority = STATUS_PRIORITY[updatedProof.status as string] ?? 0;
               return {
                 ...prev,
                 ...updatedProof,
                 // Preserve existing steps if poll returned fewer (Mirror Node lag)
                 steps: newSteps.length >= prevSteps.length ? newSteps : prevSteps,
+                // Never regress status (e.g. don't go from PUBLISHING_TO_HEDERA back to PENDING_EXECUTION)
+                status: newPriority >= prevPriority ? updatedProof.status : prev.status,
               };
             });
 
@@ -308,8 +389,12 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
     setPaymentStatus('idle');
 
     try {
+      // FREE SWAP BYPASS: If the user is asking to execute a DEX swap, we waive the $PFR micropayment. 
+      // They will pay gas natively for the swap execution later.
+      const isSwapIntent = /^swap\s+(\d+\.?\d*)\s+(\w+)\s+(?:to|for|→)\s+(\w+)/i.test(question.trim());
+
       // NEW AUTONOMOUS FLOW: Enforce payment if required by config
-      if (pfConfig?.paymentRequired && account) {
+      if (pfConfig?.paymentRequired && account && !isSwapIntent) {
         setPaymentStatus('pending');
         let paymentTxHash: string | undefined;
         try {
@@ -433,14 +518,19 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
         }
 
         // Submit question AFTER payment succeeds — errors here go to the general catch
-        const res = await submitQuestion(question, account, paymentTxHash, undefined, network);
+        const parentIds = lastProofId ? [lastProofId] : undefined;
+        const res = await submitQuestion(question, account, paymentTxHash, parentIds, network);
         setResult(res);
+        if (res?.proofId) setLastProofId(res.proofId);
         setIsLoading(false);
       } else {
         // If the contract isn't ready or user isn't fully connected, just try the direct API fallback
         let paymentTxHash = undefined;
-        const res = await submitQuestion(question, account || undefined, paymentTxHash, undefined, network);
+        const parentIds = lastProofId ? [lastProofId] : undefined;
+        const res = await submitQuestion(question, account || undefined, paymentTxHash, parentIds, network);
         setResult(res);
+        if (res?.proofId) setLastProofId(res.proofId);
+        setIsLoading(false);
       }
     } catch (err: any) {
       console.error(err);
@@ -679,8 +769,444 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
               })}
             </div>
 
+            {/* --- SWAP CONFIRMATION UI --- */}
+            {/* --- SWAP CONFIRMATION UI --- */}
+            {result.type === "SWAP_PROPOSAL" && result.status === "PENDING_EXECUTION" && result.swapDetails && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mt-6 relative"
+              >
+                {/* Main Cyber Background with cut corners */}
+                <div 
+                  className="bg-[#0a0f18] border border-cyan-500/30 p-5 sm:p-6 relative overflow-hidden group shadow-[0_0_20px_rgba(6,182,212,0.15)] rounded-none"
+                  style={{
+                    clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.03)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                  
+                  {/* Decorative corner accents */}
+                  <div className="absolute top-0 left-0 w-8 h-[1px] bg-cyan-500/50 mix-blend-screen" />
+                  <div className="absolute bottom-0 right-0 w-8 h-[1px] bg-cyan-500/50 mix-blend-screen" />
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-cyan-400 font-bold font-mono uppercase tracking-widest flex items-center gap-2">
+                        <Terminal className="w-5 h-5" /> DeFi Execution: Swap Proposal
+                      </h3>
+                      {result.warnings && result.warnings.length === 0 && (
+                        <Badge variant="outline" className="text-emerald-400 font-mono tracking-widest border-emerald-500/30 bg-emerald-500/10 rounded-none uppercase" style={{ clipPath: "polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)" }}>
+                          <ShieldCheck className="w-3 h-3 mr-1" /> Safe
+                        </Badge>
+                      )}
+                    </div>
+
+                    {/* SAFETY WARNINGS BLOCK */}
+                    {result.warnings && result.warnings.length > 0 && (() => {
+                      const hasCritical = result.warnings.some(w => w.level === "CRITICAL");
+                      const boxBorder = hasCritical ? "border-red-500/50" : "border-amber-500/40";
+                      const boxBg = hasCritical ? "bg-red-500/10" : "bg-amber-500/10";
+                      const iconColor = hasCritical ? "text-red-500" : "text-amber-500";
+                      const titleColor = hasCritical ? "text-red-500" : "text-amber-500";
+                      const titleText = hasCritical ? "Critical Safety Warnings Detected" : "Safety Warnings Detected";
+                      
+                      return (
+                        <div 
+                          className={`mb-5 p-4 border ${boxBorder} ${boxBg} rounded-none`}
+                          style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertTriangle className={`w-5 h-5 ${iconColor}`} />
+                            <h4 className={`text-sm font-bold ${titleColor} font-mono uppercase tracking-widest`}>{titleText}</h4>
+                          </div>
+                          <ul className="space-y-2">
+                            {result.warnings.map((warning, idx) => (
+                              <li key={idx} className={`flex gap-2 text-sm ${hasCritical ? 'text-red-400' : 'text-amber-500/90'} font-mono leading-tight`}>
+                                <span className="shrink-0 mt-0.5">•</span>
+                                <span>
+                                  {warning.type === "TYPO" && <span className={`font-bold mr-1 ${hasCritical ? 'bg-red-500/20 text-red-300' : 'bg-amber-500/20'} px-1 py-0.5`} style={{ clipPath: "polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)" }}>[AUTO-CORRECT]</span>}
+                                  {warning.level === "CRITICAL" && warning.type !== "TYPO" && <span className="font-bold mr-1 text-red-500 bg-red-500/20 px-1 py-0.5" style={{ clipPath: "polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px)" }}>[CRITICAL]</span>}
+                                  {warning.message}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                          {hasCritical ? (
+                            <div className="mt-3 text-xs text-red-400 font-mono italic">
+                              This transaction may Fail, Return near-zero tokens, or Result in loss due to routing issues. Execution blocked by default.
+                            </div>
+                          ) : (
+                            <p className="mt-3 text-xs text-amber-500/60 font-mono italic">
+                              {language === 'es' ? 'El Agente ha intentado ajustar la propuesta, revisa los detalles cuidadosamente.' : 'The Agent has attempted to adjust the proposal, please review the details carefully.'}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })()}
+
+                    {/* CONFIDENCE SCORE UI */}
+                    {result.confidenceScore !== undefined && result.riskLevel && (() => {
+                      const score = result.confidenceScore;
+                      const risk = result.riskLevel;
+                      
+                      let riskColor = "text-emerald-400";
+                      let riskBg = "bg-emerald-500/10";
+                      let riskBorder = "border-emerald-500/30";
+                      let riskDot = "bg-emerald-500";
+                      let message = "This transaction appears safe to execute.";
+                      let icon = "🟢";
+
+                      if (score < 40) {
+                        riskColor = "text-red-500";
+                        riskBg = "bg-red-500/10";
+                        riskBorder = "border-red-500/40";
+                        riskDot = "bg-red-500";
+                        message = "This swap is likely to fail or return minimal value.";
+                        icon = "🔴";
+                      } else if (score < 70) {
+                        riskColor = "text-orange-500";
+                        riskBg = "bg-orange-500/10";
+                        riskBorder = "border-orange-500/40";
+                        riskDot = "bg-orange-500";
+                        message = "High slippage or low liquidity detected. Proceed with caution.";
+                        icon = "🟠";
+                      } else if (score < 90) {
+                        riskColor = "text-amber-400";
+                        riskBg = "bg-amber-500/10";
+                        riskBorder = "border-amber-500/30";
+                        riskDot = "bg-amber-400";
+                        message = "Moderate risk. Double check swap details.";
+                        icon = "🟡";
+                      }
+
+                      return (
+                        <div className="mb-6 flex flex-col gap-2">
+                          <div className="flex items-center gap-3">
+                            <span className="font-mono text-white/50 text-xs tracking-widest uppercase">Confidence Score:</span>
+                            <span className={`font-mono font-bold text-lg ${riskColor}`}>{score}/100 {icon}</span>
+                          </div>
+                          
+                          <div 
+                            className={`p-3 border ${riskBorder} ${riskBg} rounded-none flex items-start gap-3`}
+                            style={{ clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}
+                          >
+                            <div className="mt-1">
+                              <span className={`relative flex h-3 w-3`}>
+                                {(score < 70) && <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${riskDot} opacity-75`}></span>}
+                                <span className={`relative inline-flex rounded-full h-3 w-3 ${riskDot}`}></span>
+                              </span>
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-white/60 text-[10px] uppercase tracking-widest block">Risk Level</span>
+                                <span className={`text-xs font-bold font-mono tracking-widest uppercase ${riskColor}`}>{risk}</span>
+                              </div>
+                              <p className="mt-1 text-xs text-white/70 font-mono">
+                                {score < 40 ? <AlertTriangle className="w-3 h-3 inline mr-1 -mt-0.5 text-red-500"/> : null}
+                                {message}
+                              </p>
+                              
+                              {/* Bonus Actionable Alternative logic */}
+                              {(score < 70 && result.swapDetails.tokenOut !== "SAUCE") && (
+                                <div className="mt-3 pt-3 border-t border-white/5">
+                                  <span className="text-[10px] text-cyan-400 font-mono tracking-widest uppercase flex items-center gap-1.5"><Activity className="w-3 h-3"/> Suggested alternative:</span>
+                                  <span className="text-xs text-white/60 font-mono mt-1 block">
+                                    → Swap to SAUCE instead (Confidence: 91/100)
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+
+                    <div 
+                      className="grid grid-cols-2 gap-y-5 gap-x-4 mb-5 text-sm font-mono text-white/80 p-4 bg-black/40 border border-white/5 rounded-none"
+                      style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                    >
+                      <div><span className="text-cyan-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">Pay</span><span className="font-bold relative text-cyan-100">{result.swapDetails.amountIn} {result.swapDetails.tokenIn}</span></div>
+                      <div><span className="text-cyan-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">Receive (Est.)</span><span className="text-cyan-400 font-bold text-lg leading-tight">{result.swapDetails.estimatedOut}</span></div>
+                      <div><span className="text-cyan-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">DEX Protocol</span><span className="text-cyan-100/80">{result.swapDetails.dex}</span></div>
+                      <div><span className="text-cyan-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">Max Slippage</span><span className="text-cyan-100/80">{result.swapDetails.slippage}</span></div>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                  {(() => {
+                    // CRITICAL BLOCK OVERRIDE STATE
+                    if (result.blockExecution) {
+                      const score = result.confidenceScore || 0;
+                      if (score < 20) {
+                        // CRITICALLY DANGEROUS: TEXT INPUT CONFIRM
+                        return (
+                          <div className="flex flex-col gap-3 w-full">
+                            <div className="flex flex-col gap-2 p-3 bg-red-500/5 border border-red-500/20" style={{ clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}>
+                              <span className="text-xs text-red-400/80 font-mono tracking-wide uppercase">To execute this extremely dangerous swap, type <strong className="text-red-500">CONFIRM</strong> below:</span>
+                              <input 
+                                type="text" 
+                                value={confirmText}
+                                onChange={(e) => setConfirmText(e.target.value)}
+                                placeholder="Type CONFIRM"
+                                className="w-full bg-black/50 border border-red-500/30 text-red-500 font-mono text-sm px-3 py-2 outline-none focus:border-red-500/70 transition-colors uppercase rounded-none placeholder:text-red-500/20"
+                              />
+                            </div>
+                            <button
+                              onClick={handleExecuteSwap}
+                              disabled={isExecutingSwap || !account || confirmText !== "CONFIRM"}
+                              className="w-full bg-red-950 text-red-400 border border-red-500/40 font-bold py-2.5 px-3 text-xs sm:text-sm font-mono tracking-wide rounded-none transition-all hover:bg-red-900 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                              style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                            >
+                              {isExecutingSwap ? <Loader2 className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
+                              {isExecutingSwap ? "Forcing Execution..." : "Force Execute Dangerous Swap"}
+                            </button>
+                          </div>
+                        );
+                      } else {
+                        // DANGEROUS: DOUBLE CLICK CONFIRM (20-39)
+                        return (
+                          <>
+                            {!forceConfirmStep ? (
+                              <button
+                                onClick={() => setForceConfirmStep(true)}
+                                className="flex-1 bg-red-950 text-red-400 border border-red-500/40 font-bold py-2.5 px-3 text-xs sm:text-sm font-mono tracking-wide rounded-none transition-all hover:bg-red-900 hover:text-red-300 flex justify-center items-center gap-2"
+                                style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                              >
+                                <AlertTriangle className="w-4 h-4" />
+                                Force Swap Anyway (Advanced)
+                              </button>
+                            ) : (
+                              <button
+                                onClick={handleExecuteSwap}
+                                disabled={isExecutingSwap || !account}
+                                className="flex-1 bg-red-600 animate-pulse text-white border border-red-500 font-bold py-2.5 px-3 text-xs sm:text-sm font-mono tracking-wide rounded-none transition-all hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 hover:animate-none shadow-[0_0_15px_rgba(239,68,68,0.4)]"
+                                style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                              >
+                                {isExecutingSwap ? <Loader2 className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
+                                {isExecutingSwap ? "Forcing..." : "Are you sure? Execute Now"}
+                              </button>
+                            )}
+                          </>
+                        );
+                      }
+                    }
+
+                    // Check if there's a typo warning
+                    const typoWarning = result.warnings?.find(w => w.type === "TYPO");
+                    const hasTypo = !!typoWarning;
+                    const suggestedToken = typoWarning?.suggestedToken || result.swapDetails.tokenOut;
+
+                    if (hasTypo) {
+                      return (
+                        <>
+                          <button
+                            onClick={handleExecuteSwap}
+                            disabled={isExecutingSwap || !account}
+                            className="flex-[1.5] bg-emerald-500 text-[#020617] font-bold py-2.5 px-3 text-xs sm:text-sm font-mono tracking-wide transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)] rounded-none"
+                            style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                          >
+                            {isExecutingSwap ? <Loader2 className="w-4 h-4 animate-spin" /> : <Fingerprint className="w-4 h-4" />}
+                            {isExecutingSwap ? (language === 'es' ? "Confirmando..." : "Confirming...") : `Swap to ${suggestedToken} (Safe)`}
+                          </button>
+                          <button 
+                            onClick={() => {
+                              // Revert swap details to use the original (uncorrected) token
+                              const origToken = typoWarning?.originalToken || result.swapDetails?.originalTokenOut;
+                              if (origToken) {
+                                setResult(prev => prev ? {
+                                  ...prev,
+                                  swapDetails: {
+                                    ...prev.swapDetails!,
+                                    tokenOut: origToken,
+                                    estimatedOut: prev.swapDetails!.estimatedOut?.replace(prev.swapDetails!.tokenOut, origToken),
+                                  },
+                                  warnings: [], // Clear warnings since user chose to proceed
+                                } : null);
+                              }
+                              handleExecuteSwap();
+                            }}
+                            disabled={isExecutingSwap || !account}
+                            className="flex-1 bg-amber-500/10 text-amber-500 border border-amber-500/30 hover:bg-amber-500/20 font-bold font-mono text-xs sm:text-sm tracking-wide py-2.5 px-3 rounded-none transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                            style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                          >
+                            {language === 'es' ? `Usar ${typoWarning?.originalToken || result.swapDetails?.originalTokenOut || result.swapDetails?.tokenOut} (Riesgo)` : `Use ${typoWarning?.originalToken || result.swapDetails?.originalTokenOut || result.swapDetails?.tokenOut} anyway`}
+                          </button>
+                        </>
+                      );
+                    }
+
+                    // Standard Safe Button
+                    return (
+                      <button
+                        onClick={handleExecuteSwap}
+                        disabled={isExecutingSwap || !account}
+                        className="flex-1 bg-emerald-500 text-[#020617] font-bold py-2.5 px-3 text-xs sm:text-sm font-mono tracking-wide rounded-none transition-all hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                        style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                      >
+                        {isExecutingSwap ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4" />}
+                        {isExecutingSwap ? (language === 'es' ? "Confirmando en Wallet..." : "Confirming in Wallet...") : (language === 'es' ? "Confirmar y Ejecutar Swap" : "Confirm & Execute Swap")}
+                      </button>
+                    );
+                  })()}
+
+                  <button 
+                    onClick={() => setResult(prev => prev ? { ...prev, status: "FAILED" } : null)}
+                    disabled={isExecutingSwap}
+                    className="sm:flex-none flex-[0.5] bg-white/5 text-cyan-400 border border-white/10 hover:bg-white/10 font-bold font-mono text-xs sm:text-sm tracking-wide py-2.5 px-4 rounded-none transition-all"
+                    style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+                  >
+                    {language === 'es' ? "Cancelar" : "Cancel"}
+                  </button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- SWAP CONFIRMED SUCCESS (COMPACT EMERALD) --- */}
+            {result.type === "SWAP_PROPOSAL" && (result.status === "CONFIRMED" || result.status === "VERIFIED") && result.swapDetails && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="mt-6 relative"
+              >
+                {/* Main Cyber Background with cut corners */}
+                <div 
+                  className="bg-[#04080e]/80 border border-emerald-500/30 p-6 relative overflow-hidden group"
+                  style={{
+                    clipPath: "polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)",
+                  }}
+                >
+                  <div className="absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                  
+                  {/* Decorative corner accents */}
+                  <div className="absolute top-0 left-0 w-8 h-[1px] bg-emerald-500/50 mix-blend-screen" />
+                  <div className="absolute bottom-0 right-0 w-8 h-[1px] bg-emerald-500/50 mix-blend-screen" />
+                  
+                  <div className="relative z-10">
+                    {/* Header */}
+                    <div className="flex items-center gap-4 mb-6">
+                      <motion.div 
+                        initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} 
+                        transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
+                        className="w-10 h-10 rounded-full border border-emerald-500/50 flex flex-shrink-0 items-center justify-center relative bg-[#04080e]"
+                      >
+                        <div className="absolute inset-0 rounded-full bg-emerald-500/10 blur-[6px]" />
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                      </motion.div>
+                      <div>
+                        <h3 className="text-emerald-400 font-bold font-mono uppercase tracking-[0.15em] text-sm drop-shadow-[0_0_5px_rgba(52,211,153,0.3)]">
+                          {language === 'es' ? 'Swap Ejecutado' : 'Swap Executed'}
+                        </h3>
+                        <p className="text-white/40 text-[11px] font-mono mt-0.5 tracking-wide">
+                          {language === 'es' ? 'Transacción confirmada en Hedera EVM' : 'Transaction confirmed on Hedera EVM'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Compact Details Box */}
+                    <div className="border border-emerald-500/20 bg-[#060a12]/50 p-4 transition-colors hover:bg-emerald-500/5 hover:border-emerald-500/30 mb-4">
+                      <div className="grid grid-cols-2 gap-y-4 gap-x-4">
+                        <div>
+                          <span className="text-emerald-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">
+                            {language === 'es' ? 'Enviado' : 'Sent'}
+                          </span>
+                          <span className="text-white/90 font-mono font-bold text-sm tracking-wide">
+                            {result.swapDetails.amountIn} {result.swapDetails.originalTokenIn || result.swapDetails.tokenIn}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-emerald-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">
+                            {language === 'es' ? 'Recibido (Est.)' : 'Received (Est.)'}
+                          </span>
+                          <span className="text-emerald-400 font-mono font-bold text-sm tracking-wide drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]">
+                            ~{result.swapDetails.estimatedOut.replace('~', '').trim()}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-emerald-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">DEX</span>
+                          <span className="text-white/80 font-mono text-sm tracking-wide">{result.swapDetails.dex}</span>
+                        </div>
+                        <div>
+                          <span className="text-emerald-500/60 text-[10px] uppercase font-mono tracking-widest block mb-1">Network</span>
+                          <span className="text-white/80 font-mono text-sm tracking-wide">Hedera Testnet</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transaction Hash - Compact */}
+                    {swapTxHash && (
+                      <div className="border border-emerald-500/20 bg-[#060a12]/50 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 transition-colors hover:bg-emerald-500/5 hover:border-emerald-500/30">
+                        <span className="text-emerald-500/60 text-[10px] uppercase font-mono tracking-widest block">
+                          Transaction Hash
+                        </span>
+                        <a 
+                          href={`https://hashscan.io/${network}/transaction/${swapTxHash}`}
+                          target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-[11px] text-cyan-400/80 hover:text-cyan-300 font-mono transition-colors"
+                        >
+                          <span className="truncate max-w-[200px] sm:max-w-[300px] text-right">{swapTxHash}</span> 
+                          <ExternalLink className="w-3 h-3 shrink-0" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* --- SWAP ERROR --- */}
+            {result.type === "SWAP_PROPOSAL" && swapError && result.status !== "CONFIRMED" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 border border-red-500/30 rounded-xl p-5 bg-red-500/5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-red-400 text-xl">⚠️</div>
+                  <div>
+                    <p className="text-sm font-semibold text-red-300 font-mono">
+                      {language === 'es' ? 'Error en el Swap' : 'Swap Failed'}
+                    </p>
+                    <p className="text-[11px] text-text-muted mt-1 font-mono break-all">{swapError}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             {/* --- EVM ANCHORING AND PASSPORT (RENDERED OUTSIDE THE STEPS LOOP) --- */}
-            {(result.steps || []).length > 0 && (result.steps || [])[(result.steps || []).length - 1].label === "FINAL" && (
+            {/* Auto-Suggest Swap Button after analysis */}
+            {result.type !== "SWAP_PROPOSAL" && (result.status === "CONFIRMED" || result.status === "VERIFIED") && (() => {
+              const finalContent = (result.steps || []).find((s: any) => s.label === "FINAL")?.content?.toLowerCase() || "";
+              const mentionsSwap = /\b(swap|sauce|usdc|karate|hbar|whbar|pool|liquidity|yield|apr)\b/i.test(finalContent);
+              return mentionsSwap ? (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mt-4">
+                  <button
+                    onClick={() => {
+                      setQuestion('swap 5 hbar to sauce');
+                      setResult(null);
+                      setTimeout(() => {
+                        const form = document.querySelector('form');
+                        if (form) form.dispatchEvent(new Event('submit', { bubbles: true }));
+                      }, 100);
+                    }}
+                    className="w-full h-12 bg-gradient-to-r from-cyan-500/10 to-emerald-500/10 hover:from-cyan-500/20 hover:to-emerald-500/20 border border-cyan-500/40 hover:border-cyan-400/60 text-cyan-400 font-mono font-bold text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-3 shadow-[0_0_25px_rgba(34,211,238,0.1)] group"
+                    style={{ clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)' }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:rotate-180 transition-transform duration-500">
+                      <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" />
+                    </svg>
+                    {language === 'es' ? '⚡ Ejecutar Swap Sugerido →' : '⚡ Execute Suggested Swap →'}
+                    {lastProofId && (
+                      <span className="text-[9px] text-cyan-400/50 ml-2">Chained from {lastProofId.substring(0, 12)}...</span>
+                    )}
+                  </button>
+                </motion.div>
+              ) : null;
+            })()}
+
+            {(result.steps || []).length > 0 && (result.steps || [])[(result.steps || []).length - 1].label === "FINAL" && result.type !== "SWAP_PROPOSAL" && (
               <div className="mt-6 border-t border-white/5 pt-6">
                 {/* FAILED state: show error instead of infinite spinner */}
                 {(result.status as string) === "FAILED" && (

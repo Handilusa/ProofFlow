@@ -9,14 +9,40 @@ export interface ReasoningStep {
 }
 
 export interface ReasoningResult {
+    type?: "SWAP_PROPOSAL";
     proofId: string;
     question: string;
     answer?: string;
     steps: ReasoningStep[];
     totalSteps: number;
-    status: "PUBLISHING_TO_HEDERA" | "PUBLISHING" | "CONFIRMED" | "VERIFIED";
+    status: "PUBLISHING_TO_HEDERA" | "PUBLISHING" | "CONFIRMED" | "VERIFIED" | "PENDING_EXECUTION" | "FAILED";
     hcsTopicId: string;
     createdAt: number;
+    confidenceScore?: number;
+    riskLevel?: string;
+    blockExecution?: boolean;
+    swapDetails?: {
+        tokenIn: string;
+        tokenOut: string;
+        amountIn: string | number;
+        originalTokenIn?: string;
+        originalTokenOut?: string;
+        estimatedOut: string;
+        dex: string;
+        slippage: string;
+    };
+    txData?: {
+        to: string;
+        value: string;
+        data: string;
+    };
+    warnings?: Array<{
+        type: string;
+        level?: string;
+        message: string;
+        suggestedToken?: string;
+        originalToken?: string;
+    }>;
 }
 
 export interface StoredProof extends ReasoningResult {

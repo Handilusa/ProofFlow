@@ -1,15 +1,20 @@
 {
     "name": "@proofflow/backend",
-    "version": "1.0.4",
+    "version": "1.2.0",
     "type": "module",
     "scripts": {
         "start": "node src/api/server.js",
         "simulate": "node src/scripts/simulate-agents.js",
+        "openclaw": "node src/scripts/openclaw-live-agent.js",
+        "openclaw:swarm": "node src/scripts/openclaw-swarm.js",
         "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --forceExit"
     },
     "dependencies": {
         "@google/generative-ai": "^0.24.1",
         "@hashgraph/sdk": "^2.80.0",
+        "@langchain/core": "^1.1.32",
+        "@langchain/google-genai": "^2.1.25",
+        "@langchain/langgraph": "^1.2.2",
         "cors": "^2.8.6",
         "dotenv": "^17.3.1",
         "ethers": "^6.13.5",
@@ -17,8 +22,10 @@
         "express-rate-limit": "^8.2.1",
         "express-validator": "^7.3.1",
         "helmet": "^8.1.0",
+        "langchain": "^1.2.32",
         "morgan": "^1.10.1",
-        "uuid": "^8.3.2"
+        "uuid": "^8.3.2",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
         "@types/uuid": "^10.0.0",

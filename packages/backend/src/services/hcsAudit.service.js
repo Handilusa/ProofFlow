@@ -104,7 +104,8 @@ export class HCSAuditService {
         // ─── Also save full proof locally for fast reads with content ───
         try {
             const localProofs = loadLocalProofs(network);
-            localProofs.push({
+            const existingIdx = localProofs.findIndex(p => p.proofId === proofId);
+            const proofEntry = {
                 proofId,
                 question,
                 steps,
@@ -115,7 +116,13 @@ export class HCSAuditService {
                 hcsSequenceNumbers: sequenceNumbers,
                 createdAt: finalPayload.timestamp,
                 network
-            });
+            };
+            if (existingIdx !== -1) {
+                // Update existing entry (e.g. from saveInitialProof) instead of creating a duplicate
+                localProofs[existingIdx] = { ...localProofs[existingIdx], ...proofEntry };
+            } else {
+                localProofs.push(proofEntry);
+            }
             saveLocalProofs(network, localProofs);
             console.log(`[LocalStore] Saved proof ${proofId} locally.`);
         } catch (e) {
@@ -124,6 +131,27 @@ export class HCSAuditService {
 
         console.log(`[HCS - ${network.toUpperCase()}] Reasoning chain completely pushed to blockchain.`);
         return sequenceNumbers;
+    }
+
+    async saveInitialProof(proofData, networkStr = "testnet") {
+        const network = getNetwork(networkStr);
+        try {
+            const localProofs = loadLocalProofs(network);
+            // Don't save duplicates
+            if (!localProofs.some(p => p.proofId === proofData.proofId)) {
+                localProofs.push({
+                    ...proofData,
+                    status: proofData.status || "PENDING_EXECUTION",
+                    hcsTopicId: "pending",
+                    createdAt: Date.now(),
+                    network
+                });
+                saveLocalProofs(network, localProofs);
+                console.log(`[LocalStore] Saved initial pending proof ${proofData.proofId} locally.`);
+            }
+        } catch (e) {
+            console.error(`[LocalStore] Failed to save initial proof locally:`, e.message);
+        }
     }
 
     async updateLocalProof(proofId, updates, networkStr = "testnet") {
@@ -215,6 +243,7 @@ export class HCSAuditService {
             console.log(`[LocalStore] Found proof ${proofId} locally with ${localProof.steps.length} steps.`);
             return {
                 proofId: localProof.proofId,
+                type: localProof.type,
                 question: localProof.question,
                 steps: localProof.steps,
                 totalSteps: localProof.totalSteps || localProof.steps.length,
@@ -224,10 +253,18 @@ export class HCSAuditService {
                 hcsSequenceNumbers: localProof.hcsSequenceNumbers,
                 createdAt: localProof.createdAt,
                 network: localProof.network || network,
+                requesterAddress: localProof.requesterAddress,
                 tokenTxId: localProof.tokenTxId,
                 explorerUrl: localProof.explorerUrl,
                 evmTxHash: localProof.evmTxHash,
-                evmSettled: localProof.evmSettled
+                evmSettled: localProof.evmSettled,
+                // Swap-specific fields
+                swapDetails: localProof.swapDetails,
+                executionTxHash: localProof.executionTxHash,
+                confidenceScore: localProof.confidenceScore,
+                riskLevel: localProof.riskLevel,
+                blockExecution: localProof.blockExecution,
+                warnings: localProof.warnings
             };
         }
 

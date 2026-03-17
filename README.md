@@ -1,4 +1,4 @@
-# ProofFlow (v1.0.4)
+# ProofFlow (v1.2.0)
 
 ### The Autonomous "Agentic Web3" Trust Layer
 > Verifiable reasoning, immutable audit trails, and autonomous settlement on Hedera.
@@ -7,6 +7,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Built for Hello Future Apex 2026](https://img.shields.io/badge/Hackathon-Hello_Future_Apex_2026-cyan.svg)](https://hackathon.stackup.dev/web/events/hedera-hello-future-apex-hackathon-2026)
 [![Live Demo](https://img.shields.io/badge/Demo-proofflow--layer.vercel.app-blueviolet)](https://proofflow-layer.vercel.app/)
+
+## 🎯 The One-Sentence Pitch
+
+**ProofFlow provides trustless, verifiable AI reasoning with auditable proof anchored on Hedera, enabling secure autonomous decisions without human oversight.**
 
 ---
 
@@ -122,6 +126,18 @@ This localization extends to the autonomous agent as well. The ProofFlow Neural 
 - If the user interacts in **Spanish** → the agent responds and reasons entirely in Spanish.
 
 This ensures a fully native, cohesive experience for users across Latin America, Spain, and the English-speaking world — both in the UI they navigate and the on-chain audit trails they generate.
+
+---
+
+## 📱 Dedicated Mobile Experience
+
+ProofFlow isn't just "responsive" — it features a **dedicated mobile interface** engineered specifically for "on-the-go" verification. When accessed via a smartphone, the dApp automatically serves a tailored, app-like experience optimized for touch and smaller viewports:
+
+- **Mobile-Native UI**: The desktop sidebar is replaced with an elegant, space-efficient mobile navigation system, maximizing screen real estate for the core audit terminal.
+- **Vertical Audit Feed**: Cryptographic hashes and multi-step reasoning logs are re-flowed into a clean vertical stack, ensuring perfect legibility without awkward horizontal scrolling.
+- **Seamless Mobile Wallet Integration**: Optimized integration with mobile wallets (like HashPack or MetaMask mobile via WalletConnect) ensures smooth, frictionless transaction signing directly from your phone.
+
+Because trust doesn't stop when you step away from your computer, ProofFlow's full cryptographic power is always right in your pocket.
 
 ---
 
@@ -244,75 +260,101 @@ ProofFlow incorporates a robust 3-layer security system to protect the autonomou
 
 ---
 
-## 🤖 OpenClaw Bounty: Killer App for the Agentic Society
+## 🤖 OpenClaw Bounty: Three-Agent Autonomous DeFi Engine
 
-ProofFlow is **agent-first public infrastructure** — the primary users are autonomous agents, not humans. The human-facing dashboard exists to *observe* agent activity.
+ProofFlow is **agent-first public infrastructure** — built for the **Agentic Society**. The human-facing dashboard exists to *observe and approve* agent activity, not to drive it.
 
-We designed ProofFlow specifically to solve the two biggest blockers to enterprise AI agent adoption (like OpenClaw):
+### The Engine: Three Specialized Agents
 
-### 1. Solving the Black Box: "OpenClaw Auditable"
-The biggest fear with frameworks like OpenClaw or AutoGPT is that they make autonomous financial decisions without anyone knowing *why*. ProofFlow fixes this by forcing agents to **"Think Out Loud"**. 
+Unlike generic AI chatbots, ProofFlow orchestrates **three real agents** — each with a distinct, deterministic job — coordinated through an intelligent router:
 
-Before an OpenClaw agent executes a trade or signs a multi-sig, it must route its internal monologue (the Neural Engine's `thinkingBudget`) to ProofFlow. ProofFlow hashes each step of the agent's reasoning to Hedera HCS in real-time. This creates an immutable, tamper-evident audit trail of the agent's decision-making process *before* the action is taken.
+| Agent | Engine | Role | Real Output |
+| :--- | :--- | :--- | :--- |
+| 🔍 **Wallet & DeFi Analyzer** | LangChain Multi-Tool (OpenClaw) | Analyzes wallets, detects idle capital, evaluates pools/APRs | Portfolio breakdown, yield recommendations |
+| 📊 **Technical Analyzer** | ProofFlow Neural Engine v2 (Gemini) | Price analysis, trends, support/resistance, risk scoring | Quantitative market signals with live data |
+| ⚡ **Swap Executor** | Deterministic (no LLM needed) | Validates tokens, calculates confidence, executes on-chain | Confidence Score, simulation, TX execution |
 
-### 2. Solving Fee Friction: x402 Agentic Wallets
-Agents can't easily hold private keys to pay gas fees. ProofFlow's architecture is designed to support **Agentic Wallets (x402 / EIP-4337)**. In our model, the agent's wallet starts with 0 HBAR. When it needs to log an audit to HCS, an on-chain **Paymaster** dynamically subsidizes the ProofFlow micro-fee. The agent operates frictionlessly while still enforcing economic Sybil resistance.
+> **Key Differentiator:** These agents don't just *think* — they **do**. Agent 3 executes real swaps on Hedera EVM. Agent 1 pulls real wallet data from Mirror Node. Agent 2 reasons with 7 live market APIs. Every step is hashed and anchored to HCS.
 
-### 🐝 OpenClaw x402 Swarm Simulation
-
-The project includes a **fully functional multi-agent simulation** (`openclaw-swarm.js`) that demonstrates this exact architecture live on Hedera Testnet:
-
-```bash
-# Ensure ProofFlow backend is running on localhost:3001
-node packages/backend/src/scripts/openclaw-swarm.js
-```
-
-**The flow:**
-1. Initialized OpenClaw Agents start with an empty wallet (0 HBAR).
-2. A simulated **x402 Paymaster** subsidizes their HBAR fee.
-3. The agents **Think Out Loud**, generating a cryptographic internal monologue.
-4. The monologue is anchored to HCS + EVM.
-5. Only after verification is the agent authorized to execute its trade.
-
-### Visual Architecture: OpenClaw Auditable x402 Flow
+### Multi-Agent Coordination Flow
 
 ```mermaid
-flowchart LR
-    %% Entities
-    Agent["🤖 OpenClaw Agent<br>(Starts with 0 HBAR)"]
-    Paymaster["⛽ x402 Paymaster"]
-    Engine["🧠 ProofFlow Engine<br>(Forces Internal Monologue)"]
-    Ledger[("📡 Hedera HCS + EVM<br>(Immutable Audit Trail)")]
-    Trade["📈 Execute Trade<br>(DeFi Swap, Multi-sig, etc)"]
-
-    %% Flow
-    Agent -- "1. Delegates Gas Fee" --> Paymaster
-    Paymaster -- "2. Subsidizes 0.16 HBAR" --> Engine
-    Agent -- "3. 'Thinks Out Loud'" --> Engine
-    Engine -- "4. Hashes reasoning steps" --> Ledger
-    Engine -- "5. Returns Proof ID" --> Agent
-    Agent -- "6. Authorized to proceed" --> Trade
+flowchart TD
+    U["👤 User Input"] --> R["🧠 Agent Router<br>(Intent Classification)"]
+    
+    R -->|"analyze my wallet"| A1["🔍 Agent 1: Wallet & DeFi Analyzer<br>(LangChain Multi-Tool)"]
+    R -->|"technical analysis of HBAR"| A2["📊 Agent 2: Technical Analyzer<br>(Neural Engine v2)"]
+    R -->|"swap 5 HBAR to SAUCE"| A3["⚡ Agent 3: Swap Executor<br>(Deterministic Pipeline)"]
+    
+    A1 -->|"Wallet State<br>+ Recommendations"| HCS["🔗 Hedera HCS<br>Immutable Audit Trail"]
+    A2 -->|"Market Analysis<br>+ Risk Score"| HCS
+    A3 -->|"TX Hash<br>+ Confidence Score"| HCS
+    
+    A1 -.->|"parentProofId chain"| A3
+    A2 -.->|"validates context for"| A3
+    
+    HCS --> EVM["⛓️ EVM Settlement<br>ProofValidator.sol"]
+    EVM --> VP["✅ Verify Proof Page<br>+ Swap Executed Card"]
+    
+    A3 -->|"Confidence < 40"| BLOCK["🔴 Execution Blocked<br>Manual override required"]
+    A3 -->|"Confidence ≥ 70"| EXEC["🟢 User Confirms<br>→ Wallet Popup → TX"]
 ```
 
-### 🌟 Why This is Revolutionary for the Agentic Society
+### How the Agents Chain (Multi-Agent Reasoning DAG)
 
-The industry is racing to build autonomous agents, but standard agents are fundamentally broken for enterprise and decentralized finance. ProofFlow fixes them:
+ProofFlow agents don't operate in isolation — they **chain their proofs** to create a verifiable decision DAG on Hedera:
 
-1. **Eradicates the "AI Black Box"**: Today, AutoGPT and OpenClaw agents execute trades. If they lose money, you don't know why. By forcing them to route their "Internal Monologue" to Hedera HCS *before* execution, you get a **tamper-proof, cryptographically secure post-mortem** of their exact logic.
-2. **Zero-Friction Onboarding (x402)**: You no longer need to manually fund 10,000 different agent wallets with gas. The x402 Paymaster model means agents can spin up, request gas dynamically, pay for their own audits, and execute without touching private keys.
-3. **Agent-to-Agent Trust**: Because agents earn PFR (Reputation Tokens) and their logic is on-chain, Agent A can mathematically verify the reasoning of Agent B before interacting with it. ProofFlow acts as the **Trust Layer** for the Agentic Web3 Economy.
+```
+User: "Analyze my wallet"
+└─ Agent 1 generates Proof #1 (anchored to HCS)
+   └─ User reads recommendation, clicks "⚡ Execute Suggested Swap"
+      └─ Agent 3 receives parentProofIds: [Proof #1]
+         └─ Backend resolves Proof #1's conclusion and injects it as context
+            └─ Agent 3 executes swap with full provenance chain
+               └─ Proof #2 is anchored to HCS, linked to Proof #1
+```
+
+> **Result:** Anyone can trace back *why* a swap was executed — not just *that* it happened. This creates an auditable, tamper-proof decision chain that enterprises and regulators can verify.
+
+### Confidence Score: Deterministic Safety Engine
+
+The Swap Executor doesn't guess — it calculates a **Confidence Score (0–100)** using deterministic rules:
+
+```javascript
+score = 100
+
+if (!poolExists)         score = 10   // Critical: no pool found
+if (liquidity < 50_000)  score -= 25  // Low liquidity
+if (volume24h < 10_000)  score -= 15  // Low volume
+if (tokenIsUnverified)   score -= 15  // Unverified token
+if (slippage > 3%)       score -= 10  // High slippage
+
+// UI enforcement:
+// ≥70  → Green, safe execution
+// 40–69 → Yellow, proceed with caution
+// 20–39 → Red, double-click confirmation required
+// <20  → Must type "CONFIRM" manually. Execution blocked by default.
+```
+
+### 1. Solving the Black Box: "OpenClaw Auditable"
+
+The biggest fear with frameworks like OpenClaw or AutoGPT is that they make autonomous financial decisions without anyone knowing *why*. ProofFlow fixes this by forcing agents to **"Think Out Loud"** — every reasoning step, every safety check, every confidence calculation is hashed to HCS before any trade is executed.
+
+### 2. Solving Fee Friction: x402 Agentic Wallets
+
+Agents can't easily hold private keys to pay gas fees. ProofFlow's architecture supports **Agentic Wallets (x402 / EIP-4337)**. The x402 Paymaster dynamically subsidizes the ProofFlow micro-fee, enabling frictionless agent operation while enforcing economic Sybil resistance.
 
 ### OpenClaw Bounty Compliance
 
 | Requirement | Status | Implementation |
 | :--- | :---: | :--- |
-| App is agent-first | ✅ | OpenClaw agents are the core users, routing logs via REST API. |
-| Autonomous behavior | ✅ | Agents autonomously pay via Paymaster and log thoughts without humans. |
-| Value in multi-agent env | ✅ | Creates a shared, verifiable knowledge graph of agent decisions. |
-| Hedera tech used | ✅ | All three: HCS (audit), HTS (reputation), EVM (settlement/escrow). |
+| App is agent-first | ✅ | Three specialized agents (Wallet Analyzer, Technical Analyzer, Swap Executor) coordinate autonomously. |
+| Autonomous behavior | ✅ | Agents analyze, score, simulate, and execute swaps without human intervention (except final wallet confirm). |
+| Value in multi-agent env | ✅ | `parentProofIds` create a verifiable DAG — agents chain their proofs to build shared, trustable context. |
+| Hedera tech used | ✅ | All three: HCS (audit), HTS (reputation), EVM (settlement + swap execution). |
 | Public repo | ✅ | [github.com/Handilusa/ProofFlow](https://github.com/Handilusa/ProofFlow) |
 | Live demo URL | ✅ | [proofflow-layer.vercel.app](https://proofflow-layer.vercel.app/) |
-| <3 min demo video | ✅ | [INSERT YOUTUBE LINK] |
+| < 3 min demo video | 🔜 | *(Provisional: see Mermaid flow diagram above)* |
 | README with setup | ✅ | You're reading it. |
 
 ---

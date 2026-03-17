@@ -8,34 +8,34 @@ import { TrendingUp, LockKeyhole, Radar, Terminal, Network, Fingerprint, Coins, 
 const AGENTS = [
     {
         id: 'agent-defi',
-        name: 'DeFi Risk Analyst',
+        name: 'DeFi & Wallet Analyzer',
         icon: TrendingUp,
         color: '#a78bfa',        // purple-400
         bgClass: 'bg-purple-500/15',
         borderClass: 'border-purple-400/40',
-        mockQuery: 'Analyzing SaucerSwap pool risk...',
+        mockQuery: 'Analyzing wallet & idle capital...',
         parentDeps: ['🌱 DAG Origin — Step 1/3'], // Root
     },
     {
-        id: 'agent-security',
-        name: 'Security Auditor',
-        icon: LockKeyhole,
+        id: 'agent-tech',
+        name: 'Technical Analyzer',
+        icon: Radar,
         color: '#60a5fa',        // blue-400
         bgClass: 'bg-blue-500/15',
         borderClass: 'border-blue-400/40',
-        mockQuery: 'Verifying DAO treasury contracts...',
-        parentDeps: ['#1 Risk Analysis'], // Depends on DeFi Analyst
+        mockQuery: 'Evaluating HBAR support & signals...',
+        parentDeps: ['#1 DeFi Analysis'], 
         dagStep: 'Step 2/3',
     },
     {
-        id: 'agent-market',
-        name: 'Market Intel',
-        icon: Radar,
-        color: '#4ade80',        // green-400
-        bgClass: 'bg-green-500/15',
-        borderClass: 'border-green-400/40',
-        mockQuery: 'Evaluating HBAR entry strategy...',
-        parentDeps: ['#1 Risk', '#2 Audit'], // Depends on both
+        id: 'agent-swap',
+        name: 'Swap Executor',
+        icon: Cpu,
+        color: '#f87171',        // red-400
+        bgClass: 'bg-red-500/15',
+        borderClass: 'border-red-400/40',
+        mockQuery: 'Executing 5 HBAR → SAUCE swap...',
+        parentDeps: ['#1 DeFi', '#2 Technical'], // Depends on both
         dagStep: 'Step 3/3',
     }
 ];
@@ -54,24 +54,22 @@ function getAgentPosition(angleDeg: number) {
 }
 
 const LOG_MESSAGES = [
-    { text: "🏦 [DeFi Analyst] Paying 0.02 HBAR → ProofFlow...", type: "agent" },
-    { text: "[Sys] Payment 0.0.798...confirmed ✓", type: "sys" },
-    { text: "🏦 [DeFi Analyst] POST /reason (root proof)", type: "agent" },
+    { text: "🔍 [DeFi & Wallet] Paying 0.02 HBAR → ProofFlow...", type: "agent" },
+    { text: "[Sys] Payment confirmed ✓", type: "sys" },
+    { text: "🔍 [DeFi & Wallet] POST /reason (root proof)", type: "agent" },
     { text: "[ProofFlow] Gemini → HCS → Proof #1: pf-8a3f...", type: "proof" },
-    { text: "[HCS] 5 msgs → Topic 0.0.1234  rootHash: 0xab3f...", type: "hcs" },
     { text: "─────────────────────────────────────", type: "sep" },
-    { text: "🔐 [Security Auditor] Paying 0.02 HBAR...", type: "agent" },
-    { text: "🔐 [Security Auditor] POST /reason", type: "agent" },
+    { text: "📊 [Technical Analyzer] POST /reason", type: "agent" },
     { text: "   🔗 parentProofIds: [\"pf-8a3f...\"]", type: "hcs" },
     { text: "[ProofFlow] Injecting 1 parent proof as context...", type: "proof" },
     { text: "[ProofFlow] Gemini → HCS → Proof #2: pf-c71b...", type: "proof" },
     { text: "─────────────────────────────────────", type: "sep" },
-    { text: "📊 [Market Strategist] POST /reason", type: "agent" },
+    { text: "⚡ [Swap Executor] POST /reason", type: "agent" },
     { text: "   🔗 parents: [\"pf-8a3f\", \"pf-c71b\"]", type: "hcs" },
     { text: "[ProofFlow] Injecting 2 parent proofs...", type: "proof" },
     { text: "[ProofFlow] Gemini → HCS → Proof #3: pf-e40d...", type: "proof" },
     { text: "─────────────────────────────────────", type: "sep" },
-    { text: "✅ DAG: #1→#2→#3 | Depth: 3 | All verified", type: "sys" },
+    { text: "✅ DAG Chain: #1→#2→#3 | Verifiable Settlement", type: "sys" },
 ];
 
 export function AgentMarketplace() {
@@ -376,7 +374,7 @@ export function AgentMarketplace() {
                                 <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                                 <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                                <span className="ml-3 text-[10px] font-mono text-text-muted/40">openclaw-swarm.js</span>
+                                <span className="ml-3 text-[10px] font-mono text-text-muted/40">openclaw-live-agent.js</span>
                             </div>
                             <div className="p-4 h-56 overflow-hidden font-mono text-[11px] leading-[1.8] flex flex-col justify-end">
                                 <AnimatePresence initial={false}>
@@ -409,7 +407,7 @@ export function AgentMarketplace() {
                         {/* CTA */}
                         <div className="mt-6">
                             <a
-                                href="https://github.com/Handilusa/ProofFlow/blob/main/packages/backend/src/scripts/openclaw-swarm.js"
+                                href="https://github.com/Handilusa/ProofFlow/blob/main/packages/backend/src/scripts/openclaw-live-agent.js"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 text-white transition-all"
