@@ -1,0 +1,486 @@
+﻿
+> @proofflow/backend@1.0.4 start
+> node src/api/server.js
+
+[Gemini] Loaded 3 API key(s) for rotation.
+Backend API running securely on port 3002
+[Agent Listener] ­ƒñû Autonomous Agent activated!
+[Agent Listener] Watching contract: 0x8775602A748990a4204C4b21BF44d31549802A7f
+[Agent Listener] Agent wallet: 0xCaC05e7762a0B4e200f4fa217284D3Ac4a10ADe6
+[Agent Listener] Starting from block: 32822673
+[Agent Listener] Polling every 10s for new audit requests...
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 463.117 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1215.341 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1274.090 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 283.798 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1609.217 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1543.603 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 239.426 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 906.295 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 974.932 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 286.518 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1614.737 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1683.255 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 251.721 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1015.105 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 949.627 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 315.057 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1564.880 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1499.151 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 354.451 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1211.066 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1183.182 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 389.640 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1721.754 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1658.984 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 331.150 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1249.084 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1318.369 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 363.363 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1304.444 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1377.941 ms - -[0m
+[EVM - TESTNET] ProofValidator contract loaded at 0x8775602A748990a4204C4b21BF44d31549802A7f
+[0mGET /api/v1/config [32m200[0m 7.566 ms - 290[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/config [32m200[0m 0.461 ms - 290[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/user/profile/0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 128.298 ms - -[0m
+[0mGET /api/v1/stats [36m304[0m 335.502 ms - -[0m
+[0mGET /api/v1/stats [36m304[0m 59.196 ms - -[0m
+[TESTNET] Using existing Token ID: 0.0.8001202
+[NFT - TESTNET] Using existing BRONZE NFT ID: 0.0.8193220
+[AuditPass] Ô£à Confirmed 0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE holds Bronze NFT via SDK.
+[0mGET /api/v1/config?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [32m200[0m 365.617 ms - 337[0m
+[TESTNET] Using existing Token ID: 0.0.8001202
+[NFT - TESTNET] Using existing BRONZE NFT ID: 0.0.8193220
+[AuditPass] Ô£à Confirmed 0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE holds Bronze NFT via SDK.
+[0mGET /api/v1/config?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [32m200[0m 350.357 ms - 337[0m
+[0mGET /api/v1/proofs [36m304[0m 1676.570 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1528.220 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/proofs [36m304[0m 979.159 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/proofs [36m304[0m 851.241 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/proofs [36m304[0m 755.672 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 333.401 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1333.795 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1453.825 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 539.638 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1619.241 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1740.069 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 414.438 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1507.226 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1632.912 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 346.287 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1566.720 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1443.067 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 457.498 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1237.048 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1362.458 ms - -[0m
+[TESTNET] Using existing Token ID: 0.0.8001202
+[NFT - TESTNET] Using existing BRONZE NFT ID: 0.0.8193220
+[AuditPass] Ô£à Confirmed 0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE holds Bronze NFT via SDK.
+[Payment] Ô£à Verified payment tx: 0x16f384357d578a11c0e20c04061be0ac2c5fa82ec414dc07e35aca3666dd431e
+[API] Payment verified: 0x16f384357d578a11c0e20c04061be0ac2c5fa82ec414dc07e35aca3666dd431e
+[MarketData] Classification: DEFI, HEDERA_ECOSYSTEM
+[API] Enriched with sources: Hedera Mirror Node (mainnet), CoinGecko API, SaucerSwap Native API, DefiLlama API
+[API] ­ƒÜÑ Intent Classifier: ACTIONABLE (DeFi/action keyword "swap" detected ÔÇö routing to OpenClaw Agent)
+[LangchainAgent] Executing Actionable flow for query: "swap 5 hbar to sauce
+
+--- LIVE MARKET DATA (fetched in real-time, use this for y..."
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 305.266 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1508.965 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1634.420 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 431.399 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1748.343 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1877.336 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 375.725 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1999.853 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1880.505 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 326.857 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 996.529 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1123.018 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 632.737 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1259.199 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1384.460 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 289.442 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1029.003 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1154.405 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 417.122 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1477.055 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1610.520 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 446.306 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1555.206 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1439.553 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 380.428 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1437.699 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1560.012 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 317.776 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1468.068 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1592.907 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 367.729 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 992.928 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1119.648 ms - -[0m
+node.exe : [API] ÔÜá 
+LangChain attempt failed 
+([GoogleGenerativeAI 
+Error]: Error fetching from 
+https://generativelanguage.g
+oogleapis.com/v1beta/models/
+gemini-2.0-flash:generateCon
+tent: [429 Too Many 
+Requests] You exceeded your 
+current quota, please check 
+your plan and billing 
+details. For more 
+information on this error, 
+head to: https://ai.google.d
+ev/gemini-api/docs/rate-limi
+ts. To monitor your current 
+usage, head to: 
+https://ai.dev/rate-limit. 
+En línea: 1 Carácter: 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo          
+: No    tSpecified: ([API] 
+ÔÜá LangC    
+...ev/rate-limit. :String) 
+[    ], RemoteException
+    + FullyQualifiedErrorId 
+: Na    tiveCommandError
+ 
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_requests, 
+limit: 0, model: 
+gemini-2.0-flash
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_requests, 
+limit: 0, model: 
+gemini-2.0-flash
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_input_token_cou
+nt, limit: 0, model: 
+gemini-2.0-flash
+Please retry in 
+55.554523419s. [{"@type":"ty
+pe.googleapis.com/google.rpc
+.Help","links":[{"descriptio
+n":"Learn more about Gemini 
+API quotas","url":"https://a
+i.google.dev/gemini-api/docs
+/rate-limits"}]},{"@type":"t
+ype.googleapis.com/google.rp
+c.QuotaFailure","violations"
+:[{"quotaMetric":"generative
+language.googleapis.com/gene
+rate_content_free_tier_reque
+sts","quotaId":"GenerateRequ
+estsPerDayPerProjectPerModel
+-FreeTier","quotaDimensions"
+:{"location":"global","model
+":"gemini-2.0-flash"}},{"quo
+taMetric":"generativelanguag
+e.googleapis.com/generate_co
+ntent_free_tier_requests","q
+uotaId":"GenerateRequestsPer
+MinutePerProjectPerModel-Fre
+eTier","quotaDimensions":{"l
+ocation":"global","model":"g
+emini-2.0-flash"}},{"quotaMe
+tric":"generativelanguage.go
+ogleapis.com/generate_conten
+t_free_tier_input_token_coun
+t","quotaId":"GenerateConten
+tInputTokensPerModelPerMinut
+e-FreeTier","quotaDimensions
+":{"model":"gemini-2.0-flash
+","location":"global"}}]},{"
+@type":"type.googleapis.com/
+google.rpc.RetryInfo","retry
+Delay":"55s"}]), retrying 
+in 2s...
+[LangchainAgent] Executing Actionable flow for query: "swap 5 hbar to sauce
+
+--- LIVE MARKET DATA (fetched in real-time, use this for y..."
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 335.868 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1490.587 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1615.216 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 417.969 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1526.386 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1647.908 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 412.941 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1690.130 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1564.469 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 278.627 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1286.988 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1412.181 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 423.881 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1527.745 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1651.336 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 297.028 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1329.689 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1205.516 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 390.615 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1481.130 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1362.731 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 530.334 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1529.578 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1654.229 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 291.292 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1469.629 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1591.062 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 394.726 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1688.991 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1565.026 ms - -[0m
+[API] ÔÜá LangChain 
+Executor failed after 
+retries, falling back to 
+Neural Engine: 
+[GoogleGenerativeAI Error]: 
+Error fetching from https://
+generativelanguage.googleapi
+s.com/v1beta/models/gemini-2
+.0-flash:generateContent: 
+[429 Too Many Requests] You 
+exceeded your current 
+quota, please check your 
+plan and billing details. 
+For more information on 
+this error, head to: https:/
+/ai.google.dev/gemini-api/do
+cs/rate-limits. To monitor 
+your current usage, head 
+to: 
+https://ai.dev/rate-limit. 
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_requests, 
+limit: 0, model: 
+gemini-2.0-flash
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_requests, 
+limit: 0, model: 
+gemini-2.0-flash
+* Quota exceeded for 
+metric: generativelanguage.g
+oogleapis.com/generate_conte
+nt_free_tier_input_token_cou
+nt, limit: 0, model: 
+gemini-2.0-flash
+Please retry in 
+11.709489493s. [{"@type":"ty
+pe.googleapis.com/google.rpc
+.Help","links":[{"descriptio
+n":"Learn more about Gemini 
+API quotas","url":"https://a
+i.google.dev/gemini-api/docs
+/rate-limits"}]},{"@type":"t
+ype.googleapis.com/google.rp
+c.QuotaFailure","violations"
+:[{"quotaMetric":"generative
+language.googleapis.com/gene
+rate_content_free_tier_reque
+sts","quotaId":"GenerateRequ
+estsPerDayPerProjectPerModel
+-FreeTier","quotaDimensions"
+:{"location":"global","model
+":"gemini-2.0-flash"}},{"quo
+taMetric":"generativelanguag
+e.googleapis.com/generate_co
+ntent_free_tier_requests","q
+uotaId":"GenerateRequestsPer
+MinutePerProjectPerModel-Fre
+eTier","quotaDimensions":{"l
+ocation":"global","model":"g
+emini-2.0-flash"}},{"quotaMe
+tric":"generativelanguage.go
+ogleapis.com/generate_conten
+t_free_tier_input_token_coun
+t","quotaId":"GenerateConten
+tInputTokensPerModelPerMinut
+e-FreeTier","quotaDimensions
+":{"location":"global","mode
+l":"gemini-2.0-flash"}}]},{"
+@type":"type.googleapis.com/
+google.rpc.RetryInfo","retry
+Delay":"11s"}]
+[Gemini REST] Calling gemini-2.5-flash on v1beta... (attempt 1/3)
+[Gemini REST] Key 
+rate-limited (429). 
+Rotating to next key (1/2 
+remaining)...
+[Gemini REST] Calling gemini-2.5-flash on v1beta... (attempt 1/3)
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 427.334 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1546.465 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1420.257 ms - -[0m
+[Gemini REST] Success. Parsed 4 steps. ProofId: 5385d8a8-455f-4e8d-b45b-6065755f55d9
+[0mPOST /api/v1/reason [32m201[0m 219966.359 ms - 2787[0m
+[API] Async handling started for proof 5385d8a8-455f-4e8d-b45b-6065755f55d9
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[HCS - TESTNET] Published step 1. Seq: 1517
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[HCS - TESTNET] Published step 2. Seq: 1518
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [32m200[0m 4147.997 ms - 1199[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[HCS - TESTNET] Published step 3. Seq: 1519
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [32m200[0m 227.632 ms - 101[0m
+[HCS - TESTNET] Published step 4. Seq: 1520
+[HCS - TESTNET] Published PROOF_COMPLETE for 5385d8a8-455f-4e8d-b45b-6065755f55d9. RootHash: 7f0e6ff50863b830f54e5fda76b6d885ee13a5baa7b07b0c0d38b3af33754443
+[LocalStore] Saved proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally.
+[HCS - TESTNET] Reasoning chain completely pushed to blockchain.
+[LocalStore] Updated proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 with new data.
+[AuditPass - TESTNET] Minting for Proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 to 0.0.8026799 (attempt 1/3)
+[TESTNET] Using existing Token ID: 0.0.8001202
+[TESTNET] Minting 1 tokens to Treasury...
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 970.442 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1092.691 ms - -[0m
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [32m200[0m 3317.300 ms - 1924[0m
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [32m200[0m 2.581 ms - 2332[0m
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [36m304[0m 2.502 ms - -[0m
+[TESTNET] Minted successfully. Status: SUCCESS
+[TESTNET] No accountKey provided for 0.0.8026799. Assuming token is already associated.
+[TESTNET] Transferring 1 tokens to 0.0.8026799...
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [36m304[0m 4.049 ms - -[0m
+[TESTNET] Transfer successful! Status: SUCCESS
+[TESTNET] Using existing Token ID: 0.0.8001202
+[NFT - TESTNET] Using existing BRONZE NFT ID: 0.0.8193220
+[AuditPass] Ô£à Confirmed 0.0.8026799 holds Bronze NFT via SDK.
+[AuditPass] User 0.0.8026799 now has 227 total audits (PFR balance).
+[AuditPass] Ô£à Process complete for 5385d8a8-455f-4e8d-b45b-6065755f55d9
+[LocalStore] Updated proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 with new data.
+[EVM - TESTNET] Recording audit on Smart Contract via registerProof()...
+[EVM - TESTNET]   taskId: "pf-1773693426389", hash: 0x5d3aeb7f688df3...
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [32m200[0m 2.401 ms - 2468[0m
+[EVM - TESTNET]   Tx sent: 0x3b23857de040b35e5ef097f818d0f2fadbbe6f4ecfdb34d43549eda1b71beb7b, waiting for confirmation...
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [36m304[0m 4.518 ms - -[0m
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [36m304[0m 4.044 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [32m200[0m 398.587 ms - 101[0m
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [36m304[0m 3.342 ms - -[0m
+[EVM - TESTNET] Ô£à Audit registered! Tx: 0x3b23857de040b35e5ef097f818d0f2fadbbe6f4ecfdb34d43549eda1b71beb7b
+[EVM - TESTNET] Proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 pushed. (tx: 0x3b23857de040b35e5ef097f818d0f2fadbbe6f4ecfdb34d43549eda1b71beb7b)
+[LocalStore] Updated proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 with new data.
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [32m200[0m 2024.720 ms - 47823[0m
+[0mGET /api/v1/proofs [32m200[0m 2147.256 ms - 47823[0m
+[LocalStore] Found proof 5385d8a8-455f-4e8d-b45b-6065755f55d9 locally with 4 steps.
+[0mGET /api/v1/proof/5385d8a8-455f-4e8d-b45b-6065755f55d9 [32m200[0m 2.540 ms - 2566[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 332.699 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1660.236 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1540.223 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 366.633 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1695.995 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1568.707 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 306.404 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 1128.586 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 1005.085 ms - -[0m
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[TESTNET] Using existing Topic ID: 0.0.8001198
+[0mGET /api/v1/stats [36m304[0m 694.160 ms - -[0m
+[0mGET /api/v1/proofs [36m304[0m 2175.959 ms - -[0m
+[0mGET /api/v1/proofs?address=0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE [36m304[0m 2053.445 ms - -[0m

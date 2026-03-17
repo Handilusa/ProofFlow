@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Search, ShieldCheck, ExternalLink, Network, FileText, CheckCircle2, ChevronRight, Hash, Clock, Loader2, Cpu } from 'lucide-react';
@@ -328,9 +330,11 @@ function VerifyContent() {
                                         </div>
 
                                         <Card className={`p-5 mb-4 ${isFinal ? 'border-amber-400/30 bg-amber-400/5' : 'border-border/50 bg-surface'}`}>
-                                            <p className={`text-sm leading-relaxed whitespace-pre-wrap ${isFinal ? 'text-white font-medium' : 'text-white/80'}`}>
-                                                {step.content}
-                                            </p>
+                                            <div className={`text-sm leading-relaxed prose prose-invert prose-p:my-1 prose-ul:my-1 max-w-none break-words ${isFinal ? 'text-white font-medium prose-strong:text-amber-400 prose-li:text-amber-100' : 'text-white/80'}`}>
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                    {step.content}
+                                                </ReactMarkdown>
+                                            </div>
 
                                             <div className="mt-5 space-y-2 pt-4 border-t border-border/40">
                                                 <div className="flex items-start sm:items-center gap-2 text-xs text-text-muted font-mono break-all sm:break-normal">
@@ -347,7 +351,73 @@ function VerifyContent() {
                             })}
                         </div>
 
-                        {/* Audit Passport & EVM Anchor Status */}
+                        {/* Extract execution hash natively or via regex fallback for older proofs */}
+                        {(() => {
+                            const finalStepDesc = proof.steps.find((s: any) => s.label === "FINAL")?.content || "";
+                            const extractedHashMatch = finalStepDesc.match(/Transaction Hash:\s*(0x[a-fA-F0-9]{64})/i);
+                            const txHashToUse = (proof as any).executionTxHash || (extractedHashMatch ? extractedHashMatch[1] : null);
+
+                            return proof.type === "SWAP_PROPOSAL" && proof.swapDetails && txHashToUse ? (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.35 }}
+                                className="mb-8 relative overflow-hidden bg-[#0a0f18] border border-cyan-500/30 p-[1px] group"
+                                style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="relative bg-[#060a12] p-6 flex flex-col gap-6"
+                                     style={{ clipPath: 'polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)' }}>
+                                    
+                                    {/* Header */}
+                                    <div className="flex items-center gap-4 border-b border-cyan-500/20 pb-5">
+                                        <div className="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.2)]"
+                                             style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <CheckCircle2 className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-display font-bold text-white tracking-wide">Swap Executed</h3>
+                                            <p className="text-xs font-mono text-cyan-400/80">Transaction confirmed on {network === 'mainnet' ? 'Hedera Mainnet' : 'Hedera Testnet'}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Grid */}
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div className="bg-[#0a0f18] border border-cyan-500/15 p-4" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[10px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-2">Sent</span>
+                                            <span className="text-base font-mono text-white/90">{proof.swapDetails.amountIn} {proof.swapDetails.tokenIn}</span>
+                                        </div>
+                                        <div className="bg-[#0a0f18] border border-cyan-500/15 p-4" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[10px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-2">Received (Est.)</span>
+                                            <span className="text-base font-mono text-emerald-400/90">{proof.swapDetails.estimatedOut}</span>
+                                        </div>
+                                        <div className="bg-[#0a0f18] border border-cyan-500/15 p-4" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[10px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-2">DEX</span>
+                                            <span className="text-base font-mono text-white/90">{proof.swapDetails.dex}</span>
+                                        </div>
+                                        <div className="bg-[#0a0f18] border border-cyan-500/15 p-4" style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                            <span className="text-[10px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold block mb-2">Network</span>
+                                            <span className="text-base font-mono text-white/90 capitalize">Hedera {network}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* TX Hash Footer */}
+                                    <div className="mt-2 bg-[#0a0f18] border border-cyan-500/20 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                                         style={{ clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)' }}>
+                                        <span className="text-[10px] text-cyan-400/50 uppercase tracking-widest font-mono font-bold shrink-0">Transaction Hash</span>
+                                        <div className="flex items-center gap-2 overflow-hidden">
+                                            <span className="text-xs sm:text-sm font-mono text-cyan-400 truncate break-all">{txHashToUse}</span>
+                                            <a href={`https://hashscan.io/${network}/tx/${txHashToUse}`} target="_blank" rel="noreferrer" className="shrink-0 text-cyan-400 hover:text-cyan-300">
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ) : null;
+                    })()}
+
+                    {/* Audit Passport & EVM Anchor Status */}
                         {(proof.status === "CONFIRMED" || proof.status === "VERIFIED") && proof.tokenTxId && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}

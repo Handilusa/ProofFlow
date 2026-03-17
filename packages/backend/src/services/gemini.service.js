@@ -166,6 +166,12 @@ RULES:
   2. Use HISTORICAL MAXIMUMS from the network or market as a stress-test scenario if no variable is given.
   3. Always provide a definitive quantitative conclusion, even if it requires stating assumptions. Label assumptions clearly.
 
+ACTIONABLE LINKS — When your analysis recommends a specific DeFi action (liquidity pool, swap, staking, etc.), include the direct dApp URL in your FINAL step so the user can act immediately. Key Hedera dApps:
+  - SaucerSwap: https://app.saucerswap.finance
+  - Bonzo Finance: https://app.bonzo.finance
+  - HeliSwap: https://app.heliswap.io
+  - HashPack Wallet: https://www.hashpack.app
+
 VIOLATION OF THIS FORMAT WILL RESULT IN AN AUDIT FAILURE.`
                         }]
                     }

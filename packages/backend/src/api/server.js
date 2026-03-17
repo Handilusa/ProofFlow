@@ -13,6 +13,9 @@ import { HCSAuditService } from "../services/hcsAudit.service.js";
 import { AuditPassService } from "../services/auditPass.service.js";
 import { enrichQuestionWithMarketData } from "../services/marketData.service.js";
 import { UserService } from "../services/userService.js";
+import { classifyIntent } from "../services/agents/agentRouter.js";
+import { LangchainAgentService } from "../services/agents/langchainAgent.service.js";
+import { SwapService } from "../services/agents/swapService.js"; // Added this import
 import { mintAndTransferGenesis, checkGenesisOwnership } from "../services/genesisMint.service.js";
 import { isContractReady, getContractAddress, recordAuditInEVM } from "../services/hedera/proofflow.js";
 import { startContractListener } from "../services/hedera/contractListener.js";
@@ -106,6 +109,8 @@ const geminiService = new GeminiService();
 const hcsAuditService = new HCSAuditService();
 const auditPassService = new AuditPassService();
 const userService = new UserService();
+const langchainService = new LangchainAgentService();
+const swapService = new SwapService(); // Added this instantiation
 
 // Middleware
 app.use(helmet());
@@ -189,9 +194,13 @@ app.post("/api/v1/reason",
                 }
             }
 
-            // Enforce micropayment when OPERATOR_EVM_ADDRESS is configured
+            // Classify intent FIRST so we can bypass payment for SWAP operations
+            const { classifyIntent } = await import("../services/agents/agentRouter.js");
+            const intent = classifyIntent(question, requesterAddress);
+
+            // Enforce micropayment when OPERATOR_EVM_ADDRESS is configured, UNLESS it's a swap intent
             const operatorAddress = getOperatorEvmAddress(network);
-            if (operatorAddress) {
+            if (operatorAddress && intent.route !== "SWAP") {
                 if (!paymentTxHash) {
                     return res.status(402).json({
                         success: false,
@@ -265,57 +274,119 @@ app.post("/api/v1/reason",
                 console.log(`[API] 🔗 Injected ${resolvedParents.length} parent proof(s) into prompt context`);
             }
 
-            // 2. Call Gemini for reasoning with enriched context
-            const reasoningResult = await geminiService.reasonWithAudit(enrichedPrompt);
-
-            // Validate the response shape
-            if (!reasoningResult || !Array.isArray(reasoningResult.steps)) {
-                console.error("[API] Gemini returned invalid shape:", JSON.stringify(reasoningResult));
-                return res.status(503).json({
-                    success: false,
-                    error: "AI service returned an unexpected response. Please try again.",
-                });
+            // 2. Classify intent and route to the correct agent
+            // 2. Classify intent and route to the correct agent
+            // (Intent is already classified at the top of the request to bypass micropayments)
+            // Use the injected prompt from the router (which might now include the implicit wallet address)
+            let finalPromptForAgent = enrichedPrompt;
+            if (intent.injectedPrompt && intent.injectedPrompt !== question) {
+                // If the router injected context (like the wallet address), append it to the enriched prompt
+                finalPromptForAgent = enrichedPrompt + "\n\n" + intent.injectedPrompt.replace(question, "").trim();
             }
 
-            // Store the original question, not the enriched one
-            reasoningResult.question = question;
-            reasoningResult.dataSources = sources;
-            reasoningResult.parentProofIds = parentProofIds || [];
-            reasoningResult.parentProofs = resolvedParents;
+            let reasoningResult;
+            
+            if (intent.route === "SWAP") {
+                // Deterministic Swap Execution Route
+                console.log(`[API] 💱 Processing direct swap execution`);
+                reasoningResult = await swapService.buildProposal(intent.swapParams, requesterAddress);
+            } else if (intent.route === "ACTIONABLE") {
+                // OpenClaw Multi-Agent System (DeFi/Wallet)
+                try {
+                    reasoningResult = await langchainService.executeDeFiFlow(finalPromptForAgent);
+                } catch (langErr) {
+                    console.error("[API] ⚠ LangChain Executor failed, falling back to Neural Engine:", langErr.message);
+                    reasoningResult = await geminiService.reasonWithAudit(finalPromptForAgent); 
+                }
+            } else {
+                // ProofFlow Neural Engine v2 (Macro/Analytical)
+                reasoningResult = await geminiService.reasonWithAudit(finalPromptForAgent);
+            }
 
-            // 3. Ensure the model actually completed its reasoning
-            const finalAnswerStep = reasoningResult.steps.find(s => s.label === "FINAL");
+            let responseData;
 
-            if (!finalAnswerStep) {
-                console.error("[API] AI generation stopped prematurely without a FINAL step.");
-                return res.status(503).json({
-                    success: false,
-                    error: "El Agente IA no pudo concluir el razonamiento complejo. Por favor, intenta de nuevo con un contexto más específico.",
-                });
+            // If it's a swap proposal, handle it distinctly
+            if (reasoningResult.type === "SWAP_PROPOSAL") {
+                responseData = {
+                    type: "SWAP_PROPOSAL",
+                    proofId: reasoningResult.proofId,
+                    question: question,
+                    swapDetails: reasoningResult.swapDetails,
+                    warnings: reasoningResult.warnings,
+                    confidenceScore: reasoningResult.confidenceScore,
+                    riskLevel: reasoningResult.riskLevel,
+                    blockExecution: reasoningResult.blockExecution,
+                    txData: reasoningResult.txData,
+                    answer: reasoningResult.steps.find(s => s.label === "FINAL")?.content || "Swap proposal built.",
+                    steps: reasoningResult.steps,
+                    totalSteps: reasoningResult.totalSteps,
+                    status: "PENDING_EXECUTION",
+                    hcsTopicId: "pending",
+                    dataSources: reasoningResult.dataSources,
+                    createdAt: reasoningResult.createdAt,
+                    requesterAddress: requesterAddress,
+                    network: network,
+                };
+                
+                // Save the initial proposal locally so polling doesn't return 404
+                await hcsAuditService.saveInitialProof(responseData, network);
+            } else {
+                // Validate the response shape for normal reasoning
+                if (!reasoningResult || !Array.isArray(reasoningResult.steps)) {
+                    console.error("[API] Agent returned invalid shape:", JSON.stringify(reasoningResult));
+                    return res.status(503).json({
+                        success: false,
+                        error: "AI service returned an unexpected response. Please try again.",
+                    });
+                }
+
+                // Store the original question, not the enriched one
+                reasoningResult.question = question;
+                // Use the agent's specific dataSources if provided (e.g., from Langchain), otherwise use the enriched ones
+                reasoningResult.dataSources = reasoningResult.dataSources || sources;
+                reasoningResult.parentProofIds = parentProofIds || [];
+                reasoningResult.parentProofs = resolvedParents;
+
+                // 3. Ensure the model actually completed its reasoning
+                const finalAnswerStep = reasoningResult.steps.find(s => s.label === "FINAL");
+
+                if (!finalAnswerStep) {
+                    console.error("[API] AI generation stopped prematurely without a FINAL step.");
+                    return res.status(503).json({
+                        success: false,
+                        error: "El Agente IA no pudo concluir el razonamiento complejo. Por favor, intenta de nuevo con un contexto más específico.",
+                    });
+                }
+
+                // Format normal response
+                responseData = {
+                    proofId: reasoningResult.proofId,
+                    question: reasoningResult.question,
+                    answer: finalAnswerStep.content,
+                    steps: reasoningResult.steps,
+                    totalSteps: reasoningResult.totalSteps,
+                    status: "PUBLISHING_TO_HEDERA",
+                    hcsTopicId: "pending",
+                    dataSources: reasoningResult.dataSources,
+                    createdAt: reasoningResult.createdAt,
+                    requesterAddress: requesterAddress,
+                    parentProofIds: reasoningResult.parentProofIds,
+                    parentProofs: resolvedParents,
+                    network: network,
+                    tier: userTier.id
+                };
             }
 
             // Return result immediately to client so UI unblocks
-            const responseData = {
-                proofId: reasoningResult.proofId,
-                question: reasoningResult.question,
-                answer: finalAnswerStep.content,
-                steps: reasoningResult.steps,
-                totalSteps: reasoningResult.totalSteps,
-                status: "PUBLISHING_TO_HEDERA",
-                hcsTopicId: "pending",
-                dataSources: sources,
-                createdAt: reasoningResult.createdAt,
-                requesterAddress: requesterAddress,
-                parentProofIds: reasoningResult.parentProofIds,
-                parentProofs: resolvedParents,
-                network: network,
-                tier: userTier.id
-            };
-
             res.status(201).json(responseData);
 
             // 4. Asynchronously handle Hedera operations
             setImmediate(async () => {
+                if (reasoningResult.type === "SWAP_PROPOSAL") {
+                    console.log(`[API] Skipping auto-anchoring for swap proposal ${reasoningResult.proofId}. Waiting for user execution.`);
+                    return; // Swaps are anchored manually after execution
+                }
+
                 let proofUpdates = {}; // Start empty, rely on HCS 'CONFIRMED' initially
                 try {
                     console.log(`[API] Async handling started for proof ${reasoningResult.proofId}`);
@@ -392,6 +463,86 @@ app.post("/api/v1/reason",
                     error: error.message,
                 });
             }
+            next(error);
+        }
+    }
+);
+
+// New endpoint: Anchor a successfully executed swap to HCS & EVM
+app.post("/api/v1/swap/anchor",
+    [
+        body("proofId").isString().notEmpty(),
+        body("txHash").isString().notEmpty(),
+        body("swapDetails").optional().isObject()
+    ],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { proofId, txHash, swapDetails } = req.body;
+            const network = extractNetwork(req);
+
+            const proof = await hcsAuditService.getProofById(proofId);
+            if (!proof) return res.status(404).json({ error: "Proof not found" });
+            if (proof.type !== "SWAP_PROPOSAL") return res.status(400).json({ error: "Not a swap proof" });
+
+            res.status(202).json({ message: "Anchoring swap execution triggered", proofId });
+
+            setImmediate(async () => {
+                let proofUpdates = { status: "PUBLISHING_TO_HEDERA", executionTxHash: txHash };
+                try {
+                    // 1. Update the FINAL step to include the actual TX hash
+                    const currentSteps = proof.steps || [];
+                    const finalStepIndex = currentSteps.findIndex(s => s.label === "FINAL");
+                    if (finalStepIndex !== -1) {
+                        let content = `User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: ${txHash}`;
+                        if (swapDetails) {
+                            content += `\n\n**Swap Details:**\n`;
+                            content += `- **Paid:** ${swapDetails.amountIn || '?'} ${swapDetails.tokenIn || '?'}\n`;
+                            content += `- **Received (Est):** ${swapDetails.estimatedOut || '?'}\n`;
+                            content += `- **Protocol:** ${swapDetails.dex || '?'}\n`;
+                            content += `- **Max Slippage:** ${swapDetails.slippage || '?'}`;
+                        }
+                        currentSteps[finalStepIndex].content = content;
+                    }
+                    proofUpdates.steps = currentSteps;
+                    await hcsAuditService.updateLocalProof(proofId, proofUpdates, network);
+
+                    // 2. Publish to HCS
+                    await hcsAuditService.publishReasoningChain(proofId, currentSteps, network, proof.question);
+
+                    // 3. Mint Audit Pass
+                    if (proof.requesterAddress) {
+                        try {
+                            const { tokenTxId, explorerUrl } = await auditPassService.mintAuditPass(proofId, proof.requesterAddress, null, network);
+                            proofUpdates.tokenTxId = tokenTxId;
+                            proofUpdates.explorerUrl = explorerUrl;
+                            await hcsAuditService.updateLocalProof(proofId, proofUpdates, network);
+                        } catch (e) {
+                            console.error("[Async] Failed to mint swap audit pass", e);
+                        }
+                    }
+
+                    // 4. Anchor to EVM
+                    try {
+                        const finalRootHash = ethers.id("fallback-hash"); 
+                        const evmTxHash = await recordAuditInEVM(`Swap Executed: ${txHash}`, finalRootHash, proof.requesterAddress, network);
+                        if (evmTxHash) {
+                            proofUpdates.evmTxHash = evmTxHash;
+                            proofUpdates.evmSettled = true;
+                        }
+                    } catch (e) {
+                        console.error("[EVM] Async recording error for swap:", e.message);
+                    }
+
+                    proofUpdates.status = "VERIFIED";
+                    await hcsAuditService.updateLocalProof(proofId, proofUpdates, network);
+
+                } catch (err) {
+                    console.error("[Async] Fatal swap anchoring failed:", err.message);
+                    await hcsAuditService.updateLocalProof(proofId, { status: "FAILED" }, network);
+                }
+            });
+        } catch (error) {
             next(error);
         }
     }
