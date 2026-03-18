@@ -94,6 +94,13 @@ export class AuditPassService {
 
                 // 1. Mint the standard Reputation Token (Fungible)
                 const mintResult = await mintReputation(recipientAddress, amount, accountKey, networkStr, true);
+
+                // If the user's wallet doesn't have PFR associated, bubble up immediately
+                if (mintResult.needsAssociation) {
+                    console.warn(`[AuditPass] Token not associated for ${recipientAddress}. Needs user action.`);
+                    return { needsAssociation: true, tokenId: mintResult.tokenId, accountId: mintResult.accountId };
+                }
+
                 const tokenTxId = mintResult.transactionId || "unknown-tx";
                 const explorerUrl = `https://hashscan.io/${networkStr}/transaction/${tokenTxId}`;
 

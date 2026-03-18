@@ -120,3 +120,68 @@ export async function connectToHedera() {
         throw error;
     }
 }
+
+/**
+ * Associates a token (e.g. PFR) to the user's Hedera wallet via WalletConnect.
+ * This is required before the backend can transfer the token to the user.
+ * Uses the same signing pattern as micropayments in dashboard.
+ */
+export async function associatePFRToken(accountId: string, tokenId: string): Promise<boolean> {
+    try {
+        const { signClient } = await initHederaWalletConnect();
+        if (!signClient) throw new Error("WalletConnect not initialized");
+
+        // Dynamically import Hedera SDK to avoid SSR issues
+        const { TokenAssociateTransaction, AccountId, TransactionId } = await import('@hashgraph/sdk');
+
+        const sessions = signClient.session.getAll();
+        const hederaSession = sessions.find((s: any) => s.namespaces.hedera);
+        if (!hederaSession) throw new Error("No active Hedera WalletConnect session found.");
+
+        // Resolve account ID from session if needed
+        let signerAccountId = accountId;
+        if (accountId.startsWith('0x')) {
+            const sessionAccounts = hederaSession.namespaces.hedera.accounts || [];
+            if (sessionAccounts[0]) {
+                const parts = sessionAccounts[0].split(':');
+                signerAccountId = parts[parts.length - 1];
+            }
+        }
+
+        console.log(`[TokenAssociate] Associating token ${tokenId} to ${signerAccountId}...`);
+
+        const tx = new TokenAssociateTransaction()
+            .setAccountId(AccountId.fromString(signerAccountId))
+            .setTokenIds([tokenId])
+            .setTransactionId(TransactionId.generate(signerAccountId))
+            .setNodeAccountIds([AccountId.fromString("0.0.3")]);
+
+        tx.freeze();
+        const txBytes = Buffer.from(tx.toBytes()).toString('base64');
+
+        const response = await signClient.request({
+            topic: hederaSession.topic,
+            chainId: 'hedera:testnet',
+            request: {
+                method: 'hedera_signAndExecuteTransaction',
+                params: {
+                    transactionList: txBytes,
+                    signerAccountId: `hedera:testnet:${signerAccountId}`
+                }
+            }
+        }) as any;
+
+        const txId = response?.transactionId || response?.response?.transactionId;
+        console.log(`[TokenAssociate] ✅ Token associated successfully! tx: ${txId}`);
+        return true;
+
+    } catch (error: any) {
+        console.error('[TokenAssociate] Failed to associate token:', error);
+        // User rejection is not a fatal error
+        if (error?.message?.includes('rejected') || error?.message?.includes('denied')) {
+            return false;
+        }
+        throw error;
+    }
+}
+

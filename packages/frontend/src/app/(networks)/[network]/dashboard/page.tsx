@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Card, Button, Skeleton } from '@/components/ui';
 import Badge from '@/components/ui/Badge';
-import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha } from '@/lib/api';
+import { submitQuestion, getRecentProofs, getConfig, getProofTxData, ReasoningResult, ReasoningStep, StoredProof, ProofFlowConfig, ApiError, verifyCaptcha, retryTokenMint } from '@/lib/api';
 import { useWallet } from '@/lib/wallet-context';
 import { useSendTransaction, useChainId } from 'wagmi';
 import { parseEther } from 'viem';
@@ -27,8 +27,9 @@ import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import { useLanguage } from '@/lib/language-context';
 import { API_URL, formatTimeAgoI18n, cn } from '@/lib/utils';
 import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
-import { getSignClient, initHederaWalletConnect } from "@/lib/hedera-walletconnect";
+import { getSignClient, initHederaWalletConnect, associatePFRToken } from "@/lib/hedera-walletconnect";
 import CaptchaModal from '@/components/ui/CaptchaModal';
+import { toast } from 'react-hot-toast';
 const ALL_VECTORS = [
   "Given current BTC volatility, model the short-term correlation and beta of HBAR. Is a decoupling imminent?",
   "Evaluate Hedera's Fully Diluted Valuation (FDV) against its real-world enterprise adoption metrics.",
@@ -144,6 +145,7 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
   const [confirmText, setConfirmText] = useState("");
   const [forceConfirmStep, setForceConfirmStep] = useState(false);
   const [lastProofId, setLastProofId] = useState<string | null>(null);
+  const [isAssociating, setIsAssociating] = useState(false);
 
   // CAPTCHA State
   const [captchaData, setCaptchaData] = useState<{ token: string; question: string } | null>(null);
@@ -768,6 +770,66 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
                 );
               })}
             </div>
+
+            {/* --- TOKEN ASSOCIATION PROMPT --- */}
+            {(result as StoredProof).needsAssociation && (result as StoredProof).pfrTokenId && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-4 p-4 border border-amber-500/40 bg-amber-500/10 rounded-none relative overflow-hidden"
+                style={{ clipPath: "polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px)" }}
+              >
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(245,158,11,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(245,158,11,0.03)_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Key className="w-5 h-5 text-amber-400" />
+                    <h4 className="text-sm font-bold text-amber-400 font-mono uppercase tracking-widest">
+                      {language === 'es' ? 'Asociación de Token Requerida' : 'Token Association Required'}
+                    </h4>
+                  </div>
+                  <p className="text-xs text-amber-300/80 font-mono mb-3">
+                    {language === 'es'
+                      ? 'Tu wallet necesita asociar el token PFR (acción única) para recibir recompensas de ProofFlow.'
+                      : 'Your wallet needs to associate the PFR token (one-time action) to receive ProofFlow rewards.'}
+                  </p>
+                  <button
+                    onClick={async () => {
+                      if (!account || !(result as StoredProof).pfrTokenId) return;
+                      setIsAssociating(true);
+                      try {
+                        const success = await associatePFRToken(account, (result as StoredProof).pfrTokenId!);
+                        if (success) {
+                          toast.success(language === 'es' ? '✅ Token asociado. Reintentando mint...' : '✅ Token associated. Retrying mint...');
+                          const retryRes = await retryTokenMint(result.proofId, network);
+                          if (retryRes.success) {
+                            toast.success(language === 'es' ? '✅ PFR recibido!' : '✅ PFR received!');
+                            setResult(prev => prev ? { ...prev, needsAssociation: false, tokenTxId: retryRes.tokenTxId } as any : null);
+                          } else {
+                            toast.error(language === 'es' ? 'Mint falló. Intenta de nuevo.' : 'Mint failed. Try again.');
+                          }
+                        } else {
+                          toast.error(language === 'es' ? 'Asociación cancelada.' : 'Association cancelled.');
+                        }
+                      } catch (err: any) {
+                        console.error('[Associate] Error:', err);
+                        toast.error(err?.message || 'Association failed');
+                      } finally {
+                        setIsAssociating(false);
+                      }
+                    }}
+                    disabled={isAssociating}
+                    className="flex items-center gap-2 px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-300 font-mono text-xs uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ clipPath: "polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)" }}
+                  >
+                    {isAssociating ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /> {language === 'es' ? 'Procesando...' : 'Processing...'}</>
+                    ) : (
+                      <><Key className="w-4 h-4" /> {language === 'es' ? 'Asociar Token PFR' : 'Associate PFR Token'}</>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            )}
 
             {/* --- SWAP CONFIRMATION UI --- */}
             {/* --- SWAP CONFIRMATION UI --- */}

@@ -112,15 +112,24 @@ export async function mintReputation(accountId, amount, accountKey = null, netwo
         }
 
         console.log(`[${network.toUpperCase()}] Transferring ${amount} tokens to ${accountId}...`);
-        const transferTx = new TransferTransaction()
-            .addTokenTransfer(tokenId, client.operatorAccountId, -amount)
-            .addTokenTransfer(tokenId, accountId, amount);
+        try {
+            const transferTx = new TransferTransaction()
+                .addTokenTransfer(tokenId, client.operatorAccountId, -amount)
+                .addTokenTransfer(tokenId, accountId, amount);
 
-        const transferResponse = await transferTx.execute(client);
-        const transferReceipt = await transferResponse.getReceipt(client);
+            const transferResponse = await transferTx.execute(client);
+            const transferReceipt = await transferResponse.getReceipt(client);
 
-        console.log(`[${network.toUpperCase()}] Transfer successful! Status: ${transferReceipt.status.toString()}`);
-        return { receipt: transferReceipt, transactionId: transferResponse.transactionId.toString() };
+            console.log(`[${network.toUpperCase()}] Transfer successful! Status: ${transferReceipt.status.toString()}`);
+            return { receipt: transferReceipt, transactionId: transferResponse.transactionId.toString() };
+        } catch (transferErr) {
+            const statusStr = transferErr.status?.toString() || transferErr.message || '';
+            if (statusStr.includes('TOKEN_NOT_ASSOCIATED')) {
+                console.warn(`[${network.toUpperCase()}] ⚠️ Token ${tokenId} NOT associated for ${accountId}. User must associate first.`);
+                return { needsAssociation: true, tokenId, accountId: accountId.toString() };
+            }
+            throw transferErr; // Re-throw if it's a different error
+        }
     } catch (error) {
         console.error(`[${getNetwork(networkStr).toUpperCase()}] Error in mintReputation:`, error);
         throw error;

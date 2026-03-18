@@ -413,12 +413,20 @@ app.post("/api/v1/reason",
                                     console.log(`[API] Could not resolve EVM address ${resolveAddress} to Hedera ID:`, e.message);
                                 }
                             }
-                            const { tokenTxId, explorerUrl } = await auditPassService.mintAuditPass(reasoningResult.proofId, resolveAddress, null, network);
-                            proofUpdates.tokenTxId = tokenTxId;
-                            proofUpdates.explorerUrl = explorerUrl;
-                            
-                            // Save immediately so frontend can show the Passport
-                            await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
+                            const mintResult = await auditPassService.mintAuditPass(reasoningResult.proofId, resolveAddress, null, network);
+
+                            // Handle token not associated — save flag so frontend can prompt user
+                            if (mintResult.needsAssociation) {
+                                console.warn(`[Async] Token not associated for ${resolveAddress}. Saving flag for frontend.`);
+                                proofUpdates.needsAssociation = true;
+                                proofUpdates.pfrTokenId = mintResult.tokenId;
+                                await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
+                            } else {
+                                proofUpdates.tokenTxId = mintResult.tokenTxId;
+                                proofUpdates.explorerUrl = mintResult.explorerUrl;
+                                // Save immediately so frontend can show the Passport
+                                await hcsAuditService.updateLocalProof(reasoningResult.proofId, proofUpdates, network);
+                            }
                         } catch (e) {
                             console.error("[Async] Failed to mint audit pass", e);
                             proofUpdates.status = "FAILED";
@@ -882,6 +890,52 @@ app.get("/api/v1/genesis/ownership/:address",
     }
 );
 
+// Retry PFR token mint after user has self-associated the token
+app.post("/api/v1/token/retry-mint/:proofId",
+    [param("proofId").isString().notEmpty()],
+    handleValidationErrors,
+    async (req, res, next) => {
+        try {
+            const { proofId } = req.params;
+            const network = extractNetwork(req);
+
+            const proof = await hcsAuditService.getProofById(proofId);
+            if (!proof) return res.status(404).json({ error: "Proof not found" });
+            if (!proof.requesterAddress) return res.status(400).json({ error: "No requester address on this proof" });
+
+            console.log(`[API] Retrying PFR mint for proof ${proofId} to ${proof.requesterAddress}`);
+
+            const mintResult = await auditPassService.mintAuditPass(proofId, proof.requesterAddress, null, network);
+
+            if (mintResult.needsAssociation) {
+                return res.status(409).json({
+                    success: false,
+                    error: "Token still not associated. Please associate the PFR token first.",
+                    needsAssociation: true,
+                    tokenId: mintResult.tokenId
+                });
+            }
+
+            // Success — update the proof with tokenTxId
+            await hcsAuditService.updateLocalProof(proofId, {
+                tokenTxId: mintResult.tokenTxId,
+                explorerUrl: mintResult.explorerUrl,
+                needsAssociation: false,
+                pfrTokenId: undefined
+            }, network);
+
+            return res.status(200).json({
+                success: true,
+                tokenTxId: mintResult.tokenTxId,
+                explorerUrl: mintResult.explorerUrl
+            });
+        } catch (error) {
+            console.error("[API] Retry mint failed:", error.message);
+            return res.status(500).json({ success: false, error: error.message });
+        }
+    }
+);
+
 // Config endpoint — tells frontend where to send micropayment
 app.get("/api/v1/config", async (req, res) => {
     const network = extractNetwork(req);
@@ -898,6 +952,15 @@ app.get("/api/v1/config", async (req, res) => {
         }
     }
 
+    // Fetch PFR Token ID so frontend can use it for association
+    let pfrTokenId = null;
+    try {
+        const { getOrCreateToken } = await import("../services/hedera/reputation-token.js");
+        pfrTokenId = await getOrCreateToken(network);
+    } catch (e) {
+        console.error("[API] Failed to fetch PFR token ID for config:", e.message);
+    }
+
     return res.status(200).json({
         operatorEvmAddress: operatorAddress,
         operatorAccountId: isMainnet ? process.env.HEDERA_ACCOUNT_ID_MAINNET : process.env.HEDERA_ACCOUNT_ID_TESTNET,
@@ -906,7 +969,8 @@ app.get("/api/v1/config", async (req, res) => {
         paymentRequired: !!operatorAddress,
         contractAddress: getContractAddress(network),
         contractReady: isContractReady(network),
-        userTier: userTier
+        userTier: userTier,
+        pfrTokenId: pfrTokenId
     });
 });
 

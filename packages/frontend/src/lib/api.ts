@@ -51,6 +51,8 @@ export interface StoredProof extends ReasoningResult {
     tokenTxId?: string;
     requesterAddress?: string;
     explorerUrl?: string;
+    needsAssociation?: boolean;
+    pfrTokenId?: string;
 }
 
 import { API_URL } from './utils';
@@ -72,6 +74,7 @@ export interface ProofFlowConfig {
     contractAddress: string | null;
     contractReady: boolean;
     userTier?: UserTier;
+    pfrTokenId?: string;
 }
 
 export async function getConfig(networkStr: string = 'testnet', address?: string): Promise<ProofFlowConfig> {
@@ -217,5 +220,13 @@ export async function getNetworkStats(networkStr: string = 'testnet'): Promise<N
     if (!response.ok) {
         throw new Error(`API Error: ${response.statusText}`);
     }
+    return response.json();
+}
+
+export async function retryTokenMint(proofId: string, networkStr: string = 'testnet'): Promise<{ success: boolean; tokenTxId?: string; explorerUrl?: string; needsAssociation?: boolean }> {
+    const response = await fetch(`${API_URL}/token/retry-mint/${proofId}`, {
+        method: 'POST',
+        headers: { 'x-network': networkStr }
+    });
     return response.json();
 }

@@ -264,7 +264,10 @@ export class HCSAuditService {
                 confidenceScore: localProof.confidenceScore,
                 riskLevel: localProof.riskLevel,
                 blockExecution: localProof.blockExecution,
-                warnings: localProof.warnings
+                warnings: localProof.warnings,
+                // Token association fields
+                needsAssociation: localProof.needsAssociation || false,
+                pfrTokenId: localProof.pfrTokenId || null
             };
         }
 
