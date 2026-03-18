@@ -221,7 +221,7 @@ export class SwapService {
             // Mock mode: forcefully set to 0 to prevent the user from losing testnet HBAR 
             // to the dummy EVM address 0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3.
             valueWei = "0";
-        } catch(e) {}
+        } catch(e) { /* no-op: mock mode */ }
 
         // ── ProofFlow Auditable Steps ──
         const timestamp = Date.now();
