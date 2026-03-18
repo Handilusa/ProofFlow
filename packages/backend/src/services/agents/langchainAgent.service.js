@@ -180,8 +180,9 @@ export class LangchainAgentService {
         if (steps.length === 0) {
             console.warn("[LangChain Parser] Agent disobeyed XML format. Creating fallback steps.");
             const hash = crypto.createHash("sha256").update(rawText).digest("hex");
+            const step1Content = "Analyzing on-chain data and compiling DeFi opportunities...";
             return [
-                { stepNumber: 1, label: "STEP 1", content: "Analyzing on-chain data and compiling DeFi opportunities...", hash: crypto.createHash("sha256").update("1").digest("hex"), timestamp: Date.now() },
+                { stepNumber: 1, label: "STEP 1", content: step1Content, hash: crypto.createHash("sha256").update(step1Content).digest("hex"), timestamp: Date.now() },
                 { stepNumber: 2, label: "FINAL", content: rawText.trim(), hash, timestamp: Date.now() + 10 }
             ];
         }

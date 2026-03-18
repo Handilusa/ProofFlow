@@ -1,4 +1,5 @@
 import "dotenv/config";
+import crypto from "crypto";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -511,6 +512,8 @@ app.post("/api/v1/swap/anchor",
                             content += `- **Max Slippage:** ${swapDetails.slippage || '?'}`;
                         }
                         currentSteps[finalStepIndex].content = content;
+                        // IMPORTANT: Rehash so frontend trustless verification stays consistent
+                        currentSteps[finalStepIndex].hash = crypto.createHash("sha256").update(content).digest("hex");
                     }
                     proofUpdates.steps = currentSteps;
                     await hcsAuditService.updateLocalProof(proofId, proofUpdates, network);

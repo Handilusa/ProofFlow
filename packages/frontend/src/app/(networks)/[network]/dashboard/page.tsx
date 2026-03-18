@@ -27,7 +27,7 @@ import LiveNetworkCounter from '@/components/proofflow/LiveNetworkCounter';
 import { useLanguage } from '@/lib/language-context';
 import { API_URL, formatTimeAgoI18n, cn } from '@/lib/utils';
 import { TransferTransaction, Hbar, TransactionId, AccountId } from "@hashgraph/sdk";
-import { getSignClient, initHederaWalletConnect, associatePFRToken } from "@/lib/hedera-walletconnect";
+import { getSignClient, initHederaWalletConnect, associatePFRToken, executeHederaSwap } from "@/lib/hedera-walletconnect";
 import CaptchaModal from '@/components/ui/CaptchaModal';
 import { toast } from 'react-hot-toast';
 const ALL_VECTORS = [
@@ -116,6 +116,38 @@ const ALL_VECTORS_ES = [
   "Desmonta (o confirma) con datos la narrativa de que la gobernanza corporativa de Hedera frena el crecimiento retail descentralizado."
 ];
 
+// ── Wallet Analysis Vectors ──
+const WALLET_VECTORS = [
+  "Analyze my wallet and identify idle capital that could be earning yield on Hedera DeFi.",
+  "Scan my wallet holdings and recommend the best SaucerSwap pools based on my current token balances.",
+  "Audit my wallet's transaction history and calculate my total gas fees spent vs. what I would have paid on Hedera.",
+  "Analyze my portfolio allocation and tell me if I'm overexposed to any single asset on Hedera.",
+  "Review my wallet and suggest an optimal rebalancing strategy using Hedera-native DeFi protocols."
+];
+const WALLET_VECTORS_ES = [
+  "Analiza mi wallet e identifica capital ocioso que podría estar generando rendimiento en Hedera DeFi.",
+  "Escanea mis holdings y recomiéndame los mejores pools de SaucerSwap según mis tokens actuales.",
+  "Audita el historial de transacciones de mi wallet y calcula cuánto he gastado en gas vs. lo que habría pagado en Hedera.",
+  "Analiza la distribución de mi portafolio y dime si estoy sobreexpuesto a algún activo en Hedera.",
+  "Revisa mi wallet y sugiere una estrategia óptima de rebalanceo usando protocolos DeFi nativos de Hedera."
+];
+
+// ── Swap Execution Vectors ──
+const SWAP_VECTORS = [
+  "Swap 5 HBAR to USDC",
+  "Swap 10 HBAR to SAUCE",
+  "Swap 100 HBAR to KARATE",
+  "Swap 50 HBAR to DOVU",
+  "Swap 25 HBAR to HST"
+];
+const SWAP_VECTORS_ES = [
+  "Cambia 5 HBAR a USDC",
+  "Cambia 10 HBAR a SAUCE",
+  "Cambia 100 HBAR a KARATE",
+  "Cambia 50 HBAR a DOVU",
+  "Cambia 25 HBAR a HST"
+];
+
 export default function DualPaneDashboard({ params }: { params: { network: string } }) {
   const { account, connect, network, setNetwork, userTier } = useWallet();
   const { t, language } = useLanguage();
@@ -164,19 +196,32 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
 
   const handleExecuteSwap = async () => {
     if (!result?.txData) return;
+
+    const isHederaNative = account?.startsWith("0.0.");
+
     setIsExecutingSwap(true);
     setSwapTxHash(null);
     setSwapError(null);
-    console.log('[SwapExec] Starting swap execution...', { proofId: result?.proofId, txData: result?.txData });
+    console.log(`[SwapExec] Starting swap execution (${isHederaNative ? 'HEDERA SDK' : 'EVM/wagmi'})...`, { proofId: result?.proofId, txData: result?.txData });
     try {
-      console.log('[SwapExec] Calling sendTransactionAsync with value:', result.txData.value);
-      const hash = await sendTransactionAsync({
-        to: result.txData.to as `0x${string}`,
-        value: BigInt(result.txData.value),
-        data: result.txData.data as `0x${string}`,
-      });
-      console.log('[SwapExec] Transaction hash received:', hash);
-      const txHash = typeof hash === 'string' ? hash : String(hash);
+      let txHash: string;
+
+      if (isHederaNative) {
+        // ═══ PATH 2: Hedera Native (HashPack / Kabila via WalletConnect) ═══
+        console.log('[SwapExec] Using Hedera SDK path via WalletConnect...');
+        txHash = await executeHederaSwap(account!, result.txData);
+      } else {
+        // ═══ PATH 1: EVM (MetaMask / OKX via wagmi) ═══
+        console.log('[SwapExec] Using EVM/wagmi path...');
+        const hash = await sendTransactionAsync({
+          to: result.txData.to as `0x${string}`,
+          value: BigInt(result.txData.value),
+          data: result.txData.data as `0x${string}`,
+        });
+        txHash = typeof hash === 'string' ? hash : String(hash);
+      }
+
+      console.log('[SwapExec] Transaction hash received:', txHash);
       setSwapTxHash(txHash);
       setResult(prev => prev ? { ...prev, status: "PUBLISHING_TO_HEDERA" } : null);
 
@@ -253,11 +298,17 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
     getConfig(network, account || undefined).then(setPfConfig).catch(() => { });
   }, [network, account]);
 
-  // Pick 3 random vectors on mount or language change
+  // Pick 3 vectors: 1 analytical + 1 wallet + 1 swap (guarantees all agent types are shown)
   useEffect(() => {
-    const vectors = language === 'es' ? ALL_VECTORS_ES : ALL_VECTORS;
-    const shuffled = [...vectors].sort(() => 0.5 - Math.random());
-    setRandomVectors(shuffled.slice(0, 3));
+    const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+    const analytical = language === 'es' ? ALL_VECTORS_ES : ALL_VECTORS;
+    const wallet     = language === 'es' ? WALLET_VECTORS_ES : WALLET_VECTORS;
+    const swap       = language === 'es' ? SWAP_VECTORS_ES : SWAP_VECTORS;
+    setRandomVectors([
+      pick(analytical),
+      pick(wallet),
+      pick(swap)
+    ]);
   }, [language]);
 
   // Fetch recent audits (including simulation data) on mount or account change

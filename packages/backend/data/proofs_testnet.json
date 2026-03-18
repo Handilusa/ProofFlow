@@ -10049,5 +10049,859 @@
       "evmTxHash": "0x6568a338799256208f09673317ea757ac28187dd1a6e5d69ebba0bd62f6318a3",
       "evmSettled": true
     }
+  ],
+  [
+    "4d1c6e64-49e5-42f4-b269-457d1281d3ea",
+    {
+      "proofId": "4d1c6e64-49e5-42f4-b269-457d1281d3ea",
+      "question": "Analyze the macroeconomic impact of upcoming US interest rate decisions on Hedera's enterprise DeFi ecosystem.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "The analysis begins by establishing the scope: evaluating the macroeconomic impact of impending US interest rate decisions on the Hedera enterprise DeFi ecosystem. This involves assessing how shifts in traditional finance (TradFi) interest rates influence capital allocation within Hedera's various DeFi primitives and its broader enterprise adoption strategy. Key data points from the provided live market data will be leveraged, including Hedera's Total Value Locked (TVL), native staking yields, and decentralized exchange (DEX) liquidity pool Annual Percentage Rates (APRs).",
+          "hash": "38989b7bfd1cb36274efcc389b35f4563fa821b0c6c99cf3ef4e5f96824b7bc8",
+          "timestamp": 1773862962855
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "A rising US interest rate environment typically increases the attractiveness of low-risk TradFi instruments, potentially drawing capital away from higher-risk or lower-yield crypto assets. For Hedera, the native HBAR staking APR of 2.41% is particularly vulnerable in such a scenario, as it could become less competitive than US Treasury yields or high-yield savings accounts. Conversely, a falling interest rate environment would diminish TradFi yields, making DeFi opportunities more appealing. The Hedera DeFi ecosystem's total TVL stands at $60.620.827,765 (DefiLlama), a relatively modest figure, which suggests it could be sensitive to significant capital shifts influenced by macroeconomic factors. Within SaucerSwap V2, the WHBAR/USDC pool offers a robust 32.42% Base Trading APR, which would likely remain attractive even with moderately rising TradFi rates, acting as a competitive draw for yield-seeking capital. However, other pools, such as SAUCE/WHBAR (3.17% and 1.27% APRs) and BSL/WHBAR (2.24% APR), offer yields closer to or below the current native staking rate, making them more susceptible to capital flight if TradFi rates increase.\n\n\nConsidering the enterprise focus of Hedera, rising US interest rates also increase the cost of capital for businesses. This higher cost can reduce corporate investment in new technologies, including blockchain-based solutions and enterprise-grade DeFi initiatives on Hedera. Enterprises evaluating the deployment of capital into Hedera's ecosystem for tokenization, supply chain, or other DeFi applications would face a higher hurdle rate for their investments. For instance, if US corporate borrowing costs exceed the 2.41% native HBAR staking return, the opportunity cost of holding HBAR for staking, rather than deploying it into higher-yielding TradFi assets or reducing debt, becomes a critical consideration. The relatively low HBAR price of $0.095275 (CoinGecko) and its position 83.2% below its All-Time High suggest that investor sentiment is already cautious, and further tightening of monetary policy could exacerbate this. Conversely, a reduction in US interest rates would lower capital costs for enterprises, potentially stimulating investment and accelerating the adoption of Hedera's platform for enterprise-grade DeFi solutions, thereby increasing TVL and demand for HBAR.",
+          "hash": "d24a13261c8253679f3735b4c8089966c1095ff9cf35b4437a19208f365fd918",
+          "timestamp": 1773862962856
+        },
+        {
+          "stepNumber": 3,
+          "label": "FINAL",
+          "content": "The macroeconomic impact of US interest rate decisions on Hedera's enterprise DeFi ecosystem is primarily driven by the competitive landscape for capital. If US interest rates rise, Hedera's native HBAR staking APR of 2.41% will become significantly less attractive, reaching a breakeven threshold if risk-free TradFi yields surpass this rate. This could lead to capital reallocation away from native staking. Enterprise adoption, a core focus for Hedera, would also face headwinds as higher borrowing costs for businesses could slow investment in blockchain initiatives. However, higher-yielding DeFi opportunities on SaucerSwap V2, such as the WHBAR/USDC pool (32.42% APR), offer a substantial yield premium that would likely retain investor interest even in a rising rate environment, albeit potentially with decreased overall risk appetite. Conversely, a reduction in US interest rates would make Hedera's DeFi ecosystem, particularly its higher-yielding liquidity pools, more competitive against TradFi, potentially driving TVL growth and stimulating enterprise investment due to lower capital costs.\n\nTo engage with Hedera's DeFi ecosystem, users can explore:\nSaucerSwap: https://app.saucerswap.finance\nHeliSwap: https://app.heliswap.io\nHashPack Wallet: https://www.hashpack.app",
+          "hash": "b3aeecf9acd6ce1c6920e1041c4ed5afbfb93c77c8598b7870d61055b12c5a23",
+          "timestamp": 1773862962857
+        }
+      ],
+      "totalSteps": 3,
+      "rootHash": "394bbb9916a4841cb1898657df948dedd56cd0a17487745068362f8780b2b085",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1744,
+        1745,
+        1748
+      ],
+      "createdAt": 1773862968209,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773862963.769197786",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773862963.769197786",
+      "evmTxHash": "0x1de34cb4f17838144904de40f54cfff9fb75b97afca2e0a85acf13991a430442",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-2efd6751-9992-43fd-a82a-2189d0201cbb",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-2efd6751-9992-43fd-a82a-2189d0201cbb",
+      "question": "swap 4 hbar to sauce",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "SAUCE",
+        "amountIn": "4",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "SAUCE",
+        "estimatedOut": "~17.30 SAUCE",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [],
+      "confidenceScore": 100,
+      "riskLevel": "Safe",
+      "blockExecution": false,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab5000000000000000000000000000000000000000000000000000000006615ba600000000000000000000000000000000000000000000000000000000000000080000000000000000000000000e359a2136a1e13ec9602e8466354cdcb19fd7eee0000000000000000000000000000000000000000000000000000000069bb05bc00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 4 HBAR → SAUCE. Deterministic execution bypass active.",
+          "hash": "7635e00988f68d031686933369e757291f60408b231a6ab00d712c7ddb8cc2ec",
+          "timestamp": 1773863180606
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 100/100 [Risk Level: Safe]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "9e8881f20d843ee65848c0768cb3e4b5239706ba97a2d52c52ae1b1e998471f2",
+          "timestamp": 1773863180607
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~17.30 SAUCE. Slippage: 1.0%.",
+          "hash": "9fe50d879496dc8272a747459229467ab9612349d34c1a2a8420b3e512f222b4",
+          "timestamp": 1773863180608
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+          "hash": "1f78954b81a06d8119130f4d5dca4fcdf30ba6e7bf281e959641ca22ec2d9334",
+          "timestamp": 1773863180609
+        }
+      ],
+      "totalSteps": 4,
+      "status": "PENDING_EXECUTION",
+      "hcsTopicId": "pending",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773863180610,
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "network": "testnet"
+    }
+  ],
+  [
+    "pf-169edf1d-fb03-45bd-bbb9-93929986f07d",
+    {
+      "proofId": "pf-169edf1d-fb03-45bd-bbb9-93929986f07d",
+      "question": "swap4 hbar to sauce",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Wallet scan results: The wallet `0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE` holds 678.7956 HBAR. Total Portfolio Value: $64.64.",
+          "hash": "acf68a6e0a41e48931ce657245028d8339510d6a40057c64e1a7e2d1cbe6ae49",
+          "timestamp": 1773863168117
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Portfolio composition: The portfolio consists solely of Hedera (HBAR). This represents a highly concentrated position. Diversification Score: 1/10, as all capital is held in a single asset.",
+          "hash": "691c46e2a9b8f8c37ab5ee84a833ef11be56609c935b576a9808750337621ca1",
+          "timestamp": 1773863168118
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Idle capital detection: Currently, 100% of the portfolio's capital (678.7956 HBAR, valued at $64.64) is not actively earning yield. This is suboptimal as the capital could be generating passive income through various DeFi protocols.",
+          "hash": "d08da9a4b88a613bcc12a3a73fd71f0b2d3acba9dfd971c8be35e0b8e37fda69",
+          "timestamp": 1773863168119
+        },
+        {
+          "stepNumber": 4,
+          "label": "STEP 4",
+          "content": "Opportunity scan: Given the total portfolio value of $64.64, which is below the $200 threshold for efficient liquidity pool participation, the primary recommendation is low-risk, capital-efficient yield generation.\n\nThe most suitable opportunity is Native HBAR Staking, offering a 2.41% APR. This method incurs minimal fees and carries significantly lower risk compared to liquidity provision.\n\nWhile SaucerSwap V2 offers various liquidity pools with higher APRs (e.g., WHBAR/USDC at 32.42% APR, SAUCE/WHBAR at 3.17% APR), these are not recommended for capital under $200 due to transaction fees and the potential for impermanent loss to erode small gains.\nDex pool snapshot hash: 40833d64adfb314bdb39279e58e31dddeaa6c4cee33b5421ecc174950a476e95",
+          "hash": "ad088e6041409bac25964716150fd66389d67f46c09265453e762f7691852eef",
+          "timestamp": 1773863168120
+        },
+        {
+          "stepNumber": 5,
+          "label": "STEP 5",
+          "content": "Risk analysis:\nFor Native HBAR Staking: Risk Score: 2/10. The primary risks are smart contract vulnerabilities (though Hedera's native staking is highly secure) and general market volatility of HBAR. There is no impermanent loss risk.\nFor Liquidity Pools (not recommended for this capital size): Risk Score: 7/10. Risks include impermanent loss, smart contract vulnerabilities, and exposure to price fluctuations of both assets in the pair. For small capital, transaction fees can also significantly diminish returns.",
+          "hash": "35de9d78e3960a3d8f639ab393da2176ae029998c4885826753a31b3c45a7e93",
+          "timestamp": 1773863168121
+        },
+        {
+          "stepNumber": 6,
+          "label": "FINAL",
+          "content": "Recommended Strategy:\nBased on your current portfolio value of $64.64, it is advisable to prioritize low-risk, capital-efficient yield generation. Engaging in liquidity pools with this capital size is generally not recommended due to the disproportionate impact of transaction fees and impermanent loss.\n\n1.  **Stake HBAR Natively:** To begin earning yield on your idle capital, stake your HBAR to a Hedera network node. This offers a secure and low-risk APR of 2.41%.\n    *   dApp URL: [https://portal.hedera.com/](https://portal.hedera.com/) (or your preferred Hedera wallet for staking)\n2.  **Consider a Direct Swap for SAUCE (Optional, High Risk):** You expressed interest in swapping HBAR for SAUCE. While not recommended for LP participation with your current capital, if you still wish to acquire SAUCE, a direct swap is possible. Be aware that holding SAUCE introduces market volatility risk for that asset.\n    *   To execute a direct swap of 4 HBAR to SAUCE, type the following command:\n        `swap 4 hbar to sauce`",
+          "hash": "940defac89b21212f83d4119c4b3cd5066eb644a6c2fb49228b5cb5c4534910f",
+          "timestamp": 1773863168122
+        }
+      ],
+      "totalSteps": 6,
+      "rootHash": "207669f3feaa3fa40619e2051ae66d4128e71214add04b1849b34ec0bb464922",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1751,
+        1752,
+        1753,
+        1754,
+        1755,
+        1756
+      ],
+      "createdAt": 1773863182429,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773863178.938142379",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773863178.938142379",
+      "evmTxHash": "0xb3100cbebd9f518c7fa6d22cc15c5fc3accbe1fa5ebd7f3a4c4f60aa66f6423f",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-f9bfc4eb-9231-4557-8aa3-1adbe2d3c039",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-f9bfc4eb-9231-4557-8aa3-1adbe2d3c039",
+      "question": "swap 4 hbar to sauce",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "SAUCE",
+        "amountIn": "4",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "SAUCE",
+        "estimatedOut": "~17.30 SAUCE",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [],
+      "confidenceScore": 100,
+      "riskLevel": "Safe",
+      "blockExecution": false,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab5000000000000000000000000000000000000000000000000000000006615ba600000000000000000000000000000000000000000000000000000000000000080000000000000000000000000e359a2136a1e13ec9602e8466354cdcb19fd7eee0000000000000000000000000000000000000000000000000000000069bb063f00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 4 HBAR → SAUCE. Deterministic execution bypass active.",
+          "hash": "7635e00988f68d031686933369e757291f60408b231a6ab00d712c7ddb8cc2ec",
+          "timestamp": 1773863311137
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 100/100 [Risk Level: Safe]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "9e8881f20d843ee65848c0768cb3e4b5239706ba97a2d52c52ae1b1e998471f2",
+          "timestamp": 1773863311138
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~17.30 SAUCE. Slippage: 1.0%.",
+          "hash": "9fe50d879496dc8272a747459229467ab9612349d34c1a2a8420b3e512f222b4",
+          "timestamp": 1773863311139
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: 0xe698339142a7c69bf55cbbd679c1aec55877e6ad0c66d01e8a36f5745c17d01a\n\n**Swap Details:**\n- **Paid:** 4 HBAR\n- **Received (Est):** ~17.30 SAUCE\n- **Protocol:** SaucerSwap V2\n- **Max Slippage:** 1.0%",
+          "hash": "1f78954b81a06d8119130f4d5dca4fcdf30ba6e7bf281e959641ca22ec2d9334",
+          "timestamp": 1773863311140
+        }
+      ],
+      "totalSteps": 4,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773863324151,
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "network": "testnet",
+      "executionTxHash": "0xe698339142a7c69bf55cbbd679c1aec55877e6ad0c66d01e8a36f5745c17d01a",
+      "rootHash": "2ef65fa69d6bbdb5a36378d2cce66d0de99a70ecaa6401c6b870ee859452fb1c",
+      "hcsSequenceNumbers": [
+        1759,
+        1760,
+        1761,
+        1762
+      ],
+      "tokenTxId": "0.0.7986674@1773863323.910059207",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773863323.910059207",
+      "evmTxHash": "0x482645f5536b246c4fa9c8b9e2d93d17c169bbfc3aab92227371e92d3a640332",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-16d4b1de-9bdb-40b5-8634-95fe46e8c6b6",
+    {
+      "proofId": "pf-16d4b1de-9bdb-40b5-8634-95fe46e8c6b6",
+      "question": "analyze my wallet",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Wallet scan for address 0.0.8026799 reveals the following holdings:\n- HBAR: 678.6174 HBAR, valued at approximately $64.58 USD.\nTotal Portfolio Value: $64.58",
+          "hash": "a3f74a54c16d6edb4fc753b35279b7d5b95d238b8bcc063fa97da0f03eb1d7dd",
+          "timestamp": 1773863465861
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "The portfolio currently consists solely of HBAR. This represents a single asset holding.\nDiversification Score: 1/10 - The portfolio lacks diversification, holding only one asset.",
+          "hash": "fc57ad2c2ff2befae05ae7b0d3033cdd4a41c3224970c8ea8bcc8a9e1eded0a5",
+          "timestamp": 1773863465862
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Currently, 100% of the portfolio's capital, approximately $64.58 USD in HBAR, is idle and not generating any yield. This is suboptimal as the capital could be earning passive income through various DeFi strategies.",
+          "hash": "2108039dfd3cb37ccad5750912d64c12cca96f727e3fd6baf4f83d12aa18adae",
+          "timestamp": 1773863465863
+        },
+        {
+          "stepNumber": 4,
+          "label": "STEP 4",
+          "content": "Given the current portfolio value of approximately $64.58, the most suitable DeFi opportunities are those with minimal risk and low transaction costs, such as native staking. Liquidity pools are not recommended for this capital size due to potential impermanent loss and gas fees disproportionately impacting yields.\n\nHedera offers native staking for HBAR, allowing holders to earn rewards by delegating their HBAR to a network node. This is a low-risk option suitable for smaller capital amounts.",
+          "hash": "d8699b3c72f05e1aac2af35be03560956a29baec133a2e838c6e07f016f3d8ac",
+          "timestamp": 1773863465864
+        },
+        {
+          "stepNumber": 5,
+          "label": "STEP 5",
+          "content": "For native HBAR staking, the primary risks are minimal. There is no impermanent loss as only a single asset is involved. Smart contract risk is also significantly reduced as staking is a core network function. The main risk is potential price volatility of HBAR itself.\nRisk Score: 2/10 - Low risk due to native staking, primarily exposed to HBAR price fluctuations.",
+          "hash": "3cc03e2ec175ae298a626b0b5d2792652af4c42ed7d1efa6e66a77ef6ddfabbb",
+          "timestamp": 1773863465865
+        },
+        {
+          "stepNumber": 6,
+          "label": "FINAL",
+          "content": "**Recommended Strategy:**\n\n1.  **Initiate Native HBAR Staking:** Delegate your 678.6174 HBAR to a Hedera network node to begin earning passive yield. This is the most appropriate strategy for your current capital size, offering a low-risk method to generate returns without exposure to impermanent loss or high transaction fees associated with liquidity pools.\n    *   **dApp URL:** [https://portal.hedera.com/](https://portal.hedera.com/) (Access through the Hedera Portal or your preferred wallet's staking interface.)",
+          "hash": "37ef60d481f780d90d281370e1eabc640bd547fb868115787a387bd246ce5124",
+          "timestamp": 1773863465866
+        }
+      ],
+      "totalSteps": 6,
+      "rootHash": "b355aa96b9fcee5c319c4d17fee3c74c70472b49c14fd7441489806aec704c0d",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1764,
+        1765,
+        1766,
+        1767,
+        1768,
+        1769
+      ],
+      "createdAt": 1773863477080,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773863472.810431254",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773863472.810431254",
+      "evmTxHash": "0x91e873f25b66adbcb1d1189a220c40fe3707d55798622b589d8dab86dd3daf0d",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-bde4d46d-4301-446c-aaee-9a893f42264b",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-bde4d46d-4301-446c-aaee-9a893f42264b",
+      "question": "swap 5 hbar to sauce",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "SAUCE",
+        "amountIn": "5",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "SAUCE",
+        "estimatedOut": "~21.67 SAUCE",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [],
+      "confidenceScore": 100,
+      "riskLevel": "Safe",
+      "blockExecution": false,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab5000000000000000000000000000000000000000000000000000000007fdf23500000000000000000000000000000000000000000000000000000000000000080000000000000000000000000e359a2136a1e13ec9602e8466354cdcb19fd7eee0000000000000000000000000000000000000000000000000000000069bb0f1700000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 5 HBAR → SAUCE. Deterministic execution bypass active.",
+          "hash": "25c053aaa5f6dffb41a13791727209e6ed5fc0dc6dedba78d9f0a331895485f3",
+          "timestamp": 1773865575942
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 100/100 [Risk Level: Safe]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "9e8881f20d843ee65848c0768cb3e4b5239706ba97a2d52c52ae1b1e998471f2",
+          "timestamp": 1773865575943
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~21.67 SAUCE. Slippage: 1.0%.",
+          "hash": "ba240b32ad37ae4ffb640eb1dc751ec5e2777430e8e4ed5cc577a36839835f16",
+          "timestamp": 1773865575944
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: 0x0c51f3c9f0fa6d0ab898f55449d766cbfa9849ac6bef903ce9fa7e04e8afb711\n\n**Swap Details:**\n- **Paid:** 5 HBAR\n- **Received (Est):** ~21.67 SAUCE\n- **Protocol:** SaucerSwap V2\n- **Max Slippage:** 1.0%",
+          "hash": "1f78954b81a06d8119130f4d5dca4fcdf30ba6e7bf281e959641ca22ec2d9334",
+          "timestamp": 1773865575945
+        }
+      ],
+      "totalSteps": 4,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773865588653,
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "network": "testnet",
+      "executionTxHash": "0x0c51f3c9f0fa6d0ab898f55449d766cbfa9849ac6bef903ce9fa7e04e8afb711",
+      "rootHash": "f7508eacb26ce50381545dd96ca3b0ec9eeb78aaf3288f559de93de000f4ba8a",
+      "hcsSequenceNumbers": [
+        1771,
+        1772,
+        1773,
+        1774
+      ],
+      "tokenTxId": "0.0.7986674@1773865582.754367760",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773865582.754367760",
+      "evmTxHash": "0x0eec7cb5b7a7a520aafeb43aa2695b66491d2ba42ca3e4e76caffce7b93ec62e",
+      "evmSettled": true
+    }
+  ],
+  [
+    "a5645d05-ec18-4092-ae4c-feb3db442b37",
+    {
+      "proofId": "a5645d05-ec18-4092-ae4c-feb3db442b37",
+      "question": "Contrast the security trade-offs of Hedera's hashgraph consensus mechanism against traditional PoS chains for institutional DeFi.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "The question requires a comparative analysis of the security trade-offs between Hedera's hashgraph consensus mechanism and traditional Proof-of-Stake (PoS) chains, specifically for institutional DeFi applications. This involves defining the core security properties of each, identifying how these properties manifest as trade-offs, and evaluating their suitability for institutional requirements such as predictable finality, high throughput, and robust governance. The analysis will leverage the provided live market data to contextualize Hedera's current operational state and economic security.",
+          "hash": "49ded851950fe5b70e7ce6dd3c377b804e49b02279cea30792f3aeae00bc0217",
+          "timestamp": 1773865645712
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Hedera's hashgraph consensus mechanism employs an Asynchronous Byzantine Fault Tolerant (aBFT) algorithm, which provides the highest level of security for distributed systems, guaranteeing safety and liveness even if up to one-third of nodes are malicious. This is achieved through a \"gossip about gossip\" protocol and virtual voting, leading to deterministic finality where transactions are confirmed immediately upon consensus, without the risk of reorgs. For institutional DeFi, this deterministic finality is critical, as it eliminates settlement uncertainty and reduces counterparty risk, which is often a concern with the probabilistic finality found in many traditional PoS chains. Hedera's network is governed by a decentralized council of up to 39 diverse organizations, providing a structured and legally accountable framework for network evolution and security, which is highly appealing to regulated entities. The network's economic security is substantial, with a circulating supply of 43.303.446.051 HBAR and a market capitalization of $4.112.449.503 (CoinGecko Market Data), further reinforced by 15.999.580.811 HBAR staked natively (Hedera Network Supply & Staking).\n\nTraditional PoS chains, while varying in their specific implementations, generally rely on validators staking tokens to participate in consensus. Security is often tied to the economic value of the staked assets, with mechanisms like slashing to penalize malicious behavior. Many PoS chains offer probabilistic finality, meaning transactions are considered final after a certain number of block confirmations, but theoretically remain susceptible to reorgs for a period. This introduces a degree of uncertainty that can be problematic for institutional use cases demanding absolute transaction immutability. While aiming for decentralization, PoS chains can face challenges with stake centralization, where a few large validators might control a significant portion of the network, potentially increasing attack vectors if these entities collude or are compromised. Governance in traditional PoS can also be more fluid, relying on on-chain voting by token holders, which may not always align with the structured oversight requirements of institutional participants.",
+          "hash": "2401ab1710dae4fb2192fd5fbf3e6b983b25c27578918129f904ce9b5a74327a",
+          "timestamp": 1773865645714
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "The primary security trade-off for institutional DeFi lies in the **guarantees of finality and resilience to attacks**. Hedera's aBFT hashgraph offers deterministic finality, a non-negotiable requirement for many institutional financial operations, ensuring that once a transaction is recorded, it cannot be reverted. This contrasts with the probabilistic finality of many PoS chains, where a transaction's finality increases with each new block but never reaches 100% certainty in the same immediate manner as aBFT. For high-value institutional transactions or cross-chain settlement, this distinction is paramount.\n\nAnother significant trade-off is **governance and accountability**. Hedera's governing council structure, composed of established global enterprises, provides a robust and transparent decision-making process, offering institutions a clear framework for accountability and a predictable regulatory environment. This contrasts with the often more dispersed and less formally structured governance models of many PoS chains, which, while promoting broader participation, can introduce uncertainties regarding future protocol changes or responses to critical security events.\n\nFurthermore, **attack vectors and costs** differ. Hashgraph's aBFT ensures security as long as less than one-third of the total stake (or voting weight within the council) is malicious, making a successful attack extremely costly and difficult due to the diverse and geographically distributed council members. For PoS chains, a 51% (or 33% for some BFT PoS variants) attack, where a majority of staked tokens are controlled by an attacker, can lead to network compromise. While slashing mechanisms aim to deter such attacks, the economic cost of acquiring sufficient stake can be a more direct vector compared to subverting a diverse governing body and the underlying aBFT protocol. The active DeFi ecosystem on Hedera, with a Total Chain TVL of $60.592.756,947 (DefiLlama), demonstrates that the network is already handling significant value, with transactions like the confirmed swap of 5 HBAR to SAUCE (Parent Proof #1) showcasing its operational security and reliability.",
+          "hash": "d7825bddb1a02f180972522c698261a85f596167cd4ebec9a1628e95b861743c",
+          "timestamp": 1773865645715
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "For institutional DeFi, Hedera's hashgraph consensus mechanism presents a superior security profile compared to traditional PoS chains, primarily due to its deterministic aBFT finality, robust governance model, and high resilience against attacks. The immediate and irreversible transaction finality inherent in hashgraph is a critical advantage for institutions requiring absolute certainty in settlement, unlike the probabilistic finality typically found in PoS. Hedera's governing council provides a structured and accountable framework that aligns with institutional requirements for oversight and predictability. While both mechanisms offer energy efficiency over Proof-of-Work, hashgraph's gossip protocol provides higher throughput and lower latency, essential for high-volume institutional applications. The substantial HBAR market capitalization of $4.112.449.503 and over $60 million in DeFi TVL on Hedera (CoinGecko Market Data, DefiLlama) underscore its economic security and growing institutional relevance. Institutions seeking predictable, high-assurance, and high-performance DeFi infrastructure would find Hedera's hashgraph a more suitable choice. For engaging with Hedera's DeFi ecosystem, platforms like SaucerSwap (https://app.saucerswap.finance) offer a robust environment for asset swaps and liquidity provision.",
+          "hash": "6fa14494f832a8834aff3a7953b4a3e7a8f035ecd98f5e4abd530ae563aa6e60",
+          "timestamp": 1773865645716
+        }
+      ],
+      "totalSteps": 4,
+      "rootHash": "85d596eb4941dde4cd53c519f4c8a070373db9b5a40e91479149b34ebcca3611",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1776,
+        1777,
+        1780,
+        1783
+      ],
+      "createdAt": 1773865651898,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773865647.471345352",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773865647.471345352",
+      "evmTxHash": "0xd958bdd5e9c5ff2561e1367825034d1cbf26c5780bb41e93541ca28ecb3016d4",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-a6386109-3bd8-494f-9c79-db0dae39a9a0",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-a6386109-3bd8-494f-9c79-db0dae39a9a0",
+      "question": "swap 5 hbar to sauce",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "SAUCE",
+        "amountIn": "5",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "SAUCE",
+        "estimatedOut": "~21.67 SAUCE",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [],
+      "confidenceScore": 100,
+      "riskLevel": "Safe",
+      "blockExecution": false,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab5000000000000000000000000000000000000000000000000000000007fdf2350000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000069bb0f7900000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 5 HBAR → SAUCE. Deterministic execution bypass active.",
+          "hash": "25c053aaa5f6dffb41a13791727209e6ed5fc0dc6dedba78d9f0a331895485f3",
+          "timestamp": 1773865673906
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 100/100 [Risk Level: Safe]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "9e8881f20d843ee65848c0768cb3e4b5239706ba97a2d52c52ae1b1e998471f2",
+          "timestamp": 1773865673907
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~21.67 SAUCE. Slippage: 1.0%.",
+          "hash": "ba240b32ad37ae4ffb640eb1dc751ec5e2777430e8e4ed5cc577a36839835f16",
+          "timestamp": 1773865673908
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: 0.0.8064827@1773865672.601058668\n\n**Swap Details:**\n- **Paid:** 5 HBAR\n- **Received (Est):** ~21.67 SAUCE\n- **Protocol:** SaucerSwap V2\n- **Max Slippage:** 1.0%",
+          "hash": "1f78954b81a06d8119130f4d5dca4fcdf30ba6e7bf281e959641ca22ec2d9334",
+          "timestamp": 1773865673909
+        }
+      ],
+      "totalSteps": 4,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773865693183,
+      "requesterAddress": "0.0.8064827",
+      "network": "testnet",
+      "executionTxHash": "0.0.8064827@1773865672.601058668",
+      "rootHash": "f7508eacb26ce50381545dd96ca3b0ec9eeb78aaf3288f559de93de000f4ba8a",
+      "hcsSequenceNumbers": [
+        1786,
+        1787,
+        1788,
+        1789
+      ],
+      "tokenTxId": "0.0.7986674@1773865691.962383597",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773865691.962383597",
+      "evmTxHash": "0x872fe3d9c5fa040784a1501c03bd932480cf0619dfddf5933bac9ddee1ca15d9",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-b37f3d55-7e7b-4dbe-9001-d33b48102550",
+    {
+      "proofId": "pf-b37f3d55-7e7b-4dbe-9001-d33b48102550",
+      "question": "analyze my wallet",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Wallet 0.0.8064827 holdings:\n  HBAR: 299.3351\nTotal Portfolio Value: $28.47",
+          "hash": "42543a93bac9fc6667a456412879d18e3727b951251d56164c4611801560462f",
+          "timestamp": 1773865759239
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "The portfolio is composed solely of HBAR.\nDiversification Score: 1/10. The portfolio lacks diversification, holding only a single asset.",
+          "hash": "6745ab8036d591b67c5bcf06734c14fb0ca32413e26f15c80e804148866dcf8a",
+          "timestamp": 1773865759240
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "100% of the capital is currently idle and not generating any yield. This represents a missed opportunity for potential growth and capital appreciation through various DeFi protocols or staking mechanisms.",
+          "hash": "a3b8e1f627fc4a6d81b77a42eba3b5837701f800bb5e1a368e9dac1931decf92",
+          "timestamp": 1773865759241
+        },
+        {
+          "stepNumber": 4,
+          "label": "STEP 4",
+          "content": "Given the total portfolio value of $28.47, which is below the $200 threshold for liquidity pool recommendations, the primary opportunity is native HBAR staking. This low-risk option allows the user to earn yield on their HBAR holdings without exposure to impermanent loss or significant smart contract risks associated with more complex DeFi protocols.",
+          "hash": "5a0fbfb26d676ecb59a04b772cdbf77e286cb370b78cc0fd4c2f592ce36ffdca",
+          "timestamp": 1773865759242
+        },
+        {
+          "stepNumber": 5,
+          "label": "STEP 5",
+          "content": "Risk Score: 2/10. Native HBAR staking carries a relatively low risk profile. The primary risks include potential smart contract vulnerabilities within the staking mechanism (though Hedera's native staking is highly secure) and broader network-level risks. It does not involve impermanent loss, which is a significant risk in liquidity provision.",
+          "hash": "be4c74448cc99e45596ff7b2aa8faa0bbd840f5acb52b9f1f90e91d6d1efc67d",
+          "timestamp": 1773865759243
+        },
+        {
+          "stepNumber": 6,
+          "label": "FINAL",
+          "content": "Recommended Strategy:\n1. **Initiate Native HBAR Staking:** Stake your HBAR to a Hedera network node to earn passive yield. This is the most suitable low-risk option for your current capital size.\n2. **Monitor Portfolio:** Regularly review your portfolio and market conditions for new opportunities as your capital grows.\n\nYou can learn more about Hedera native staking here: [https://hedera.com/staking](https://hedera.com/staking)",
+          "hash": "28160d6fd12cc3edda92b4ef8191410c66134efeaa36413bcd1e31b3c0d1abc3",
+          "timestamp": 1773865759244
+        }
+      ],
+      "totalSteps": 6,
+      "rootHash": "bfc2d775c74b3abf1115102352a561ed9b099d30c0b446e4a3cc1a769d780673",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1791,
+        1792,
+        1793,
+        1794,
+        1795,
+        1796
+      ],
+      "createdAt": 1773865771977,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773865769.682909320",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773865769.682909320",
+      "evmTxHash": "0x6ae224908dc86050254e3c5a41f2201b92afe350c19a8bec05c9940cab0b79b2",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-414c9158-c5e0-4136-828f-683f363747cd",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-414c9158-c5e0-4136-828f-683f363747cd",
+      "question": "Swap 100 HBAR to KARATE",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "KARATE",
+        "amountIn": "100",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "KARATE",
+        "estimatedOut": "~9850.00 KARATE",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [
+        {
+          "type": "LIQUIDITY",
+          "level": "CRITICAL",
+          "message": "No Hedera pool found for KARATE"
+        }
+      ],
+      "confidenceScore": 10,
+      "riskLevel": "Dangerous",
+      "blockExecution": true,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab5000000000000000000000000000000000000000000000000000000e30b782780000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000069bb11ff00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Swap blocked due to critical safety / liquidity warnings. Manual override required.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 100 HBAR → KARATE. Deterministic execution bypass active.\n\n⚠️ Safety Warnings:\n[CRITICAL] No Hedera pool found for KARATE",
+          "hash": "8ef1239302d881351aaa871bfd0af23c93d2e22a7c5bcc1ff29eb3bd63215aab",
+          "timestamp": 1773866319399
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 10/100 [Risk Level: Dangerous]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "a62a9b03bbdc528c50fb78d1dbdfed66b5edea659dbb3118dc283fdfbb20f438",
+          "timestamp": 1773866319400
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~9850.00 KARATE. Slippage: 1.0%.",
+          "hash": "837794d7a97e1cfb3a6ef74cd7b60a603ce1f43da04cf8ea37e43ecac78a563d",
+          "timestamp": 1773866319401
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: 0.0.8064827@1773866326.170937247\n\n**Swap Details:**\n- **Paid:** 100 HBAR\n- **Received (Est):** ~9850.00 KARATE\n- **Protocol:** SaucerSwap V2\n- **Max Slippage:** 1.0%",
+          "hash": "6adab6e17c18f354aab58c7168d32da8e3fce09c1f5a19d73c989e1e3fb83e7f",
+          "timestamp": 1773866319402
+        }
+      ],
+      "totalSteps": 4,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773866344062,
+      "requesterAddress": "0.0.8064827",
+      "network": "testnet",
+      "executionTxHash": "0.0.8064827@1773866326.170937247",
+      "rootHash": "cf6d7c1b928ab829a329df72fdcac98432a9da440947146d379692bebc277164",
+      "hcsSequenceNumbers": [
+        1798,
+        1799,
+        1800,
+        1801
+      ],
+      "tokenTxId": "0.0.7986674@1773866340.505184456",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773866340.505184456",
+      "evmTxHash": "0xcf4998153c078ebc969856e6c9174b6587b11a3b046c3622c978a918d100aad0",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-e0e875ac-8c6c-4ace-a146-ff1642d8eb78",
+    {
+      "proofId": "pf-e0e875ac-8c6c-4ace-a146-ff1642d8eb78",
+      "question": "Analyze my wallet and identify idle capital that could be earning yield on Hedera DeFi.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Wallet scan results for address 0.0.8064827:\nThe wallet holds 299.1543 HBAR.\nTotal Portfolio Value: $28.54 USD (based on current HBAR price of $0.095403 from CoinGecko).",
+          "hash": "028787fbf24f98f6e7d20c9bd12fb5d1b4c5bf92300430df34264ee7959df478",
+          "timestamp": 1773866376680
+        },
+        {
+          "stepNumber": 2,
+          "label": "STEP 2",
+          "content": "Portfolio composition:\nThe portfolio consists solely of HBAR.\nDiversification Score: 1/10. The portfolio is highly concentrated in a single asset, HBAR, indicating minimal diversification.",
+          "hash": "dbc712522882768d8cffd0b0c4dfb88ea86f800f99adf6c7995a849e05df8f23",
+          "timestamp": 1773866376681
+        },
+        {
+          "stepNumber": 3,
+          "label": "STEP 3",
+          "content": "Idle capital detection:\nCurrently, 100% of the portfolio, totaling 299.1543 HBAR ($28.54 USD), is not actively earning yield. This represents a suboptimal allocation of capital, as it could be generating passive income through various DeFi protocols.",
+          "hash": "f4fddeb8af69a25e50a429725edb0e1163d91cd20e46023ed9a615f65739c224",
+          "timestamp": 1773866376682
+        },
+        {
+          "stepNumber": 4,
+          "label": "STEP 4",
+          "content": "Opportunity scan:\nGiven the total portfolio value of $28.54 USD, which is below the $200 threshold, the recommendation is limited to low-risk options such as native staking. Liquidity Pools are not recommended due to potential gas fees and impermanent loss significantly impacting small capital yields.\n\nThe most suitable opportunity identified is:\n*   **Native HBAR Staking:** Offers a stable APR of 2.41% (Source: Hedera Network Supply & Staking, Mainnet). This is a low-risk method to earn yield on HBAR holdings without exposure to impermanent loss or complex smart contract interactions typical of liquidity pools.",
+          "hash": "d9f75dc658dfac40446215a17995b7734d085033d35b64ace0abc12e08e5b468",
+          "timestamp": 1773866376683
+        },
+        {
+          "stepNumber": 5,
+          "label": "STEP 5",
+          "content": "Risk analysis:\nFor Native HBAR Staking:\nRisk Score: 2/10. This option carries a low risk profile. The primary risks include the inherent price volatility of HBAR and minimal smart contract risk associated with the native staking mechanism. There is no impermanent loss risk as assets are not paired in a liquidity pool.",
+          "hash": "aad1badeaca8e3bcb8360360a736a4edf9893b8849f1d4aa98b556390be5166d",
+          "timestamp": 1773866376684
+        },
+        {
+          "stepNumber": 6,
+          "label": "FINAL",
+          "content": "Recommended Strategy:\nTo optimize your idle capital, it is recommended to engage in Native HBAR Staking. This strategy provides a low-risk method to earn yield on your HBAR holdings, aligning with your current capital size.\n\n1.  **Stake HBAR:** Delegate your 299.1543 HBAR to a Hedera network staking node to earn an estimated 2.41% APR.\n2.  **Monitor Performance:** Regularly review your staking rewards and the overall market conditions.\n\ndApp URL: [Hedera Staking Information](https://portal.hedera.com/staking)",
+          "hash": "4f23a6eb1ceab98cf811ccc2dac463081115db869553be0f2d1c7644bc6fd934",
+          "timestamp": 1773866376685
+        }
+      ],
+      "totalSteps": 6,
+      "rootHash": "a2fe390978590e0dc0eccc4d8b402d9d68c4266c69fa250cd7c848a68b4d1577",
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "hcsSequenceNumbers": [
+        1803,
+        1804,
+        1805,
+        1806,
+        1807,
+        1808
+      ],
+      "createdAt": 1773866388341,
+      "network": "testnet",
+      "tokenTxId": "0.0.7986674@1773866384.395562009",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773866384.395562009",
+      "evmTxHash": "0x7ed026329fa34119c0138fa16c81c81e23e52366f74647dc6b269138cb161494",
+      "evmSettled": true
+    }
+  ],
+  [
+    "pf-792bdc7b-31b4-413b-8c87-2e4e67f780dd",
+    {
+      "type": "SWAP_PROPOSAL",
+      "proofId": "pf-792bdc7b-31b4-413b-8c87-2e4e67f780dd",
+      "question": "Swap 5 HBAR to USDC",
+      "swapDetails": {
+        "tokenIn": "HBAR",
+        "tokenOut": "USDC",
+        "amountIn": "5",
+        "originalTokenIn": "HBAR",
+        "originalTokenOut": "USDC",
+        "estimatedOut": "~0.49 USDC",
+        "dex": "SaucerSwap V2",
+        "slippage": "1.0%"
+      },
+      "warnings": [],
+      "confidenceScore": 100,
+      "riskLevel": "Safe",
+      "blockExecution": false,
+      "txData": {
+        "to": "0x45e5b52bf445f1bbbba0c3ade4b8ca17c733c4e3",
+        "value": "0",
+        "data": "0x7ff36ab50000000000000000000000000000000000000000000000000000000002e434300000000000000000000000000000000000000000000000000000000000000080000000000000000000000000e359a2136a1e13ec9602e8466354cdcb19fd7eee0000000000000000000000000000000000000000000000000000000069bb15e600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000072000000000000000000000000000000000000000000000000000000000000371a"
+      },
+      "answer": "Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "label": "STEP 1",
+          "content": "Detected intent: Swap 5 HBAR → USDC. Deterministic execution bypass active.",
+          "hash": "82fc76b5972c16e55e55a906f7a2cec87f79f3ca30920becb0aa2720ce304f14",
+          "timestamp": 1773867318266
+        },
+        {
+          "stepNumber": 2,
+          "label": "EVALUATION",
+          "content": "AI DeFi Engine calculated a Confidence Score of 100/100 [Risk Level: Safe]. Liquidity evaluated against DexScreener endpoints.",
+          "hash": "9e8881f20d843ee65848c0768cb3e4b5239706ba97a2d52c52ae1b1e998471f2",
+          "timestamp": 1773867318267
+        },
+        {
+          "stepNumber": 3,
+          "label": "SIMULATION",
+          "content": "Simulated via SaucerSwap V2 Router. Estimated output: ~0.49 USDC. Slippage: 1.0%.",
+          "hash": "7f414a790cc87568877e9eb176ed62d1268c119e6ab5c2c6ffb6caf3816c4f0d",
+          "timestamp": 1773867318268
+        },
+        {
+          "stepNumber": 4,
+          "label": "FINAL",
+          "content": "User confirmed swap. Transaction executed on Hedera EVM.\n\nTransaction Hash: 0x264162a1b7314079343dfb82bf3a4de60d9107b9b53490cb0e203808f303584e\n\n**Swap Details:**\n- **Paid:** 5 HBAR\n- **Received (Est):** ~0.49 USDC\n- **Protocol:** SaucerSwap V2\n- **Max Slippage:** 1.0%",
+          "hash": "fefd38e55911e2d692e0c06c2c781746902bd3bb274be20a26c78cf136ec39ad",
+          "timestamp": 1773867318269
+        }
+      ],
+      "totalSteps": 4,
+      "status": "VERIFIED",
+      "hcsTopicId": "0.0.8001198",
+      "dataSources": [
+        "SaucerSwap EVM Router",
+        "DexScreener Safety Check",
+        "Deterministic Matcher"
+      ],
+      "createdAt": 1773867335092,
+      "requesterAddress": "0xe359A2136a1e13Ec9602e8466354cdCb19fd7EeE",
+      "network": "testnet",
+      "executionTxHash": "0x264162a1b7314079343dfb82bf3a4de60d9107b9b53490cb0e203808f303584e",
+      "rootHash": "52edbed4e666900766ba6e91365789063161d11547e418e2c0fc1ea3eaf5f223",
+      "hcsSequenceNumbers": [
+        1810,
+        1811,
+        1812,
+        1813
+      ],
+      "tokenTxId": "0.0.7986674@1773867333.753779887",
+      "explorerUrl": "https://hashscan.io/testnet/transaction/0.0.7986674@1773867333.753779887",
+      "evmTxHash": "0x7e28d5039af330ebb19b8b578d76b007ee981bfbe20ae4e19be13dce17457209",
+      "evmSettled": true
+    }
   ]
 ]

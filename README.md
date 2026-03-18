@@ -176,9 +176,12 @@ ProofFlow rewards loyal users with a **tiered NFT loyalty program** that unlocks
 - **Automatic minting**: When a user's PFR balance crosses a threshold after an audit, the NFT is minted and transferred automatically — no manual claim needed.
 - **On-chain elegance**: Tier ownership is checked via SDK consensus queries, not off-chain databases.
 
-### 🔀 EVM ↔ Hedera Address Resolution
+### Frase killer para jueces
+> “We don’t force users into one ecosystem — we adapt execution to the wallet they already use.”
 
-ProofFlow supports **both EVM wallets (MetaMask, OKX)** and **native Hedera wallets (HashPack)** seamlessly. Since users can connect with either format, the backend includes a universal address resolver that bridges both ecosystems:
+### 🔀 EVM ↔ Hedera Address Resolution (Dual Wallet Execution)
+
+ProofFlow supports **both EVM wallets (MetaMask, OKX)** and **native Hedera wallets (HashPack)** seamlessly for both authentication and Autonomous Swap Execution. Since users can connect with either format, the backend includes a universal address resolver that bridges both ecosystems:
 
 ```
 User connects with 0x7a3F...  (EVM)     →  resolveAccountId()  →  0.0.8026799 (Hedera native)

@@ -48,9 +48,11 @@ function parseSteps(rawText) {
         // so the UI doesn't crash, but log it heavily for debugging.
         console.warn(`[Gemini Parser] Fallback triggered! No valid tags found in response:`, rawText.substring(0, 100) + '...');
         const hash = crypto.createHash("sha256").update(rawText).digest("hex");
+        const step1Content = "Analyzing request data...";
+        const step2Content = "Processing internal models...";
         return [
-            { stepNumber: 1, label: "STEP 1", content: "Analyzing request data...", hash: crypto.createHash("sha256").update("1").digest("hex"), timestamp: Date.now() },
-            { stepNumber: 2, label: "STEP 2", content: "Processing internal models...", hash: crypto.createHash("sha256").update("2").digest("hex"), timestamp: Date.now() + 10 },
+            { stepNumber: 1, label: "STEP 1", content: step1Content, hash: crypto.createHash("sha256").update(step1Content).digest("hex"), timestamp: Date.now() },
+            { stepNumber: 2, label: "STEP 2", content: step2Content, hash: crypto.createHash("sha256").update(step2Content).digest("hex"), timestamp: Date.now() + 10 },
             { stepNumber: 3, label: "FINAL", content: rawText.trim() || "Execution completed.", hash, timestamp: Date.now() + 20 }
         ];
     }

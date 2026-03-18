@@ -207,6 +207,13 @@ export class HCSAuditService {
 
                         if (payload.type === "PROOF_COMPLETE") {
                             const local = localMap.get(payload.proofId);
+                            const proofRequester = local?.requesterAddress || null;
+
+                            // If an address filter was provided, skip proofs that don't belong to this user
+                            if (address && proofRequester && proofRequester !== address) {
+                                continue;
+                            }
+
                             proofs.push({
                                 proofId: payload.proofId,
                                 rootHash: payload.rootHash,
@@ -216,7 +223,7 @@ export class HCSAuditService {
                                 hcsTopicId: topicId.toString(),
                                 question: payload.question || local?.question || null,
                                 totalSteps: payload.totalSteps || local?.totalSteps || 0,
-                                requesterAddress: address
+                                requesterAddress: proofRequester || address
                             });
                         }
                     } catch (e) {

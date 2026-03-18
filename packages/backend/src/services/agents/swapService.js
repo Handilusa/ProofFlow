@@ -229,29 +229,34 @@ export class SwapService {
             ? `\n\n⚠️ Safety Warnings:\n${warnings.map(w => `[${w.level}] ${w.message}`).join("\n")}`
             : "";
 
+        const step1Content = `Detected intent: Swap ${amountIn} ${tokenIn} → ${tokenOut}. Deterministic execution bypass active.${warningText}`;
+        const step2Content = `AI DeFi Engine calculated a Confidence Score of ${score}/100 [Risk Level: ${riskLevel}]. Liquidity evaluated against DexScreener endpoints.`;
+        const step3Content = `Simulated via SaucerSwap V2 Router. Estimated output: ~${estimatedOut} ${tokenOut}. Slippage: 1.0%.`;
+        const step4Content = blockExecution ? `Swap blocked due to critical safety / liquidity warnings. Manual override required.` : `Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.`;
+
         const steps = [
             {
                 stepNumber: 1, label: "STEP 1",
-                content: `Detected intent: Swap ${amountIn} ${tokenIn} → ${tokenOut}. Deterministic execution bypass active.${warningText}`,
-                hash: crypto.createHash("sha256").update(`intent-${amountIn}-${tokenIn}-${tokenOut}`).digest("hex"),
+                content: step1Content,
+                hash: crypto.createHash("sha256").update(step1Content).digest("hex"),
                 timestamp
             },
             {
                 stepNumber: 2, label: "EVALUATION",
-                content: `AI DeFi Engine calculated a Confidence Score of ${score}/100 [Risk Level: ${riskLevel}]. Liquidity evaluated against DexScreener endpoints.`,
-                hash: crypto.createHash("sha256").update(`eval-${score}`).digest("hex"),
+                content: step2Content,
+                hash: crypto.createHash("sha256").update(step2Content).digest("hex"),
                 timestamp: timestamp + 1
             },
             {
                 stepNumber: 3, label: "SIMULATION",
-                content: `Simulated via SaucerSwap V2 Router. Estimated output: ~${estimatedOut} ${tokenOut}. Slippage: 1.0%.`,
-                hash: crypto.createHash("sha256").update(`quote-${estimatedOut}`).digest("hex"),
+                content: step3Content,
+                hash: crypto.createHash("sha256").update(step3Content).digest("hex"),
                 timestamp: timestamp + 2
             },
             {
                 stepNumber: 4, label: "FINAL",
-                content: blockExecution ? `Swap blocked due to critical safety / liquidity warnings. Manual override required.` : `Review the swap proposal and confirm via your Web3 wallet to execute on Hedera EVM.`,
-                hash: crypto.createHash("sha256").update("final").digest("hex"),
+                content: step4Content,
+                hash: crypto.createHash("sha256").update(step4Content).digest("hex"),
                 timestamp: timestamp + 3
             }
         ];
