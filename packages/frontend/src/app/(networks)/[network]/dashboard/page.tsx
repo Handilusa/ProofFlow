@@ -444,7 +444,7 @@ export default function DualPaneDashboard({ params }: { params: { network: strin
     try {
       // FREE SWAP BYPASS: If the user is asking to execute a DEX swap, we waive the $PFR micropayment. 
       // They will pay gas natively for the swap execution later.
-      const isSwapIntent = /^swap\s+(\d+\.?\d*)\s+(\w+)\s+(?:to|for|→)\s+(\w+)/i.test(question.trim());
+      const isSwapIntent = /^(?:swap|cambia|cambiar)\s+(\d+\.?\d*)\s+(\w+)\s+(?:to|for|por|a|→)\s+(\w+)/i.test(question.trim());
 
       // NEW AUTONOMOUS FLOW: Enforce payment if required by config
       if (pfConfig?.paymentRequired && account && !isSwapIntent) {
