@@ -32,8 +32,8 @@ const ACTIONABLE_KEYWORDS = [
 // Regex to detect Hedera account IDs or EVM addresses in the question  
 const ACCOUNT_PATTERN = /(?:0\.0\.\d{4,}|0x[a-fA-F0-9]{40})/;
 
-// Regex to detect an explicit swap command, e.g. "swap 5 hbar to sauce", "swap 10.5 HBAR for USDC"
-const SWAP_PATTERN = /swap\s+(\d+\.?\d*)\s+(\w+)\s+(?:to|for|→)\s+(\w+)/i;
+// Regex to detect an explicit swap command, e.g. "swap 5 hbar to sauce", "cambia 10.5 HBAR por USDC"
+const SWAP_PATTERN = /(?:swap|cambia|cambiar)\s+(\d+\.?\d*)\s+(\w+)\s+(?:to|for|por|a|→)\s+(\w+)/i;
 
 /**
  * Classifies whether the question should go to the OpenClaw Agent or Neural Engine.
