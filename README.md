@@ -14,6 +14,24 @@
 
 ---
 
+## ✅ Hackathon Submission Checklist
+
+All required submission items for **Hello Future Apex 2026** are complete and accessible:
+
+| # | Requirement | Status | Link |
+| :---: | :--- | :---: | :--- |
+| 1 | **Project GitHub Repo** (code, README, deployment files, testing instructions) | ✅ | [github.com/Handilusa/ProofFlow](https://github.com/Handilusa/ProofFlow) |
+| 2 | **Project Details** (description, track, tech stack) | ✅ | See sections below |
+| 3 | **Pitch Deck (PDF)** | ✅ | [View Pitch Deck (Google Drive)](https://drive.google.com/file/d/1jRkEs9UMLuOGX1peZv_FWsitLAiPBxGk/view?usp=sharing) |
+| 4 | **Project Demo Video** (max 5 min) | ✅ | [Watch on YouTube](https://youtu.be/7ZrcvWSofAw?si=nVaW3-R9h37QjXOr) |
+| 5 | **Project Demo Link** (live environment) | ✅ | [proofflow-layer.vercel.app](https://proofflow-layer.vercel.app/) |
+
+**Track:** Theme 1: AI & Agents — *AI & Agents (Main Track Submission)*  
+**Bounty:** OpenClaw  
+**Documentation:** [proofflow.mintlify.app](https://proofflow.mintlify.app/)
+
+---
+
 ## 📝 Project Description (100 words)
 
 ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem by creating verifiable, immutable audit trails for every AI reasoning step. When a user pays a native HBAR micro-fee, the **ProofFlow Neural Engine v2** — a crypto-specialized reasoning agent trained with Gemini 2.5 Flash — decomposes their query into logical steps, hashes each step onto Hedera Consensus Service (HCS), mints a reputation credential via Hedera Token Service (HTS), and settles the final proof on an EVM smart contract — all autonomously, without human intervention. ProofFlow enables trustless agent-to-agent composability through cryptographically chained proof DAGs, positioning Hedera as the trust backbone for the Agentic Economy.
@@ -357,7 +375,7 @@ Agents can't easily hold private keys to pay gas fees. ProofFlow's architecture 
 | Hedera tech used | ✅ | All three: HCS (audit), HTS (reputation), EVM (settlement + swap execution). |
 | Public repo | ✅ | [github.com/Handilusa/ProofFlow](https://github.com/Handilusa/ProofFlow) |
 | Live demo URL | ✅ | [proofflow-layer.vercel.app](https://proofflow-layer.vercel.app/) |
-| < 3 min demo video | 🔜 | *(Provisional: see Mermaid flow diagram above)* |
+| < 3 min demo video | ✅ | [Watch on YouTube](https://youtu.be/7ZrcvWSofAw?si=nVaW3-R9h37QjXOr) |
 | README with setup | ✅ | You're reading it. |
 
 ---
