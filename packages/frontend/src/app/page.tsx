@@ -1,7 +1,7 @@
 'use client';
-import React from 'react';
-import { motion } from 'framer-motion';
-import { ArrowRight, Network, Fingerprint, Gavel, Coins, Hexagon, Blocks, Scale, Github, Globe, Zap, Lock, Activity, ShieldAlert, HeartPulse, Truck, Award, Trophy, Crown, Sparkles, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Network, Fingerprint, Gavel, Coins, Hexagon, Blocks, Scale, Github, Globe, Zap, Lock, Activity, ShieldAlert, HeartPulse, Truck, Award, Trophy, Crown, Sparkles, ChevronRight, BookOpen, ExternalLink, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AgentMarketplace } from '@/components/openclaw/AgentMarketplace';
@@ -40,6 +40,7 @@ import { useWallet } from '@/lib/wallet-context';
 
 export default function LandingPage() {
   const { network } = useWallet();
+  const [showXModal, setShowXModal] = useState(false);
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
@@ -875,15 +876,22 @@ export default function LandingPage() {
 
             {/* Social links — centered */}
             <div className="flex items-center justify-center gap-6">
+              <a href="https://proofflow.mintlify.app/quickstart" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="Documentation">
+                <BookOpen className="w-5 h-5" />
+              </a>
               <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="GitHub">
                 <Github className="w-5 h-5" />
               </a>
-              <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="X (Twitter)">
+              <button 
+                onClick={() => setShowXModal(true)}
+                className="text-text-muted hover:text-[#22d3ee] transition-all transform hover:scale-110" 
+                aria-label="X (Twitter)"
+              >
                 {/* X logo */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-              </a>
+              </button>
               <a href="https://hedera.com" target="_blank" rel="noopener noreferrer" className="text-text-muted hover:text-white transition-colors" aria-label="Hedera">
                 {/* Hedera ℏ logo */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -924,6 +932,79 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* ============ CREATOR PROFILE MODAL ============ */}
+      <AnimatePresence>
+        {showXModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowXModal(false)}
+              className="absolute inset-0 bg-background/80 backdrop-blur-md"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-[#060a12] border border-cyan-500/30 overflow-hidden shadow-[0_0_50px_rgba(34,211,238,0.15)]"
+              style={{ clipPath: 'polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px)' }}
+            >
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+              
+              <div className="p-8">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center">
+                      <Zap className="w-4 h-4 text-cyan-400" />
+                    </div>
+                    <span className="text-[10px] font-mono tracking-widest text-cyan-400 uppercase">Creator Intel</span>
+                  </div>
+                  <button 
+                    onClick={() => setShowXModal(false)}
+                    className="text-text-muted hover:text-white transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <h3 className="text-2xl font-display font-bold text-white mb-4 tracking-tight">System Message</h3>
+                
+                <div className="space-y-4 mb-8">
+                  <p className="text-sm text-text-muted leading-relaxed">
+                    You are being redirected to the <span className="text-cyan-400 font-mono">Lead Creator's</span> profile, not the official project account.
+                  </p>
+                  <div className="p-3 bg-cyan-500/5 border-l-2 border-cyan-500/50 italic text-[11px] text-cyan-300">
+                    "Step out of the protocol and meet the mind behind ProofFlow."
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <a 
+                    href="https://x.com/Cebohia18"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setShowXModal(false)}
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-[#060a12] font-bold transition-all"
+                    style={{ clipPath: 'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)' }}
+                  >
+                    Connect with Creator
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                  <button 
+                    onClick={() => setShowXModal(false)}
+                    className="w-full py-3 text-xs font-mono text-text-muted hover:text-white transition-colors uppercase tracking-widest"
+                  >
+                    Return to Nexus
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

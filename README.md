@@ -20,11 +20,11 @@ ProofFlow is an autonomous agent protocol that solves the AI "Black Box" problem
 
 ---
 
-## 🚀 Overview: The AI & Agents Challenge
+## 🚀 Overview: Theme 1 - AI & Agents
 
-**ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon**. It solves the "Black Box" problem of AI by fusing decentralized infrastructure with autonomous reasoning.
+**ProofFlow** is an autonomous agent protocol designed for the **Hello Future Apex 2026 Hackathon** under **Theme 1: AI & Agents**. This track challenges builders to explore the fusion of AI-driven agents with decentralized infrastructure by creating coordination layers where autonomous actors can think, transact, and collaborate — leveraging Hedera’s fast, low-cost microtransactions and secure consensus to unlock the rise of transparent, autonomous economies.
 
-When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where the **ProofFlow Neural Engine v2** — a crypto-specialized autonomous agent — manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
+ProofFlow perfectly embodies this vision by solving the "Black Box" problem of AI: turning opaque reasoning into verifiable, decentralized action. When a user interacts with ProofFlow, they aren't just talking to a chatbot. They are triggering an **Agentic Workflow** where the **ProofFlow Neural Engine v2** — a crypto-specialized autonomous agent — manages the entire lifecycle: from picking up the request after a native HBAR micropayment to logging every reasoning step on **HCS**, minting reputation credentials on **HTS**, and settling the final proof on an **EVM Smart Contract**.
 
 ---
 
@@ -374,6 +374,9 @@ Agents can't easily hold private keys to pay gas fees. ProofFlow's architecture 
 | **Backend** | Node.js, Express | Autonomous orchestrator, market data router, and Hedera service manager. |
 | **Connectivity** | WalletConnect / RainbowKit | Multi-ecosystem wallet support (HashPack, MetaMask, OKX). |
 | **Security** | hCaptcha + DDoS Shield + Rate Limiter | 3-layer bot protection tied to wallet addresses. |
+| **AI Assistants** | Antigravity, Hedera Hivemind (ChatGPT) | AI-driven development and intelligent Hedera smart contract/agent integration. |
+| **NFT Assets** | Nano Banana Pro, Veo 3.1 | Generation of premium visual assets for the Bronze, Silver, Gold, and Genesis Loyalty NFTs. |
+| **Infrastructure** | Vercel (Frontend), Render (Backend) | Serverless frontend deployment and continuous backend container execution. |
 
 ---
 
@@ -435,6 +438,46 @@ cd packages/frontend && npm run dev    # Frontend on :3000
 ```
 
 > **Windows Users**: Set `NEXT_IGNORE_INCORRECT_LOCKFILE=true` before running `npm run dev` to bypass a known Next.js 14 monorepo lockfile bug.
+
+---
+
+## 🧪 Testing Instructions
+
+ProofFlow includes testing suites to ensure reliability across its autonomous framework. To run the tests locally:
+
+```bash
+# Backend & API tests
+cd packages/backend
+npm test
+
+# Smart Contract tests
+cd packages/contracts
+npx hardhat test
+```
+
+---
+
+## ☁️ Deployment Files & Architecture
+
+The application is structured as a monorepo and is ready for production deployment:
+
+**Frontend (Vercel / Next.js):**
+The frontend is built with Next.js 14 and is optimized for Vercel.
+1. Connect your GitHub repository to Vercel.
+2. Set the Root Directory to `packages/frontend`.
+3. Vercel will automatically configure the build settings.
+
+**Backend (Node.js / Express):**
+The backend can be deployed to Render, Railway, Heroku, or AWS.
+1. Configure your `.env` variables in your provider's dashboard (Hedera keys, Gemini API keys).
+2. Set the root directory to `packages/backend` or run `npm start` from that directory.
+
+**Smart Contracts (Hardhat):**
+The EVM settlement contracts are deployed via Hardhat to the Hedera Testnet/Mainnet. The deployment scripts are included in the repository.
+```bash
+cd packages/contracts
+npx hardhat run scripts/deploy.js --network hederaTestnet
+```
 
 ---
 

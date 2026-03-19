@@ -1,5 +1,6 @@
 'use client';
 import { useLanguage } from '@/lib/language-context';
+import { BookOpen } from 'lucide-react';
 
 export default function FooterText() {
     const { t } = useLanguage();
@@ -12,7 +13,11 @@ export default function FooterText() {
             <span className="text-[10px] sm:text-xs text-cyan-500/30 shrink-0">|</span>
             <span className="text-[10px] sm:text-xs text-cyan-400/70 tracking-widest min-w-[50px]">{t('footer_tagline')}</span>
             <span className="hidden sm:inline text-[10px] sm:text-xs text-cyan-500/30 shrink-0">|</span>
-            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-[10px] sm:text-xs text-cyan-400/50 hover:text-cyan-400 transition-colors uppercase tracking-widest">
+            <a href="https://proofflow.mintlify.app/quickstart" target="_blank" rel="noopener noreferrer" className="text-cyan-400/50 hover:text-cyan-400 transition-colors shrink-0" aria-label="Documentation">
+                <BookOpen className="w-4 h-4" />
+            </a>
+            <span className="hidden sm:inline text-[10px] sm:text-xs text-cyan-500/30 shrink-0">|</span>
+            <a href="https://github.com/Handilusa/ProofFlow" target="_blank" rel="noopener noreferrer" className="text-[10px] sm:text-xs text-cyan-400/50 hover:text-cyan-400 transition-colors uppercase tracking-widest shrink-0">
                 {t('footer_github')}
             </a>
             <span className="text-[9px] text-cyan-400/30 uppercase tracking-[0.2em] hidden sm:inline shrink-0">{t('footer_built_for')}</span>
